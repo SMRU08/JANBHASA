@@ -19,16 +19,49 @@ interface Props {
   style?: ViewStyle;
 }
 
-export function Button({ title, onPress, variant = 'primary', size = 'md', loading = false, disabled = false, icon, iconPosition = 'left', fullWidth = false, style }: Props) {
+export function Button({
+  title,
+  onPress,
+  variant = 'primary',
+  size = 'md',
+  loading = false,
+  disabled = false,
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
+  style,
+}: Props) {
   const theme = useTheme();
   const c = theme.colors;
 
-  const bg: Record<Variant, string> = { primary: c.primary, secondary: c.secondary, outline: 'transparent', ghost: 'transparent', danger: c.error };
-  const borderColor: Record<Variant, string> = { primary: c.primary, secondary: c.secondary, outline: c.primary, ghost: 'transparent', danger: c.error };
-  const textColor: Record<Variant, string> = { primary: '#fff', secondary: '#fff', outline: c.primary, ghost: c.primary, danger: '#fff' };
-  const heights: Record<Size, number> = { sm: 36, md: 48, lg: 56 };
-  const fontSizes: Record<Size, number> = { sm: 13, md: 15, lg: 17 };
-  const px: Record<Size, number> = { sm: 12, md: 20, lg: 28 };
+  const bg: Record<Variant, string> = {
+    primary: c.primary,
+    secondary: c.secondary,
+    outline: 'transparent',
+    ghost: 'transparent',
+    danger: c.error,
+  };
+
+  const borderColor: Record<Variant, string> = {
+    primary: c.primaryDark,
+    secondary: c.secondaryDark,
+    outline: c.primary,
+    ghost: 'transparent',
+    danger: c.error,
+  };
+
+  const textColor: Record<Variant, string> = {
+    primary: '#FFFFFF',
+    secondary: '#FFFFFF',
+    outline: c.primary,
+    ghost: c.primary,
+    danger: '#FFFFFF',
+  };
+
+  const heights: Record<Size, number> = { sm: 40, md: 52, lg: 60 };
+  const fontSizes: Record<Size, number> = { sm: 14, md: 16, lg: 18 };
+  const px: Record<Size, number> = { sm: 16, md: 24, lg: 32 };
+  const radiuses: Record<Size, number> = { sm: 12, md: 16, lg: 18 };
 
   const isDisabled = disabled || loading;
 
@@ -36,14 +69,23 @@ export function Button({ title, onPress, variant = 'primary', size = 'md', loadi
     <TouchableOpacity
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.75}
+      activeOpacity={0.85}
       accessibilityRole="button"
       accessibilityLabel={title}
       style={[
         styles.base,
-        { backgroundColor: bg[variant], borderColor: borderColor[variant], height: heights[size], paddingHorizontal: px[size], borderRadius: theme.radius.md, opacity: isDisabled ? 0.55 : 1 },
+        {
+          backgroundColor: bg[variant],
+          borderColor: borderColor[variant],
+          height: heights[size],
+          paddingHorizontal: px[size],
+          borderRadius: radiuses[size],
+          opacity: isDisabled ? 0.6 : 1,
+        },
+        variant === 'primary' && styles.primaryShadow,
+        variant === 'secondary' && styles.secondaryShadow,
+        variant === 'outline' && { borderWidth: 2 },
         fullWidth && { width: '100%' },
-        (variant === 'outline') && { borderWidth: 2 },
         style,
       ]}
     >
@@ -51,9 +93,25 @@ export function Button({ title, onPress, variant = 'primary', size = 'md', loadi
         <ActivityIndicator color={textColor[variant]} size="small" />
       ) : (
         <>
-          {icon && iconPosition === 'left' && <Ionicons name={icon as any} size={fontSizes[size] + 2} color={textColor[variant]} style={{ marginRight: 6 }} />}
-          <Text style={[styles.text, { color: textColor[variant], fontSize: fontSizes[size] }]}>{title}</Text>
-          {icon && iconPosition === 'right' && <Ionicons name={icon as any} size={fontSizes[size] + 2} color={textColor[variant]} style={{ marginLeft: 6 }} />}
+          {icon && iconPosition === 'left' && (
+            <Ionicons
+              name={icon as any}
+              size={fontSizes[size] + 3}
+              color={textColor[variant]}
+              style={{ marginRight: 8 }}
+            />
+          )}
+          <Text style={[styles.text, { color: textColor[variant], fontSize: fontSizes[size] }]}>
+            {title}
+          </Text>
+          {icon && iconPosition === 'right' && (
+            <Ionicons
+              name={icon as any}
+              size={fontSizes[size] + 3}
+              color={textColor[variant]}
+              style={{ marginLeft: 8 }}
+            />
+          )}
         </>
       )}
     </TouchableOpacity>
@@ -61,6 +119,27 @@ export function Button({ title, onPress, variant = 'primary', size = 'md', loadi
 }
 
 const styles = StyleSheet.create({
-  base: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 0 },
-  text: { fontWeight: '700', letterSpacing: 0.2 },
+  base: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryShadow: {
+    shadowColor: '#059669',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  secondaryShadow: {
+    shadowColor: '#D97706',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  text: {
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
 });
