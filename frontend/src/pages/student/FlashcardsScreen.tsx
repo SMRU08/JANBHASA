@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { Header } from '../../components/Header';
 import { Flashcard } from '../../components/Flashcard';
 import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
-import { useAuthStore } from '../../store/authStore';
 import { useGamificationStore } from '../../store/gamificationStore';
-import { apiRequest } from '../../services/apiClient';
 import { synthesize } from '../../services/ttsService';
-
-const SAMPLE_FLASHCARDS = [
-  { id: 1, front_text: 'एक', back_text: 'One', front_lang: 'hi', back_lang: 'en', image_emoji: '1️⃣' },
-  { id: 2, front_text: 'दो', back_text: 'Two', front_lang: 'hi', back_lang: 'en', image_emoji: '2️⃣' },
-  { id: 3, front_text: 'तीन', back_text: 'Three', front_lang: 'hi', back_lang: 'en', image_emoji: '3️⃣' },
-  { id: 4, front_text: 'पानी', back_text: 'Water', front_lang: 'hi', back_lang: 'en', image_emoji: '💧' },
-  { id: 5, front_text: 'आग', back_text: 'Fire', front_lang: 'hi', back_lang: 'en', image_emoji: '🔥' },
-];
+import vocabCards from '../../data/flashcards/primary_vocab.json';
 
 export function FlashcardsScreen() {
   const theme = useTheme(); const c = theme.colors;
-  const { user } = useAuthStore();
   const { addXp } = useGamificationStore();
-  const [cards, setCards] = useState(SAMPLE_FLASHCARDS);
+  const [cards] = useState(vocabCards);
   const [current, setCurrent] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [done, setDone] = useState(false);
@@ -43,11 +32,13 @@ export function FlashcardsScreen() {
   };
 
   const handleListen = async (text: string, lang: string) => {
-    const url = await synthesize(text, lang);
-    if (url) {
-      const { sound } = await Audio.Sound.createAsync({ uri: url });
-      await sound.playAsync();
-    }
+    try {
+      const url = await synthesize(text, lang);
+      if (url) {
+        const { sound } = await Audio.Sound.createAsync({ uri: url });
+        await sound.playAsync();
+      }
+    } catch {}
   };
 
   if (done) return (
@@ -59,7 +50,7 @@ export function FlashcardsScreen() {
     </SafeAreaView>
   );
 
-  const card = cards[current];
+  const card = cards[current] || cards[0];
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.background }}>
       <Header title="Flashcards 🃏" subtitle={`${current + 1} / ${cards.length}`} />

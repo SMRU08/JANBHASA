@@ -1,0 +1,47 @@
+[
+  { "front_text": "एक (1)", "back_text": "One • ᱢᱤᱫ • ଏକ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "1️⃣" },
+  { "front_text": "दो (2)", "back_text": "Two • ᱵᱟᱨ • ଦୁଇ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "2️⃣" },
+  { "front_text": "तीन (3)", "back_text": "Three • ᱯᱮ • ତିନି", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "3️⃣" },
+  { "front_text": "चार (4)", "back_text": "Four • ᱯᱩᱱ • ଚାରି", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "4️⃣" },
+  { "front_text": "पाँच (5)", "back_text": "Five • ᱢᱚᱬᱮ • ପାଞ୍ଚ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "5️⃣" },
+  { "front_text": "छह (6)", "back_text": "Six • ᱛᱩᱨᱩᱭ • ଛଅ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "6️⃣" },
+  { "front_text": "सात (7)", "back_text": "Seven • ᱮᱭᱟᱭ • ସାତ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "7️⃣" },
+  { "front_text": "आठ (8)", "back_text": "Eight • ᱤᱨᱟᱹᱞ • ଆଠ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "8️⃣" },
+  { "front_text": "नौ (9)", "back_text": "Nine • ᱟᱨᱮ • ନଅ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "9️⃣" },
+  { "front_text": "दस (10)", "back_text": "Ten • ᱜᱮᱞ • ଦଶ", "front_lang": "hi", "back_lang": "en", "category": "Numbers", "class_level": "1", "image_emoji": "🔟" },
+
+  { "front_text": "पानी (Water)", "back_text": "ᱫᱟᱜ (Santali) • Daa (Ho) • Dā (Mundari)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "1", "image_emoji": "💧" },
+  { "front_text": "पेड़ (Tree)", "back_text": "ᱫᱟᱨᱮ (Santali) • Darang (Ho) • Gacha (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "1", "image_emoji": "🌳" },
+  { "front_text": "सूरज (Sun)", "back_text": "ᱥᱤᱧ (Santali) • Singi (Ho) • ସୂର୍ଯ୍ୟ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "1", "image_emoji": "☀️" },
+  { "front_text": "चाँद (Moon)", "back_text": "ᱪᱟᱸᱫᱚ (Santali) • Chando (Ho) • ଚାନ୍ଦ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "1", "image_emoji": "🌙" },
+  { "front_text": "नदी (River)", "back_text": "ᱜᱟᱰᱟ (Santali) • Gada (Ho) • ନଦୀ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "2", "image_emoji": "🌊" },
+  { "front_text": "पहाड़ (Mountain)", "back_text": "ᱵᱩᱨᱩ (Santali) • Buru (Ho) • ପାହାଡ଼ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "2", "image_emoji": "⛰️" },
+  { "front_text": "फूल (Flower)", "back_text": "ᱵᱟᱦᱟ (Santali) • Baha (Ho) • ଫୁଲ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "1", "image_emoji": "🌸" },
+  { "front_text": "जंगल (Forest)", "back_text": "ᱵᱤᱨ (Santali) • Bir (Ho) • ଜଙ୍ଗଲ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Nature", "class_level": "2", "image_emoji": "🌲" },
+
+  { "front_text": "किताब (Book)", "back_text": "ᱯᱳᱛᱷᱤ (Santali) • Pothi (Ho/Mundari) • ବହି (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "School", "class_level": "1", "image_emoji": "📖" },
+  { "front_text": "कलम (Pen)", "back_text": "ᱠᱚᱞᱚᱢ (Santali) • Kolom (Ho) • କଲମ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "School", "class_level": "1", "image_emoji": "🖊️" },
+  { "front_text": "स्कूल (School)", "back_text": "ᱤᱥᱠᱩᱞ (Santali) • Iskool (Ho) • ବିଦ୍ୟାଳୟ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "School", "class_level": "1", "image_emoji": "🏫" },
+  { "front_text": "शिक्षक (Teacher)", "back_text": "ᱢᱟᱪᱮᱛ (Santali) • Macheet (Ho) • ଶିକ୍ଷକ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "School", "class_level": "2", "image_emoji": "👩‍🏫" },
+  { "front_text": "विद्यार्थी (Student)", "back_text": "ᱯᱟᱹᱴᱷᱩᱣᱟᱹ (Santali) • Pathua (Ho) • ଛାତ୍ର (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "School", "class_level": "2", "image_emoji": "👨‍🎓" },
+
+  { "front_text": "माँ (Mother)", "back_text": "ᱟᱭᱳ (Santali) • Ayo (Ho) • ମା (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Family", "class_level": "1", "image_emoji": "👩" },
+  { "front_text": "पिता (Father)", "back_text": "ᱵᱟᱵᱟ (Santali) • Baba (Ho) • ବାପା (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Family", "class_level": "1", "image_emoji": "👨" },
+  { "front_text": "भाई (Brother)", "back_text": "ᱵᱚᱭᱦᱟ (Santali) • Bhaai (Ho) • ଭାଇ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Family", "class_level": "1", "image_emoji": "👦" },
+  { "front_text": "बहन (Sister)", "back_text": "ᱢᱤᱥᱤ (Santali) • Misi (Ho) • ଭଉଣୀ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Family", "class_level": "1", "image_emoji": "👧" },
+  { "front_text": "घर (House)", "back_text": "ᱚᱲᱟᱜ (Santali) • Ora (Ho) • ଘର (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Family", "class_level": "1", "image_emoji": "🏠" },
+
+  { "front_text": "गाय (Cow)", "back_text": "ᱜᱟᱹᱭ (Santali) • Gai (Ho) • ଗାଈ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Animals", "class_level": "1", "image_emoji": "🐄" },
+  { "front_text": "कुत्ता (Dog)", "back_text": "ᱥᱮᱛᱟ (Santali) • Seta (Ho) • କୁକୁର (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Animals", "class_level": "1", "image_emoji": "🐕" },
+  { "front_text": "बिल्ली (Cat)", "back_text": "ᱯᱩᱥᱤ (Santali) • Pusi (Ho) • ବିରାଡ଼ି (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Animals", "class_level": "1", "image_emoji": "🐈" },
+  { "front_text": "हाथी (Elephant)", "back_text": "ᱦᱟᱹᱛᱤ (Santali) • Hati (Ho) • ହାତୀ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Animals", "class_level": "2", "image_emoji": "🐘" },
+  { "front_text": "चिड़िया (Bird)", "back_text": "ᱪᱮᱬᱮ (Santali) • Chede (Ho) • ଚଢ଼େଇ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Animals", "class_level": "1", "image_emoji": "🐦" },
+
+  { "front_text": "आम (Mango)", "back_text": "ᱩᱞ (Santali) • Uli (Ho) • ଆମ୍ବ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Food", "class_level": "1", "image_emoji": "🥭" },
+  { "front_text": "केला (Banana)", "back_text": "ᱠᱟᱭᱨᱟ (Santali) • Kadali (Ho) • କଦଳୀ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Food", "class_level": "1", "image_emoji": "🍌" },
+  { "front_text": "चावल (Rice)", "back_text": "ᱪᱟᱣᱞᱮ (Santali) • Chauli (Ho) • ଚାଉଳ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Food", "class_level": "1", "image_emoji": "🍚" },
+  { "front_text": "दूध (Milk)", "back_text": "ᱛᱳᱣᱟ (Santali) • Toha (Ho) • କ୍ଷୀର (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Food", "class_level": "1", "image_emoji": "🥛" },
+
+  { "front_text": "जोड़ (Addition)", "back_text": "ᱡᱳᱲ (Santali) • Jod (Ho) • ମିଶାଣ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Math", "class_level": "2", "image_emoji": "➕" },
+  { "front_text": "घटाव (Subtraction)", "back_text": "ᱜᱷᱚᱴᱟᱣ (Santali) • Ghataw (Ho) • ଫେଡ଼ାଣ (Odia)", "front_lang": "hi", "back_lang": "sat", "category": "Math", "class_level": "2", "image_emoji": "➖" }
+]

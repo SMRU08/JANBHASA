@@ -8,7 +8,9 @@
     "splash": {
       "backgroundColor": "#4CAF50"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.teamxerses.janbhasha",
@@ -29,7 +31,9 @@
         "WRITE_EXTERNAL_STORAGE",
         "INTERNET",
         "ACCESS_WIFI_STATE",
-        "ACCESS_NETWORK_STATE"
+        "ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -46,8 +50,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "janbhasha-team-xerses"
+        "projectId": "4ef6a122-e346-4291-862e-f5c36d3393e4"
       }
-    }
+    },
+    "owner": "sahillllq"
   }
 }
