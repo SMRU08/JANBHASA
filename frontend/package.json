@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "build": "expo export --platform web",
     "start": "expo start -c --tunnel",
     "dev": "expo start -c --tunnel",
     "dev:lan": "expo start -c --lan",
