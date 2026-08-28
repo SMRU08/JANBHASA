@@ -1,0 +1,14 @@
+{
+  "name": "janbhasha-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JANBHASHA - Offline-First Multilingual Education Platform",
+  "scripts": {
+    "postinstall": "npm install --prefix frontend --legacy-peer-deps",
+    "dev": "npm run dev --prefix frontend",
+    "start": "npm start --prefix frontend",
+    "web": "npm run web --prefix frontend",
+    "android": "npm run android --prefix frontend",
+    "ios": "npm run ios --prefix frontend"
+  }
+}

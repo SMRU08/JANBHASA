@@ -1,0 +1,15 @@
+{
+  "common": { "ok": "hã", "cancel": "bātal", "save": "sãcā", "delete": "hātāo", "back": "pāchā", "next": "āge", "loading": "lōḍ hō...", "error": "ghalat", "retry": "phir kōshish", "offline": "offline", "online": "online", "submit": "dākhil", "done": "mumu", "yes": "hã", "no": "bā", "scan": "scan", "listen": "sunō", "translate": "badlō", "speak": "bōlō" },
+  "nav": { "home": "ghara", "learn": "sikhā", "ai": "AI sāthī", "progress": "āge baḍhō", "settings": "sēttiṅ", "classroom": "iskōlā", "assignments": "kām", "dashboard": "ḍāshbōrḍ" },
+  "splash": { "tagline": "Hindī mẽ sikhāo. Māṭri bhāṣā mẽ sikhō.", "loading": "lōḍ hō...", "developed_by": "Ṭīm Jhersas" },
+  "welcome": { "title": "JANBHASHA mẽ swāgat", "subtitle": "āpanī bhāṣā chunō", "select_language": "bhāṣā chunō", "continue": "jārī rakhō" },
+  "role": { "title": "āp kaun?", "teacher": "maiṃ ōstād", "student": "maiṃ sīkhane-wālā", "admin": "admin lōgin" },
+  "auth": { "login": "lōgin", "password": "pāswōrḍ", "name": "nām", "logout": "lōgāuṭ" },
+  "teacher": { "dashboard": "Ōstād Ḍāshbōrḍ", "welcome": "Jōhār, Ōstād!", "start_classroom": "iskōlā surū" },
+  "student": { "dashboard": "Sīkhane-wālā Ḍāshbōrḍ", "hello": "Jōhār, sīkhane-wālā!", "lessons": "pāṭh", "quiz": "sawāl" },
+  "classroom": { "create": "iskōlā banāo", "join": "iskōlā jōṛō", "connecting": "jōṛ hō rahā...", "connected": "jōṛ ho gayā", "end_session": "iskōlā khatam" },
+  "errors": { "generic": "ghalat ho gayā. phir kōshish karō.", "no_network": "neṭwork nahī. JANBHASHA offline kām kartā." },
+  "gamification": { "xp": "XP", "level": "star {{level}}", "streak": "{{days}} din", "level_up": "🎉 Star {{level}}!", "badge_unlocked": "🏆 nayā bej: {{name}}" },
+  "settings": { "title": "sēttiṅ", "dark_mode": "dark mōḍ", "language": "bhāṣā", "all_offline": "sab suvid offline" },
+  "content": { "class": "kakshā {{num}}", "subject_math": "hisāb", "lesson": "pāṭh", "correct": "sac", "wrong": "ghalat", "completed": "mumu" }
+}

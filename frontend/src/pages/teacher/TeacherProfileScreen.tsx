@@ -1,0 +1,1 @@
+export { TeacherProfileScreen } from './TeacherAnalyticsScreen';

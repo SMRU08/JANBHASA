@@ -1,0 +1,15 @@
+{
+  "common": { "ok": "hon", "cancel": "batal", "save": "sacha", "delete": "hatao", "back": "pacha", "next": "age", "loading": "loading...", "error": "galat", "retry": "phir koshish", "offline": "offline", "online": "online", "submit": "dakhal", "done": "mumu", "yes": "hon", "no": "bai", "scan": "scan", "listen": "suniu", "translate": "badolo", "speak": "boto" },
+  "nav": { "home": "ghora", "learn": "sikhia", "ai": "AI marang", "progress": "age badi", "settings": "setting", "classroom": "iskool", "assignments": "kaam", "dashboard": "dashboard" },
+  "splash": { "tagline": "Hindi re sikhaao. Maa boli re sikho.", "loading": "loading...", "developed_by": "Team Xerses" },
+  "welcome": { "title": "JANBHASHA re swagat", "subtitle": "aaman boli bachao", "select_language": "boli bachao", "continue": "jari raho" },
+  "role": { "title": "aam kone?", "teacher": "ai guru", "student": "ai chalak", "admin": "admin login" },
+  "auth": { "login": "login", "password": "password", "name": "naam", "logout": "logout" },
+  "teacher": { "dashboard": "Guru Dashboard", "welcome": "Johar, Guru!", "start_classroom": "iskool suru" },
+  "student": { "dashboard": "Chalak Dashboard", "hello": "Johar, sikhia-wala!", "lessons": "porha", "quiz": "prashan" },
+  "classroom": { "create": "iskool banao", "join": "iskool jog do", "connecting": "jod ho raha...", "connected": "jod ho gaya", "end_session": "iskool ses" },
+  "errors": { "generic": "galat bhayo. phir koshish karo.", "no_network": "network nahi. JANBHASHA offline kaam karta." },
+  "gamification": { "xp": "XP", "level": "level {{level}}", "streak": "{{days}} din", "level_up": "🎉 Level {{level}}!", "badge_unlocked": "🏆 nayi badge: {{name}}" },
+  "settings": { "title": "setting", "dark_mode": "dark mode", "language": "boli", "all_offline": "sab suwidha offline" },
+  "content": { "class": "kaksha {{num}}", "subject_math": "hisab", "lesson": "porha", "correct": "sach", "wrong": "galat", "completed": "mumu" }
+}

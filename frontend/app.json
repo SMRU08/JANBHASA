@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "JANBHASHA",
+    "slug": "janbhasha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#4CAF50"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.teamxerses.janbhasha",
+      "infoPlist": {
+        "NSCameraUsageDescription": "JANBHASHA needs camera access to scan QR codes and worksheets.",
+        "NSMicrophoneUsageDescription": "JANBHASHA needs microphone access for voice translation in classroom mode."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#4CAF50"
+      },
+      "package": "com.teamxerses.janbhasha",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET",
+        "ACCESS_WIFI_STATE",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "JANBHASHA needs camera to scan QR codes and worksheets.",
+          "microphonePermission": "JANBHASHA needs microphone for voice translation."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "janbhasha-team-xerses"
+      }
+    }
+  }
+}

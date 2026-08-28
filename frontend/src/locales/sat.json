@@ -1,0 +1,15 @@
+{
+  "common": { "ok": "ᱦᱚ", "cancel": "ᱵᱟᱛᱤᱞ", "save": "ᱥᱟᱱᱪᱷᱟᱣ", "delete": "ᱦᱟᱹᱛᱩᱡ", "edit": "ᱵᱟᱫᱚᱞ", "back": "ᱦᱮᱨᱮ", "next": "ᱟᱜᱽ", "loading": "ᱞᱚᱰ ᱦᱚᱞᱟᱜ...", "error": "ᱜᱷᱚᱞᱛᱤ", "retry": "ᱞᱟᱜᱤᱫ ᱪᱮᱥᱴᱟ", "offline": "ᱚᱯᱷᱞᱟᱭᱤᱱ", "online": "ᱚᱱᱞᱟᱭᱤᱱ", "submit": "ᱫᱟᱠᱷᱤᱞ", "close": "ᱵᱚᱸᱫ", "done": "ᱢᱩᱢᱩ", "yes": "ᱦᱚ", "no": "ᱵᱟᱝ", "scan": "ᱥᱠᱮᱱ", "listen": "ᱥᱩᱱᱩ", "translate": "ᱵᱚᱫᱚᱞ", "speak": "ᱦᱚᱲᱚ" },
+  "nav": { "home": "ᱜᱷᱚᱨ", "learn": "ᱥᱮᱱᱟ", "ai": "AI ᱢᱟᱲᱟᱝ", "progress": "ᱟᱜᱽ ᱵᱟᱰᱟᱭ", "settings": "ᱛᱷᱤᱠ", "classroom": "ᱤᱥᱠᱩᱞ", "assignments": "ᱠᱟᱹᱢᱤ", "dashboard": "ᱰᱮᱥᱵᱚᱨᱰ" },
+  "splash": { "tagline": "ᱦᱤᱱᱫᱤ ᱨᱮ ᱯᱚᱲᱦᱟᱣ᱾ ᱢᱟᱹᱣ ᱯᱤᱞᱪᱩ ᱨᱮ ᱥᱮᱱᱟ᱾", "loading": "ᱞᱚᱰ ᱦᱚᱞᱟᱜ...", "developed_by": "ᱴᱤᱢ ᱡᱷᱚᱨᱥᱮᱥ" },
+  "welcome": { "title": "JANBHASHA ᱨᱮ ᱥᱣᱟᱜᱚᱛ", "subtitle": "ᱟᱢᱟᱜ ᱯᱤᱞᱪᱩ ᱵᱟᱪᱷᱟᱣ", "select_language": "ᱯᱤᱞᱪᱩ ᱵᱟᱪᱷᱟᱣ", "continue": "ᱡᱟᱨᱤ" },
+  "role": { "title": "ᱟᱢ ᱠᱚᱬᱮ?", "teacher": "ᱤᱧ ᱜᱩᱨᱩ", "student": "ᱤᱧ ᱚᱠᱛᱮ", "admin": "ᱮᱰᱢᱤᱱ ᱞᱚᱜᱤᱱ" },
+  "auth": { "login": "ᱞᱚᱜᱤᱱ", "register": "ᱫᱟᱹᱠᱷᱤᱞ", "password": "ᱯᱟᱥᱣᱚᱨᱰ", "name": "ᱫᱚ ᱨᱮᱠᱚᱨᱰ ᱱᱟᱢ", "logout": "ᱞᱚᱜᱟᱣᱴ" },
+  "teacher": { "dashboard": "ᱜᱩᱨᱩ ᱰᱮᱥᱵᱚᱨᱰ", "welcome": "ᱡᱳᱦᱟᱨ, ᱜᱩᱨᱩ!", "start_classroom": "ᱤᱥᱠᱩᱞ ᱥᱩᱨᱩ" },
+  "student": { "dashboard": "ᱚᱠᱛᱮ ᱰᱮᱥᱵᱚᱨᱰ", "hello": "ᱡᱳᱦᱟᱨ, ᱥᱮᱱᱟᱣᱟᱞᱟ!", "lessons": "ᱯᱟᱹᱲᱤ", "quiz": "ᱯᱨᱟᱥᱣᱱ" },
+  "classroom": { "create": "ᱤᱥᱠᱩᱞ ᱛᱤᱭᱟᱨ", "join": "ᱤᱥᱠᱩᱞ ᱡᱚᱜ", "connecting": "ᱡᱳᱰ ᱦᱚᱞᱟᱜ...", "connected": "ᱡᱳᱰ ᱦᱚᱞᱚᱜ", "end_session": "ᱤᱥᱠᱩᱞ ᱥᱮᱥ" },
+  "errors": { "generic": "ᱜᱷᱚᱞᱛᱤ ᱦᱚᱞᱚᱜ᱾ ᱞᱟᱜᱤᱫ ᱪᱮᱥᱴᱟ᱾", "no_network": "ᱱᱮᱴᱣᱚᱨᱠ ᱵᱟᱝ᱾ JANBHASHA ᱚᱯᱷᱞᱟᱭᱤᱱ ᱠᱟᱢᱟ᱾" },
+  "gamification": { "xp": "XP", "level": "ᱞᱮᱵᱮᱞ {{level}}", "streak": "{{days}} ᱫᱤᱱ", "level_up": "🎉 ᱞᱮᱵᱮᱞ {{level}}!", "badge_unlocked": "🏆 ᱱᱟᱶᱟ ᱵᱮᱡ: {{name}}" },
+  "settings": { "title": "ᱛᱷᱤᱠ", "dark_mode": "ᱰᱟᱨᱠ ᱢᱳᱰ", "language": "ᱯᱤᱞᱪᱩ", "all_offline": "ᱥᱚᱵ ᱥᱩᱵᱤᱫᱷᱟ ᱚᱯᱷᱞᱟᱭᱤᱱ" },
+  "content": { "class": "ᱠᱚᱠᱮᱴ {{num}}", "subject_math": "ᱜᱚᱱᱤᱛ", "lesson": "ᱯᱟᱹᱲᱤ", "correct": "ᱥᱟᱪ", "wrong": "ᱜᱷᱚᱞᱛᱤ", "completed": "ᱢᱩᱢᱩ" }
+}

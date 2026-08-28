@@ -1,0 +1,15 @@
+{
+  "common": { "ok": "ଠିକ ଅଛି", "cancel": "ବାତିଲ", "save": "ସଞ୍ଚୟ", "delete": "ଅପସାରଣ", "edit": "ସମ୍ପାଦନ", "back": "ଫେରନ୍ତୁ", "next": "ଆଗକୁ", "loading": "ଲୋଡ ହେଉଛି...", "error": "ତ୍ରୁଟି", "retry": "ପୁନଃ ଚେଷ୍ଟା", "offline": "ଅଫଲାଇନ", "online": "ଅନଲାଇନ", "submit": "ଦାଖଲ", "close": "ବନ୍ଦ", "search": "ଖୋଜ", "done": "ସମ୍ପୂର୍ଣ୍ଣ", "yes": "ହଁ", "no": "ନା", "scan": "ସ୍କ୍ୟାନ", "play": "ଚଲାନ୍ତୁ", "stop": "ଅଟକ", "listen": "ଶୁଣନ୍ତୁ", "translate": "ଅନୁବାଦ", "speak": "କୁହନ୍ତୁ" },
+  "nav": { "home": "ଘର", "learn": "ଶିଖ", "ai": "AI ସହାୟକ", "progress": "ଅଗ୍ରଗତି", "settings": "ସେଟିଂ", "classroom": "ଶ୍ରେଣୀ", "assignments": "କାର୍ଯ୍ୟ", "dashboard": "ଡ୍ୟାଶବୋର୍ଡ", "users": "ବ୍ୟବହାରକାରୀ", "content": "ବିଷୟବସ୍ତୁ", "system": "ସିଷ୍ଟମ" },
+  "splash": { "tagline": "ହିନ୍ଦୀରେ ଶିଖାନ୍ତୁ। ମାତୃଭାଷାରେ ଶିଖ।", "loading": "ଲୋଡ ହେଉଛି...", "developed_by": "ଟିମ ଜ଼ର୍ସେସ ଦ୍ୱାରା" },
+  "welcome": { "title": "JANBHASHA ରେ ସ୍ୱାଗତ", "subtitle": "ଆପଣଙ୍କ ଭାଷା ବଛନ୍ତୁ", "select_language": "ଭାଷା ବଛନ୍ତୁ", "continue": "ଜାରି ରଖନ୍ତୁ" },
+  "role": { "title": "ଆପଣ କିଏ?", "teacher": "ମୁଁ ଶିକ୍ଷକ", "student": "ମୁଁ ଛାତ୍ର", "admin": "ଆଡମିନ ଲଗଇନ", "teacher_desc": "ଶ୍ରେଣୀ ପରିଚାଳନ", "student_desc": "ଶିଖ ଏବଂ ବଢ", "admin_desc": "ସିଷ୍ଟମ ପ୍ରଶାସନ" },
+  "auth": { "login": "ଲଗଇନ", "register": "ପଞ୍ଜୀକରଣ", "email": "ଇମେଲ", "phone": "ଫୋନ ନଂ", "password": "ପାସୱାର୍ଡ", "name": "ପୂରା ନାମ", "school": "ବିଦ୍ୟାଳୟ", "forgot_password": "ପାସୱାର୍ଡ ଭୁଲିଗଲ?", "recovery_pin": "ରିକଭରି ପିନ", "logout": "ଲଗଆଉଟ" },
+  "teacher": { "dashboard": "ଶିକ୍ଷକ ଡ୍ୟାଶବୋର୍ଡ", "welcome": "ସ୍ୱାଗତ, ଶିକ୍ଷକ!", "classroom": "ଶ୍ରେଣୀ", "start_classroom": "ଶ୍ରେଣୀ ଆରମ୍ଭ", "end_classroom": "ଶ୍ରେଣୀ ଶେଷ" },
+  "student": { "dashboard": "ଛାତ୍ର ଡ୍ୟାଶବୋର୍ଡ", "hello": "ନମସ୍କାର, ଶିକ୍ଷାର୍ଥୀ!", "learning_path": "ଶିକ୍ଷା ପଥ", "lessons": "ପାଠ", "quiz": "ପ୍ରଶ୍ନୋତ୍ତର", "join_classroom": "ଶ୍ରେଣୀ ଯୋଗ ଦିଅ" },
+  "classroom": { "create": "ଶ୍ରେଣୀ ତିଆରି", "join": "ଶ୍ରେଣୀ ଯୋଗ", "scan_qr": "QR ସ୍କ୍ୟାନ", "connecting": "ଯୋଡ ହେଉଛି...", "connected": "ଯୋଡ ହୋଇଛି", "end_session": "ଶ୍ରେଣୀ ଶେଷ" },
+  "errors": { "no_network": "ନେଟୱର୍କ ନାହିଁ। JANBHASHA ଅଫଲାଇନ କାମ କରେ।", "model_not_installed": "ଭାଷା ମଡେଲ ଇନଷ୍ଟଲ ନାହିଁ।", "generic": "ଭୁଲ ହୋଇଛି। ପୁନଃ ଚେଷ୍ଟା।" },
+  "gamification": { "xp": "XP", "level": "ସ୍ତର {{level}}", "streak": "{{days}} ଦିନ", "level_up": "🎉 ସ୍ତର {{level}}!", "badge_unlocked": "🏆 ନୂଆ ବ୍ୟାଜ: {{name}}" },
+  "settings": { "title": "ସେଟିଂ", "dark_mode": "ଡାର୍କ ମୋଡ", "language": "ଭାଷା", "offline_mode": "ଅଫଲାଇନ ମୋଡ", "all_offline": "ସବୁ ସୁବିଧା ଅଫଲାଇନ" },
+  "content": { "class": "ଶ୍ରେଣୀ {{num}}", "subject_math": "ଗଣିତ", "subject_hindi": "ହିନ୍ଦୀ", "lesson": "ପାଠ", "correct": "ଠିକ", "wrong": "ଭୁଲ", "score": "ଅଙ୍କ", "completed": "ସମ୍ପୂର୍ଣ" }
+}

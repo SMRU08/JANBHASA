@@ -1,0 +1,8 @@
+[
+  { "badge_key": "first_lesson", "name_hi": "पहला कदम", "name_en": "First Step", "description_en": "Complete your first lesson", "icon": "🌱", "xp_reward": 50, "condition_type": "lessons_completed", "condition_value": 1 },
+  { "badge_key": "streak_3", "name_hi": "3 दिन का सिलसिला", "name_en": "3-Day Streak", "description_en": "Study 3 days in a row", "icon": "🔥", "xp_reward": 75, "condition_type": "streak", "condition_value": 3 },
+  { "badge_key": "streak_7", "name_hi": "हफ्ते का विजेता", "name_en": "Week Warrior", "description_en": "Study 7 days in a row", "icon": "⚡", "xp_reward": 150, "condition_type": "streak", "condition_value": 7 },
+  { "badge_key": "quiz_master", "name_hi": "क्विज़ मास्टर", "name_en": "Quiz Master", "description_en": "Pass 5 quizzes", "icon": "🏆", "xp_reward": 100, "condition_type": "quizzes_passed", "condition_value": 5 },
+  { "badge_key": "story_lover", "name_hi": "कहानी प्रेमी", "name_en": "Story Lover", "description_en": "Read 3 stories in mother tongue", "icon": "📚", "xp_reward": 100, "condition_type": "stories_read", "condition_value": 3 },
+  { "badge_key": "classroom_star", "name_hi": "कक्षा का सितारा", "name_en": "Classroom Star", "description_en": "Join a live offline classroom", "icon": "⭐", "xp_reward": 100, "condition_type": "classroom_joined", "condition_value": 1 }
+]

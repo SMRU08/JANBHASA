@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: janbhasha-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/database:/app/backend/database
+      - ./ai_models:/app/ai_models
+    environment:
+      - PORT=8000
+      - DB_PATH=/app/backend/database/janbhasha.db
+      - AI_MODELS_PATH=/app/ai_models
+      - WHISPER_MODEL=tiny
+    restart: unless-stopped
