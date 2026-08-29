@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StudentHeroIllustration } from '../../components/VisualIllustrations';
+import { StudentHeroIllustration, TribalMotifBar } from '../../components/VisualIllustrations';
+import { useTheme } from '../../theme';
 
 const { width } = Dimensions.get('window');
 
@@ -19,18 +19,24 @@ const FLOATING_SPEECH_BUBBLES = [
 
 export function WelcomeScreen() {
   const nav = useNavigation<any>();
+  const theme = useTheme();
+  const c = theme.colors;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {/* Brand Logo & Header */}
         <View style={styles.brandHeader}>
-          <View style={styles.logoBubble}>
-            <Text style={styles.logoAi}>Ai</Text>
+          <View style={[styles.logoBubble, { backgroundColor: '#10B981', shadowColor: '#10B981' }]}>
+            <Text style={styles.logoAi}>🏫</Text>
           </View>
-          <Text style={styles.brandTitle}>JANBHASHA</Text>
-          <Text style={styles.taglineBold}>Teach in Hindi. Learn in Your Mother Tongue.</Text>
-          <Text style={styles.taglineSub}>AI-Powered Multilingual Education for Everyone</Text>
+          <Text style={[styles.brandTitle, { color: c.text }]}>JANBHASHA</Text>
+          <Text style={[styles.taglineBold, { color: c.text }]}>
+            Teach in Hindi. Learn in Your Mother Tongue.
+          </Text>
+          <Text style={[styles.taglineSub, { color: c.textSecondary }]}>
+            AI-Powered Multilingual Education for Tribal & Rural Learners
+          </Text>
         </View>
 
         {/* Hero Visual Area with Floating Tribal Dialect Bubbles */}
@@ -41,18 +47,25 @@ export function WelcomeScreen() {
               key={i}
               style={[
                 styles.floatingBubble,
-                { top: bubble.y, left: bubble.x },
+                {
+                  top: bubble.y,
+                  left: bubble.x,
+                  backgroundColor: c.card,
+                  borderColor: theme.isDark ? '#334155' : '#E2E8F0',
+                },
               ]}
             >
-              <Text style={styles.bubbleText}>{bubble.text}</Text>
+              <Text style={[styles.bubbleText, { color: c.text }]}>{bubble.text}</Text>
             </View>
           ))}
 
           {/* Teacher & Students Illustration Graphic */}
-          <View style={styles.illustrationCard}>
+          <View style={[styles.illustrationCard, { backgroundColor: theme.isDark ? '#1E293B' : '#F8FAFC' }]}>
             <StudentHeroIllustration />
           </View>
         </View>
+
+        <TribalMotifBar color={theme.isDark ? '#10B981' : '#059669'} height={10} />
 
         {/* Action Buttons */}
         <View style={styles.actionsContainer}>
@@ -62,19 +75,29 @@ export function WelcomeScreen() {
             activeOpacity={0.85}
           >
             <LinearGradient
-              colors={['#2563EB', '#1D4ED8']}
+              colors={['#059669', '#10B981']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={styles.btnGradient}
             >
-              <Text style={styles.primaryBtnText}>Get Started</Text>
+              <Text style={styles.primaryBtnText}>Get Started / शुरू करें ➔</Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => nav.navigate('LanguageSelection' as any)}
-            style={styles.secondaryBtn}
+            style={[
+              styles.secondaryBtn,
+              {
+                backgroundColor: c.card,
+                borderColor: theme.isDark ? '#334155' : '#CBD5E1',
+              },
+            ]}
             activeOpacity={0.85}
           >
-            <Text style={styles.secondaryBtnText}>Select Language</Text>
+            <Text style={[styles.secondaryBtnText, { color: c.text }]}>
+              🌐 Select Language / भाषा चुनें
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -85,7 +108,6 @@ export function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   scroll: {
     flexGrow: 1,
@@ -98,60 +120,51 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   logoBubble: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#3B82F6',
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
-    shadowColor: '#3B82F6',
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
   logoAi: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 26,
   },
   brandTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '900',
-    color: '#0F172A',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   taglineBold: {
     fontSize: 15,
     fontWeight: '800',
-    color: '#1E293B',
-    marginTop: 8,
+    marginTop: 6,
     textAlign: 'center',
   },
   taglineSub: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#64748B',
     marginTop: 4,
     textAlign: 'center',
   },
   heroVisualWrapper: {
     position: 'relative',
-    height: 320,
+    height: 300,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 12,
   },
   floatingBubble: {
     position: 'absolute',
-    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
     zIndex: 10,
@@ -159,25 +172,24 @@ const styles = StyleSheet.create({
   bubbleText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#1E293B',
   },
   illustrationCard: {
     width: width - 48,
-    height: 260,
+    height: 250,
     borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: '#F8FAFC',
     alignItems: 'center',
     justifyContent: 'center',
   },
   actionsContainer: {
     gap: 12,
+    marginTop: 8,
     marginBottom: 16,
   },
   primaryBtn: {
     borderRadius: 18,
     overflow: 'hidden',
-    shadowColor: '#2563EB',
+    shadowColor: '#059669',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -196,14 +208,11 @@ const styles = StyleSheet.create({
   secondaryBtn: {
     borderRadius: 18,
     borderWidth: 1.5,
-    borderColor: '#CBD5E1',
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
   },
   secondaryBtnText: {
-    color: '#0F172A',
     fontSize: 15,
     fontWeight: '800',
   },

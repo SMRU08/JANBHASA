@@ -36,7 +36,7 @@ export const FONT_SCALE: Record<FontSize, number> = {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
-      darkMode: 'system',
+      darkMode: 'dark',
       voiceEnabled: true,
       soundEffects: true,
       animationsEnabled: true,
