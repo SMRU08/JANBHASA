@@ -49,20 +49,13 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
 }
 
 export default function App() {
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const { darkMode } = useSettingsStore();
 
   useEffect(() => {
-    async function init() {
-      try {
-        await initDatabase();
-      } catch (e) {
-        console.warn('Database init notice:', e);
-      } finally {
-        setReady(true);
-      }
-    }
-    init();
+    initDatabase().catch((e) => {
+      console.warn('Database init notice:', e);
+    });
   }, []);
 
   const theme = darkMode === 'dark' ? darkTheme : lightTheme;
