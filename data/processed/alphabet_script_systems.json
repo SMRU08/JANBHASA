@@ -1,0 +1,465 @@
+{
+  "a_to_z": [
+    {
+      "letter": "A",
+      "word_en": "Apple",
+      "word_hi": "सेब",
+      "word_ho": "सेब (Seb)",
+      "word_mun": "सेब (Seb)",
+      "word_sat": "ᱥᱮᱣ (Sew)",
+      "image_emoji": "🍎",
+      "sentence_hi": "यह एक मीठा सेब है।",
+      "sentence_sat": "ᱱᱚᱣᱟ ᱫᱚ ᱢᱤᱫ ᱦᱮᱲᱮᱢ ᱥᱮᱣ ᱠᱟᱱᱟ ᱾"
+    },
+    {
+      "letter": "B",
+      "word_en": "Ball",
+      "word_hi": "गेंद",
+      "word_ho": "गेन्द (Gend)",
+      "word_mun": "गेन्द (Gend)",
+      "word_sat": "ᱵᱚᱞ (Bol)",
+      "image_emoji": "⚽",
+      "sentence_hi": "बच्चे गेंद से खेल रहे हैं।",
+      "sentence_sat": "ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚ ᱵᱚᱞ ᱠᱚ ᱮᱱᱮᱡ ᱠᱟᱱᱟ ᱾"
+    },
+    {
+      "letter": "C",
+      "word_en": "Cat",
+      "word_hi": "बिल्ली",
+      "word_ho": "बिल्ली (Billi)",
+      "word_mun": "पुसी (Pusi)",
+      "word_sat": "ᱯᱩᱥᱤ (Pusi)",
+      "image_emoji": "🐱",
+      "sentence_hi": "बिल्ली दूध पीती है।",
+      "sentence_sat": "ᱯᱩᱥᱤ ᱛᱚᱣᱟᱭ ᱧᱩᱭᱟ ᱾"
+    },
+    {
+      "letter": "D",
+      "word_en": "Dog",
+      "word_hi": "कुत्ता",
+      "word_ho": "सेता (Seta)",
+      "word_mun": "सेता (Seta)",
+      "word_sat": "ᱥᱮᱛᱟ (Seta)",
+      "image_emoji": "🐶",
+      "sentence_hi": "कुत्ता घर की रखवाली करता है।",
+      "sentence_sat": "ᱥᱮᱛᱟ ᱚᱲᱟᱜ ᱮ ᱨᱩᱠᱷᱤᱭᱟᱹᱭᱟ ᱾"
+    },
+    {
+      "letter": "E",
+      "word_en": "Elephant",
+      "word_hi": "हाथी",
+      "word_ho": "हाथी (Hathi)",
+      "word_mun": "हाथी (Hathi)",
+      "word_sat": "ᱦᱟᱹᱛᱤ (Hati)",
+      "image_emoji": "🐘",
+      "sentence_hi": "हाथी जंगल में रहता है।",
+      "sentence_sat": "ᱦᱟᱹᱛᱤ ᱵᱤᱨ ᱨᱮ ᱛᱟᱦᱮᱸᱱᱟᱭ ᱾"
+    },
+    {
+      "letter": "F",
+      "word_en": "Fish",
+      "word_hi": "मछली",
+      "word_ho": "हाकु (Haku)",
+      "word_mun": "हाकु (Hai)",
+      "word_sat": "ᱦᱟᱹᱠᱩ (Haku)",
+      "image_emoji": "🐟",
+      "sentence_hi": "मछली पानी में तैरती है।",
+      "sentence_sat": "ᱦᱟᱹᱠᱩ ᱫᱟᱜ ᱨᱮᱠᱚ ᱯᱟᱭᱨᱟᱜ-ᱟ ᱾"
+    },
+    {
+      "letter": "G",
+      "word_en": "Goat",
+      "word_hi": "बकरी",
+      "word_ho": "मेरोम (Merom)",
+      "word_mun": "मेरोम (Merom)",
+      "word_sat": "ᱢᱮᱨᱚᱢ (Merom)",
+      "image_emoji": "🐐",
+      "sentence_hi": "बकरी घास चरती है।",
+      "sentence_sat": "ᱢᱮᱨᱚᱢ ᱜᱷᱟᱸᱥ ᱮ ᱡᱚᱢᱟ ᱾"
+    },
+    {
+      "letter": "H",
+      "word_en": "House",
+      "word_hi": "घर",
+      "word_ho": "ओड़ाः (Orah)",
+      "word_mun": "ओड़ाः (Orah)",
+      "word_sat": "ᱚᱲᱟᱜ (Orag)",
+      "image_emoji": "🏠",
+      "sentence_hi": "हमारा घर सुंदर है।",
+      "sentence_sat": "ᱟᱞᱮᱭᱟᱜ ᱚᱲᱟᱜ ᱱᱟᱯᱟᱭ ᱜᱮᱭᱟ ᱾"
+    },
+    {
+      "letter": "I",
+      "word_en": "Ink",
+      "word_hi": "स्याही",
+      "word_ho": "सियाही (Siyahi)",
+      "word_mun": "सियाही (Siyahi)",
+      "word_sat": "ᱥᱤᱭᱟᱹᱦᱤ (Siyahi)",
+      "image_emoji": "🖋️",
+      "sentence_hi": "कलम में नीली स्याही है।",
+      "sentence_sat": "ᱠᱚᱞᱚᱢ ᱨᱮ ᱞᱤᱞ ᱥᱤᱭᱟᱹᱦᱤ ᱢᱮᱱᱟᱜ-ᱟ ᱾"
+    },
+    {
+      "letter": "J",
+      "word_en": "Jungle",
+      "word_hi": "जंगल",
+      "word_ho": "बीर (Bir)",
+      "word_mun": "बीर (Bir)",
+      "word_sat": "ᱵᱤᱨ (Bir)",
+      "image_emoji": "🌲",
+      "sentence_hi": "जंगल में घने पेड़ हैं।",
+      "sentence_sat": "ᱵᱤᱨ ᱨᱮ ᱡᱷᱟᱹᱲ ᱫᱟᱨᱮ ᱢᱮᱱᱟᱜ-ᱟ ᱾"
+    },
+    {
+      "letter": "K",
+      "word_en": "Kite",
+      "word_hi": "पतंग",
+      "word_ho": "पतंग (Patang)",
+      "word_mun": "पतंग (Patang)",
+      "word_sat": "ᱯᱟᱹᱛᱟᱹᱝ (Patang)",
+      "image_emoji": "🪁",
+      "sentence_hi": "आसमान में पतंग उड़ रही है।",
+      "sentence_sat": "ᱥᱮᱨᱢᱟ ᱨᱮ ᱯᱟᱹᱛᱟᱹᱝ ᱩᱰᱟᱹᱜ ᱠᱟᱱᱟ ᱾"
+    },
+    {
+      "letter": "L",
+      "word_en": "Leaf",
+      "word_hi": "पत्ता",
+      "word_ho": "साकाम (Sakam)",
+      "word_mun": "साकाम (Sakam)",
+      "word_sat": "ᱥᱟᱠᱟᱢ (Sakam)",
+      "image_emoji": "🍃",
+      "sentence_hi": "पेड़ का पत्ता हरा है।",
+      "sentence_sat": "ᱫᱟᱨᱮ ᱥᱟᱠᱟᱢ ᱦᱟᱹᱨᱭᱟᱹᱲ ᱜᱮᱭᱟ ᱾"
+    },
+    {
+      "letter": "M",
+      "word_en": "Moon",
+      "word_hi": "चाँद",
+      "word_ho": "चान्दु (Chandu)",
+      "word_mun": "चान्दु (Chandu)",
+      "word_sat": "ᱪᱟᱸᱫᱚ (Chando)",
+      "image_emoji": "🌙",
+      "sentence_hi": "रात में चाँद चमकता है।",
+      "sentence_sat": "ᱧᱤᱫᱟᱹ ᱪᱟᱸᱫᱚ ᱡᱩᱞᱩᱜ-ᱟ ᱾"
+    },
+    {
+      "letter": "N",
+      "word_en": "Nest",
+      "word_hi": "घोंसला",
+      "word_ho": "तुका (Tuka)",
+      "word_mun": "तुका (Tuka)",
+      "word_sat": "ᱛᱩᱠᱟᱹ (Tuka)",
+      "image_emoji": "🪺",
+      "sentence_hi": "चिड़िया का घोंसला पेड़ पर है।",
+      "sentence_sat": "ᱪᱮᱬᱮ ᱛᱩᱠᱟᱹ ᱫᱟᱨᱮ ᱨᱮ ᱢᱮᱱᱟᱜ-ᱟ ᱾"
+    },
+    {
+      "letter": "O",
+      "word_en": "Ox",
+      "word_hi": "बैल",
+      "word_ho": "उरीः (Urih)",
+      "word_mun": "उरीः (Urih)",
+      "word_sat": "ᱰᱟᱝᱜᱽᱨᱟ (Dangra)",
+      "image_emoji": "🐂",
+      "sentence_hi": "बैल खेत जोतता है।",
+      "sentence_sat": "ᱰᱟᱝᱜᱽᱨᱟ ᱠᱷᱮᱛ ᱮ ᱥᱤᱭᱟ ᱾"
+    },
+    {
+      "letter": "P",
+      "word_en": "Pen",
+      "word_hi": "कलम",
+      "word_ho": "कलम (Kalam)",
+      "word_mun": "कलम (Kalam)",
+      "word_sat": "ᱠᱚᱞᱚᱢ (Kolom)",
+      "image_emoji": "🖊️",
+      "sentence_hi": "यह मेरी कलम है।",
+      "sentence_sat": "ᱱᱚᱣᱟ ᱫᱚ ᱤᱧᱟᱜ ᱠᱚᱞᱚᱢ ᱠᱟᱱᱟ ᱾"
+    },
+    {
+      "letter": "Q",
+      "word_en": "Queen",
+      "word_hi": "रानी",
+      "word_ho": "रानी (Rani)",
+      "word_mun": "रानी (Rani)",
+      "word_sat": "ᱨᱟᱹᱱᱤ (Rani)",
+      "image_emoji": "👑",
+      "sentence_hi": "रानी महल में रहती है।",
+      "sentence_sat": "ᱨᱟᱹᱱᱤ ᱢᱚᱦᱚᱞ ᱨᱮ ᱛᱟᱦᱮᱸᱱᱟᱭ ᱾"
+    },
+    {
+      "letter": "R",
+      "word_en": "River",
+      "word_hi": "नदी",
+      "word_ho": "गाड़ा (Gada)",
+      "word_mun": "गाड़ा (Gada)",
+      "word_sat": "ᱜᱟᱰᱟ (Gada)",
+      "image_emoji": "🌊",
+      "sentence_hi": "नदी का पानी साफ़ है।",
+      "sentence_sat": "ᱜᱟᱰᱟ ᱫᱟᱜ ᱥᱟᱯᱷᱟ ᱜᱮᱭᱟ ᱾"
+    },
+    {
+      "letter": "S",
+      "word_en": "Sun",
+      "word_hi": "सूरज",
+      "word_ho": "सिंगी (Singi)",
+      "word_mun": "सिंगी (Singi)",
+      "word_sat": "ᱥᱤᱧ ᱪᱟᱸᱫᱚ (Sin Chando)",
+      "image_emoji": "☀️",
+      "sentence_hi": "सूरज पूर्व में उगता है।",
+      "sentence_sat": "ᱥᱤᱧ ᱪᱟᱸᱫᱚ ᱥᱟᱢᱟᱝ ᱨᱮ ᱨᱟᱠᱟᱵ-ᱟ ᱾"
+    },
+    {
+      "letter": "T",
+      "word_en": "Tree",
+      "word_hi": "पेड़",
+      "word_ho": "दारू (Daru)",
+      "word_mun": "दारू (Daru)",
+      "word_sat": "ᱫᱟᱨᱮ (Dare)",
+      "image_emoji": "🌳",
+      "sentence_hi": "पेड़ हमें फल देते हैं।",
+      "sentence_sat": "ᱫᱟᱨᱮ ᱡᱚ ᱮᱢᱟᱵᱚᱱᱟ ᱾"
+    },
+    {
+      "letter": "U",
+      "word_en": "Umbrella",
+      "word_hi": "छाता",
+      "word_ho": "छाता (Chhata)",
+      "word_mun": "छाता (Chhata)",
+      "word_sat": "ᱪᱷᱟᱛᱟ (Chhata)",
+      "image_emoji": "☂️",
+      "sentence_hi": "बारिश में छाता खोलो।",
+      "sentence_sat": "ᱫᱟᱜ ᱨᱮ ᱪᱷᱟᱛᱟ ᱚᱰᱚᱠ ᱢᱮ ᱾"
+    },
+    {
+      "letter": "V",
+      "word_en": "Village",
+      "word_hi": "गाँव",
+      "word_ho": "हातू (Hatu)",
+      "word_mun": "हातू (Hatu)",
+      "word_sat": "ᱟᱹᱛᱩ (Atu)",
+      "image_emoji": "🏡",
+      "sentence_hi": "हमारा गाँव बहुत सुंदर है।",
+      "sentence_sat": "ᱟᱞᱮᱭᱟᱜ ᱟᱹᱛᱩ ᱟᱹᱰᱤ ᱪᱚᱨᱚᱠ ᱜᱮᱭᱟ ᱾"
+    },
+    {
+      "letter": "W",
+      "word_en": "Water",
+      "word_hi": "पानी",
+      "word_ho": "दाः (Dah)",
+      "word_mun": "दाः (Dah)",
+      "word_sat": "ᱫᱟᱜ (Dag)",
+      "image_emoji": "💧",
+      "sentence_hi": "साफ़ पानी पियो।",
+      "sentence_sat": "ᱥᱟᱯᱷᱟ ᱫᱟᱜ ᱧᱩᱭ ᱢᱮ ᱾"
+    },
+    {
+      "letter": "X",
+      "word_en": "Xylophone",
+      "word_hi": "काष्ठतरंग",
+      "word_ho": "बाजा (Baja)",
+      "word_mun": "बाजा (Baja)",
+      "word_sat": "ᱵᱟᱡᱟ (Baja)",
+      "image_emoji": "🎵",
+      "sentence_hi": "बच्चे बाजा बजाते हैं।",
+      "sentence_sat": "ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚ ᱵᱟᱡᱟ ᱠᱚ ᱨᱩᱭᱟ ᱾"
+    },
+    {
+      "letter": "Y",
+      "word_en": "Yak",
+      "word_hi": "याक",
+      "word_ho": "याक (Yak)",
+      "word_mun": "याक (Yak)",
+      "word_sat": "ᱭᱟᱠ (Yak)",
+      "image_emoji": "🐂",
+      "sentence_hi": "याक पहाड़ पर रहता है।",
+      "sentence_sat": "ᱭᱟᱠ ᱵᱩᱨᱩ ᱨᱮ ᱛᱟᱦᱮᱸᱱᱟᱭ ᱾"
+    },
+    {
+      "letter": "Z",
+      "word_en": "Zebra",
+      "word_hi": "ज़ेबरा",
+      "word_ho": "ज़ेबरा (Zebra)",
+      "word_mun": "ज़ेबरा (Zebra)",
+      "word_sat": "ᱡᱮᱵᱽᱨᱟ (Jebra)",
+      "image_emoji": "🦓",
+      "sentence_hi": "ज़ेबरा के शरीर पर धारियाँ होती हैं।",
+      "sentence_sat": "ᱡᱮᱵᱽᱨᱟ ᱦᱚᱲᱢᱚ ᱨᱮ ᱜᱟᱨ ᱢᱮᱱᱟᱜ-ᱟ ᱾"
+    }
+  ],
+  "native_scripts": {
+    "santali": {
+      "script_name": "Ol Chiki (ᱚᱞ ᱪᱤᱠᱤ)",
+      "inventor": "Pandit Raghunath Murmu (1925)",
+      "type": "Alphabetic script",
+      "characters_count": 30,
+      "vowels": [
+        {
+          "char": "ᱚ",
+          "name": "LA",
+          "sound": "[ɔ]",
+          "example": "ᱚᱲᱟᱜ (Orag - House)"
+        },
+        {
+          "char": "ᱟ",
+          "name": "AA",
+          "sound": "[a]",
+          "example": "ᱟᱹᱛᱩ (Atu - Village)"
+        },
+        {
+          "char": "ᱤ",
+          "name": "LI",
+          "sound": "[i]",
+          "example": "ᱤᱥᱤ (Isi - Twenty)"
+        },
+        {
+          "char": "ᱩ",
+          "name": "LU",
+          "sound": "[u]",
+          "example": "ᱩᱞ (Ul - Mango)"
+        },
+        {
+          "char": "ᱮ",
+          "name": "LE",
+          "sound": "[e]",
+          "example": "ᱮᱱᱮᱡ (Enej - Dance)"
+        },
+        {
+          "char": "ᱳ",
+          "name": "LO",
+          "sound": "[o]",
+          "example": "ᱳᱞ (Ol - Write)"
+        }
+      ],
+      "diacritics": [
+        {
+          "char": "ᱸ",
+          "name": "Mu Tudaag (Nasalization)",
+          "example": "ᱥᱟᱸᱜᱟ (Sanga)"
+        },
+        {
+          "char": "ᱹ",
+          "name": "Gahla Tudaag (Low vowel)",
+          "example": "ᱦᱟᱹᱠᱩ (Haku)"
+        },
+        {
+          "char": "ᱺ",
+          "name": "Mu-Gahla Tudaag",
+          "example": "ᱠᱷᱟᱹᱸᱰᱟᱹ"
+        },
+        {
+          "char": "ᱻ",
+          "name": "Ahlat (Elongation)",
+          "example": "ᱟᱻ"
+        },
+        {
+          "char": "ᱼ",
+          "name": "Pharka (Glottal pause)",
+          "example": "ᱫᱟᱜᱼᱟ"
+        }
+      ]
+    },
+    "ho": {
+      "script_name": "Warang Citi (𑢡𑢢𑢣)",
+      "inventor": "Lako Bodra (1940s)",
+      "type": "Abugida / Alphabet",
+      "characters_count": 32,
+      "primary_letters": [
+        {
+          "char": "𑢡",
+          "name": "Ong",
+          "devanagari": "अं / ओ"
+        },
+        {
+          "char": "𑢢",
+          "name": "Nga",
+          "devanagari": "ङ"
+        },
+        {
+          "char": "𑢣",
+          "name": "U",
+          "devanagari": "उ"
+        },
+        {
+          "char": "𑢤",
+          "name": "Ga",
+          "devanagari": "ग"
+        },
+        {
+          "char": "𑢥",
+          "name": "In",
+          "devanagari": "इ"
+        }
+      ],
+      "notes": "Ho is also officially written in Devanagari script in Jharkhand schools and Latin in research publications."
+    },
+    "mundari": {
+      "script_name": "Mundari Bani / Devanagari (मुण्डारी)",
+      "inventor": "Rohidas Singh Nag (Mundari Bani, 1980s)",
+      "type": "Alphabetic / Abugida",
+      "primary_scripts_used": [
+        "Devanagari (Standard educational curriculum)",
+        "Mundari Bani",
+        "Latin"
+      ],
+      "notes": "In Jharkhand state primary education and NCERT/JCERT curricula, Mundari is standardized in Devanagari script with special glottal markers (colon ः for glottal stop)."
+    },
+    "hindi": {
+      "script_name": "Devanagari (देवनागरी)",
+      "type": "Abugida",
+      "vowels": [
+        "अ",
+        "आ",
+        "इ",
+        "ई",
+        "उ",
+        "ऊ",
+        "ऋ",
+        "ए",
+        "ऐ",
+        "ओ",
+        "औ",
+        "अं",
+        "अः"
+      ],
+      "consonants": [
+        "क",
+        "ख",
+        "ग",
+        "घ",
+        "ङ",
+        "च",
+        "छ",
+        "ज",
+        "झ",
+        "ञ",
+        "ट",
+        "ठ",
+        "ड",
+        "ढ",
+        "ण",
+        "त",
+        "थ",
+        "द",
+        "ध",
+        "न",
+        "प",
+        "फ",
+        "ब",
+        "भ",
+        "म",
+        "य",
+        "र",
+        "ल",
+        "व",
+        "श",
+        "ष",
+        "स",
+        "ह",
+        "क्ष",
+        "त्र",
+        "ज्ञ"
+      ]
+    }
+  }
+}

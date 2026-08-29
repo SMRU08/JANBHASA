@@ -57,3 +57,7 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Raw & Large Generated datasets (built on-demand via tools/build_janbhasha_master_dataset.py)
+data/raw/
+*.jsonl

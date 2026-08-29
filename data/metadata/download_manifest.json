@@ -1,0 +1,128 @@
+{
+  "pipeline_version": "1.0.0",
+  "execution_time": "2026-08-29T13:40:31.745219",
+  "total_targets": 11,
+  "results": [
+    {
+      "id": "karya_hindi_mundari_translation",
+      "name": "Karya Hindi-Mundari Translation Corpus",
+      "status": "cached",
+      "file": "data/raw/karya_hindi_mundari_translation/translation-hi-unr.tsv",
+      "size_bytes": 3788450,
+      "sha256": "217be36a2d459bc8ff513165c6cbf809532ac6a51f8bc118b9728cf5da6ef4ca",
+      "timestamp": "2026-08-29T13:40:31.753185",
+      "license": "Karya Public License (Non-Commercial)",
+      "source_url": "https://github.com/karya-inc/dataset-hindi-mundari-translation"
+    },
+    {
+      "id": "santali_category_animals",
+      "name": "Santali Ol Chiki Animals Lexicon",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Animal.csv",
+      "size_bytes": 966,
+      "sha256": "f8bb40ce63a19d5b2a972de51b71f5ca3ba390f47d07d959dde198566daf9e39",
+      "timestamp": "2026-08-29T13:40:33.226984",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_birds",
+      "name": "Santali Ol Chiki Birds Lexicon",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Birds.csv",
+      "size_bytes": 321,
+      "sha256": "bf4210533c3f03565a8edfda00b932b7c7435fbcc1312c00c103a92759091db7",
+      "timestamp": "2026-08-29T13:40:35.271301",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_body_parts",
+      "name": "Santali Ol Chiki Body Parts Lexicon",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Body_Parts.csv",
+      "size_bytes": 1224,
+      "sha256": "1014e016a554e4f09c67ee95e44dcb3a069f0c2c6ff591542b6770155ed150d3",
+      "timestamp": "2026-08-29T13:40:36.497383",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_colors",
+      "name": "Santali Ol Chiki Colours Lexicon",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Colour.csv",
+      "size_bytes": 212,
+      "sha256": "876e238db12e2e31ce5721601deefe07b32020d94cf2d4f7a23e3fbb9d164dd3",
+      "timestamp": "2026-08-29T13:40:37.710677",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_days_months",
+      "name": "Santali Ol Chiki Days and Months",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Days_and_Months.csv",
+      "size_bytes": 489,
+      "sha256": "ebc553e528885eae3fb793f82bd37c2215184b9cfeeca04a1673453366996b81",
+      "timestamp": "2026-08-29T13:40:38.954368",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_eatables",
+      "name": "Santali Ol Chiki Eatables & Food",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Eatables.csv",
+      "size_bytes": 1458,
+      "sha256": "79a1184556b619df229c03e2ee4d074104b4b6f82a33e3eba901fbca0908b6bb",
+      "timestamp": "2026-08-29T13:40:40.204132",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_numbers_100",
+      "name": "Santali Numbers Upto 100 in Words",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Numbers_upto_100_in_words.csv",
+      "size_bytes": 4052,
+      "sha256": "c715dee35b259c73d642761bac75f09d54da1c321ba780804f99766028e58768",
+      "timestamp": "2026-08-29T13:40:42.434885",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_relation",
+      "name": "Santali Kinship & Relations",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Relation.csv",
+      "size_bytes": 1291,
+      "sha256": "42fb1582f173d3c743c981bfb47cdf78698ef1adcd61fde0d6122b0b3c1d4019",
+      "timestamp": "2026-08-29T13:40:49.218479",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_category_vegetables",
+      "name": "Santali Vegetables Lexicon",
+      "status": "downloaded",
+      "file": "data/raw/santali_lexicon/Vegetable.csv",
+      "size_bytes": 596,
+      "sha256": "6ea98add6a8d0387bf93cf1cf0411f7d1c5e7368fab543a113b146fd8e528b8c",
+      "timestamp": "2026-08-29T13:40:50.219927",
+      "license": "Open Community License",
+      "source_url": "https://github.com/Prasanta-Hembram/Translation-work-list-for-Santali-language"
+    },
+    {
+      "id": "santali_dictionary_json",
+      "name": "Santali-English Dictionary Ol Chiki",
+      "status": "cached",
+      "file": "data/raw/santali_dictionary/santali.json",
+      "size_bytes": 8121,
+      "sha256": "a18aabae097b77d68b4a55873f217f7a596148c3673999eed48cc478250cd63c",
+      "timestamp": "2026-08-29T13:40:50.221209",
+      "license": "MIT License",
+      "source_url": "https://github.com/kailashmurmu/SantaliDictionary"
+    }
+  ]
+}

@@ -1,0 +1,1675 @@
+{
+  "categories": [
+    "Greetings",
+    "Family",
+    "School",
+    "Classroom",
+    "Animals",
+    "Birds",
+    "Food",
+    "Fruits",
+    "Vegetables",
+    "Body Parts",
+    "Colors",
+    "Shapes",
+    "Numbers",
+    "Time",
+    "Days",
+    "Months",
+    "Nature",
+    "Agriculture",
+    "Household",
+    "Clothing",
+    "Transport",
+    "Directions",
+    "Weather",
+    "Common Nouns",
+    "Common Verbs",
+    "Common Adjectives",
+    "Science",
+    "Mathematics"
+  ],
+  "total_entries": 164,
+  "entries": [
+    {
+      "category": "Greetings",
+      "hi": "नमस्ते / जोहार",
+      "ho": "जोहार (Johar)",
+      "mun": "जोहार (Johar)",
+      "sat": "ᱡᱚᱦᱟᱨ (Johar)",
+      "en": "Greetings / Hello",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "धन्यवाद",
+      "ho": "दोनोवाद (Donovad)",
+      "mun": "जोहार (Johar)",
+      "sat": "ᱥᱟᱨᱦᱟᱣ (Sarhao)",
+      "en": "Thank you",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "शुभ प्रभात",
+      "ho": "सुबु सिंगी (Subu Singi)",
+      "mun": "बुगिन सेताः (Bugin Setah)",
+      "sat": "ᱥᱟᱹᱜᱩᱱ ᱥᱮᱛᱟᱜ (Sagun Setag)",
+      "en": "Good Morning",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "शुभ रात्रि",
+      "ho": "सुबु निदा (Subu Nida)",
+      "mun": "बुगिन निदा (Bugin Nida)",
+      "sat": "ᱥᱟᱹᱜᱩᱱ ᱧᱤᱫᱟᱹ (Sagun Nida)",
+      "en": "Good Night",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "आप कैसे हैं?",
+      "ho": "चिलकेनाना (Chilkenana?)",
+      "mun": "चिलेकानाम् (Chilekanam?)",
+      "sat": "ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱢᱟ? (Ched leka menama?)",
+      "en": "How are you?",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "मैं ठीक हूँ",
+      "ho": "बुगितेगेया (Bugitegeya)",
+      "mun": "बुगियाञ (Bugiyan)",
+      "sat": "ᱤᱧ ᱫᱚ ᱵᱮᱥ ᱜᱮ (In do bes ge)",
+      "en": "I am fine",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Greetings",
+      "hi": "अलविदा / फिर मिलेंगे",
+      "ho": "नेनांग बु नापाम (Nenang bu napam)",
+      "mun": "ओड़ोःबु नापाम (Orohbu napam)",
+      "sat": "ᱫᱚᱲᱦᱟ ᱵᱚᱱ ᱧᱟᱯᱟᱢᱟ (Dorha bon napama)",
+      "en": "Goodbye / See you again",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "माँ",
+      "ho": "इंगा (Inga / Maa)",
+      "mun": "इंगा (Inga)",
+      "sat": "ᱟᱭᱳ (Ayo)",
+      "en": "Mother",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "पिता",
+      "ho": "आपु (Apu)",
+      "mun": "आपु (Apu)",
+      "sat": "ᱵᱟᱵᱟ (Baba)",
+      "en": "Father",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "भाई",
+      "ho": "हागा (Haga)",
+      "mun": "हागा (Haga)",
+      "sat": "ᱵᱚᱭᱦᱟ (Boyha)",
+      "en": "Brother",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "बहन",
+      "ho": "मिसि (Misi)",
+      "mun": "मिसि (Misi)",
+      "sat": "ᱢᱤᱥᱮᱨᱟ (Misera)",
+      "en": "Sister",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "दादा",
+      "ho": "ताता (Tata)",
+      "mun": "ताता (Tata)",
+      "sat": "ᱜᱚᱲᱚᱢ ᱵᱟᱵᱟ (Gorom Baba)",
+      "en": "Grandfather (Paternal)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "दादी",
+      "ho": "जीया (Jiya)",
+      "mun": "जीया (Jiya)",
+      "sat": "ᱜᱚᱲᱚᱢ ᱟᱭᱳ (Gorom Ayo)",
+      "en": "Grandmother (Paternal)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Family",
+      "hi": "बच्चा / संतान",
+      "ho": "होन (Hon)",
+      "mun": "होन (Hon)",
+      "sat": "ᱜᱤᱫᱽᱨᱟᱹ (Gidra)",
+      "en": "Child",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "स्कूल / विद्यालय",
+      "ho": "इसकूल (Iskul)",
+      "mun": "इसकूल (Iskul)",
+      "sat": "ᱟᱥᱲᱟ (Asra)",
+      "en": "School",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "शिक्षक",
+      "ho": "मास्टर (Guru / Master)",
+      "mun": "मास्टर (Master)",
+      "sat": "ᱢᱟᱪᱮᱛ (Machet)",
+      "en": "Teacher (Male)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "शिक्षिका",
+      "ho": "मास्टरनी (Masterni)",
+      "mun": "मास्टरनी (Masterni)",
+      "sat": "ᱢᱟᱪᱮᱛᱟᱹᱱᱤ (Machetani)",
+      "en": "Teacher (Female)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "छात्र",
+      "ho": "पाठो (Patho)",
+      "mun": "पाठो (Patho)",
+      "sat": "ᱯᱟᱹᱴᱷᱩᱣᱟᱹ (Pathua)",
+      "en": "Student",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "किताब",
+      "ho": "पुथी (Puthi)",
+      "mun": "पुथी (Puthi)",
+      "sat": "ᱯᱩᱛᱷᱤ (Puthi)",
+      "en": "Book",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "कलम / पेन",
+      "ho": "कलम (Kalam)",
+      "mun": "कलम (Kalam)",
+      "sat": "ᱠᱚᱞᱚᱢ (Kolom)",
+      "en": "Pen",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "School",
+      "hi": "कॉपी / अभ्यास पुस्तिका",
+      "ho": "कागज (Kagaj)",
+      "mun": "कागोच (Kagoch)",
+      "sat": "ᱠᱷᱟᱛᱟ (Khata)",
+      "en": "Notebook",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Classroom",
+      "hi": "श्यामपट्ट / ब्लैकबोर्ड",
+      "ho": "ब्लैकबोर्ड (Blackboard)",
+      "mun": "ब्लैकबोर्ड (Blackboard)",
+      "sat": "ᱦᱮᱸᱫᱮ ᱯᱟᱴᱟ (Hende Pata)",
+      "en": "Blackboard",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Classroom",
+      "hi": "मेज",
+      "ho": "टेबुल (Tebul)",
+      "mun": "टेबुल (Tebul)",
+      "sat": "ᱢᱮᱡᱽ (Mej)",
+      "en": "Table / Desk",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Classroom",
+      "hi": "कुर्सी",
+      "ho": "कुर्सी (Kursi)",
+      "mun": "कुर्सी (Kursi)",
+      "sat": "ᱢᱟᱹᱪᱤ (Machi)",
+      "en": "Chair",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Classroom",
+      "hi": "बस्ता / झोला",
+      "ho": "झोला (Jhola)",
+      "mun": "झोला (Jhola)",
+      "sat": "ᱛᱷᱟᱹᱞᱤ (Thali)",
+      "en": "School Bag",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Classroom",
+      "hi": "घंटी",
+      "ho": "घंटी (Ghanti)",
+      "mun": "घंटी (Ghanti)",
+      "sat": "ᱜᱷᱟᱹᱱᱴᱤ (Ghanti)",
+      "en": "School Bell",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "गाय",
+      "ho": "उरीः (Urih)",
+      "mun": "उरीः (Urih)",
+      "sat": "ᱜᱟᱹᱭ (Gay)",
+      "en": "Cow",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "बैल",
+      "ho": "डांगरा (Dangra)",
+      "mun": "डांगरा (Dangra)",
+      "sat": "ᱰᱟᱝᱜᱽᱨᱟ (Dangra)",
+      "en": "Ox / Bull",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "कुत्ता",
+      "ho": "सेता (Seta)",
+      "mun": "सेता (Seta)",
+      "sat": "ᱥᱮᱛᱟ (Seta)",
+      "en": "Dog",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "बिल्ली",
+      "ho": "बिल्ली (Billi)",
+      "mun": "पुसी (Pusi)",
+      "sat": "ᱯᱩᱥᱤ (Pusi)",
+      "en": "Cat",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "बकरी",
+      "ho": "मेरोम (Merom)",
+      "mun": "मेरोम (Merom)",
+      "sat": "ᱢᱮᱨᱚᱢ (Merom)",
+      "en": "Goat",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "भेड़",
+      "ho": "मिंदी (Mindi)",
+      "mun": "मिंदी (Mindi)",
+      "sat": "ᱵᱷᱤᱰᱤ (Bhidi)",
+      "en": "Sheep",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "हाथी",
+      "ho": "हाथी (Hathi)",
+      "mun": "हाथी (Hathi)",
+      "sat": "ᱦᱟᱹᱛᱤ (Hati)",
+      "en": "Elephant",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "बाघ",
+      "ho": "कुला (Kula)",
+      "mun": "कुला (Kula)",
+      "sat": "ᱛᱟᱹᱨᱩᱵ (Tarub)",
+      "en": "Tiger",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "शेर",
+      "ho": "सिंह (Singh)",
+      "mun": "सिंह (Singh)",
+      "sat": "ᱥᱤᱝᱦᱚ (Singho)",
+      "en": "Lion",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Animals",
+      "hi": "घोड़ा",
+      "ho": "सादोम (Sadom)",
+      "mun": "सादोम (Sadom)",
+      "sat": "ᱥᱟᱫᱚᱢ (Sadom)",
+      "en": "Horse",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "चिड़िया / पक्षी",
+      "ho": "चेणे (Chene)",
+      "mun": "चेणे (Chene)",
+      "sat": "ᱪᱮᱬᱮ (Chene)",
+      "en": "Bird",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "कौआ",
+      "ho": "काउवा (Kauwa)",
+      "mun": "काउवा (Kauwa)",
+      "sat": "ᱠᱟᱺᱦᱩ (Kahu)",
+      "en": "Crow",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "मुर्गा",
+      "ho": "सिम (Sim)",
+      "mun": "सिम (Sim)",
+      "sat": "ᱥᱤᱢ (Sim)",
+      "en": "Rooster / Fowl",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "मोर",
+      "ho": "माराः (Marah)",
+      "mun": "माराः (Marah)",
+      "sat": "ᱢᱟᱨᱟᱜ (Marag)",
+      "en": "Peacock",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "तोता",
+      "ho": "तोता (Miru)",
+      "mun": "मीरु (Miru)",
+      "sat": "ᱢᱤᱨᱩ (Miru)",
+      "en": "Parrot",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Birds",
+      "hi": "बतख",
+      "ho": "गेडे (Gede)",
+      "mun": "गेडे (Gede)",
+      "sat": "ᱜᱮᱰᱮ (Gede)",
+      "en": "Duck",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "भात / पके चावल",
+      "ho": "मांडी (Mandi)",
+      "mun": "मांडी (Mandi)",
+      "sat": "ᱫᱟᱠᱟ (Daka)",
+      "en": "Cooked Rice",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "दाल",
+      "ho": "दालि (Dali)",
+      "mun": "दालि (Dali)",
+      "sat": "ᱫᱟᱹᱞ (Dal)",
+      "en": "Pulses / Dal",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "रोटी",
+      "ho": "रोटी (Roti)",
+      "mun": "रोटी (Roti)",
+      "sat": "ᱯᱤᱴᱷᱟᱹ (Pitha)",
+      "en": "Bread / Roti",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "दूध",
+      "ho": "तवा (Tawa / Toa)",
+      "mun": "तवा (Toa)",
+      "sat": "ᱛᱚᱣᱟ (Toa)",
+      "en": "Milk",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "पानी",
+      "ho": "दाः (Dah)",
+      "mun": "दाः (Dah)",
+      "sat": "ᱫᱟᱜ (Dag)",
+      "en": "Water",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Food",
+      "hi": "नमक",
+      "ho": "बुलुंग (Bulung)",
+      "mun": "बुलुंग (Bulung)",
+      "sat": "ᱵᱩᱞᱩᱝ (Bulung)",
+      "en": "Salt",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "फल",
+      "ho": "जो (Jo)",
+      "mun": "जो (Jo)",
+      "sat": "ᱡᱚ (Jo)",
+      "en": "Fruit",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "आम",
+      "ho": "उल (Ul)",
+      "mun": "उल (Ul)",
+      "sat": "ᱩᱞ (Ul)",
+      "en": "Mango",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "केला",
+      "ho": "कदेला (Kadela)",
+      "mun": "कदेला (Kadela)",
+      "sat": "ᱠᱟᱭᱨᱟ (Kayra)",
+      "en": "Banana",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "अमरूद",
+      "ho": "अमृत (Amrut)",
+      "mun": "अमृत (Amrut)",
+      "sat": "ᱟᱢᱨᱩᱫᱽ (Amrud)",
+      "en": "Guava",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "जामुन",
+      "ho": "कुदु (Kudu)",
+      "mun": "कुदु (Kudu)",
+      "sat": "ᱠᱩᱫᱽ (Kud)",
+      "en": "Blackberry / Jamun",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Fruits",
+      "hi": "कटहल",
+      "ho": "कांथार (Kanthar)",
+      "mun": "कांथार (Kanthar)",
+      "sat": "ᱠᱟᱱᱴᱷᱟᱲ (Kanthar)",
+      "en": "Jackfruit",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "सब्जी",
+      "ho": "उतु (Utu)",
+      "mun": "उतु (Utu)",
+      "sat": "ᱩᱛᱩ (Utu)",
+      "en": "Vegetable / Curry",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "आलू",
+      "ho": "आलु (Alu)",
+      "mun": "आलु (Alu)",
+      "sat": "ᱟᱞᱩ (Alu)",
+      "en": "Potato",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "प्याज",
+      "ho": "पियाज (Piyaj)",
+      "mun": "पियाज (Piyaj)",
+      "sat": "ᱯᱮᱭᱟᱸᱡᱽ (Peyaj)",
+      "en": "Onion",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "टमाटर",
+      "ho": "बिलाति (Bilati)",
+      "mun": "बिलाति (Bilati)",
+      "sat": "ᱵᱤᱞᱟᱹᱛᱤ (Bilati)",
+      "en": "Tomato",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "मिर्च",
+      "ho": "मरिच (Marich)",
+      "mun": "मरिच (Marich)",
+      "sat": "ᱢᱟᱹᱨᱤᱪ (Marich)",
+      "en": "Chilli",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Vegetables",
+      "hi": "बैंगन",
+      "ho": "बेंगेड़ (Benged)",
+      "mun": "बेंगेड़ (Benged)",
+      "sat": "ᱵᱮᱸᱜᱟᱲ (Bengar)",
+      "en": "Brinjal / Eggplant",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "आँख",
+      "ho": "मेद (Med)",
+      "mun": "मेद (Med)",
+      "sat": "ᱢᱮᱫ (Med)",
+      "en": "Eye",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "कान",
+      "ho": "लुतुर (Lutur)",
+      "mun": "लुतुर (Lutur)",
+      "sat": "ᱞᱩᱛᱩᱨ (Lutur)",
+      "en": "Ear",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "नाक",
+      "ho": "मुं (Mu)",
+      "mun": "मुं (Mu)",
+      "sat": "ᱢᱩᱸ (Mu)",
+      "en": "Nose",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "मुँह",
+      "ho": "मोचा (Mocha)",
+      "mun": "मोचा (Mocha)",
+      "sat": "ᱢᱚᱪᱟ (Mocha)",
+      "en": "Mouth",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "हाथ",
+      "ho": "ती (Ti)",
+      "mun": "ती (Ti)",
+      "sat": "ᱛᱤ (Ti)",
+      "en": "Hand",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "पैर",
+      "ho": "काता (Kata)",
+      "mun": "काता (Kata)",
+      "sat": "ᱡᱟᱝᱜᱟ (Janga)",
+      "en": "Leg / Foot",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "सिर",
+      "ho": "बोः (Boh)",
+      "mun": "बोः (Boh)",
+      "sat": "ᱵᱚᱦᱚᱜ (Bohog)",
+      "en": "Head",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "दाँत",
+      "ho": "दाता (Data)",
+      "mun": "दाता (Data)",
+      "sat": "ᱰᱟᱴᱟ (Data)",
+      "en": "Tooth",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Body Parts",
+      "hi": "बाल",
+      "ho": "उब (Ub)",
+      "mun": "उब (Ub)",
+      "sat": "ᱩᱵ (Ub)",
+      "en": "Hair",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "लाल",
+      "ho": "अराः (Arah)",
+      "mun": "अराः (Arah)",
+      "sat": "ᱟᱨᱟᱜ (Arag)",
+      "en": "Red",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "सफेद",
+      "ho": "पोंडी (Pondi)",
+      "mun": "पुंदी (Pundi)",
+      "sat": "ᱯᱩᱸᱰ (Pund)",
+      "en": "White",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "काला",
+      "ho": "हेंदे (Hende)",
+      "mun": "हेंदे (Hende)",
+      "sat": "ᱦᱮᱸᱫᱮ (Hende)",
+      "en": "Black",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "हरा",
+      "ho": "हरियर (Hariyar)",
+      "mun": "हरियर (Hariyar)",
+      "sat": "ᱦᱟᱹᱨᱭᱟᱹᱲ (Haryar)",
+      "en": "Green",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "पीला",
+      "ho": "ससांग (Sasang)",
+      "mun": "ससांग (Sasang)",
+      "sat": "ᱥᱟᱥᱟᱝ (Sasang)",
+      "en": "Yellow",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Colors",
+      "hi": "नीला",
+      "ho": "लील (Leel)",
+      "mun": "लील (Leel)",
+      "sat": "ᱞᱤᱞ (Lil)",
+      "en": "Blue",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Shapes",
+      "hi": "गोल / वृत्त",
+      "ho": "गोला (Gola)",
+      "mun": "गोला (Gola)",
+      "sat": "ᱜᱩᱞᱟᱹᱭ (Gulay)",
+      "en": "Circle / Round",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Shapes",
+      "hi": "चौकोर / वर्ग",
+      "ho": "चारकोना (Charkona)",
+      "mun": "उपूनकोना (Upunkona)",
+      "sat": "ᱯᱩᱱᱠᱳᱱᱟ (Punkona)",
+      "en": "Square",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Shapes",
+      "hi": "त्रिकोण / त्रिभुज",
+      "ho": "तीनकोना (Tinkona)",
+      "mun": "आपीकोना (Apikona)",
+      "sat": "ᱯᱮᱠᱳᱱᱟ (Pekona)",
+      "en": "Triangle",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Numbers",
+      "hi": "गिनती / संख्या",
+      "ho": "लेखा (Lekha)",
+      "mun": "लेखा (Lekha)",
+      "sat": "ᱞᱮᱠᱷᱟ (Lekha)",
+      "en": "Counting / Number",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Numbers",
+      "hi": "पहला",
+      "ho": "सिदा (Sida)",
+      "mun": "सिदा (Sida)",
+      "sat": "ᱯᱟᱹᱦᱤᱞ (Pahil)",
+      "en": "First",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Numbers",
+      "hi": "दूसरा",
+      "ho": "एटाः (Etah)",
+      "mun": "एटाः (Etah)",
+      "sat": "ᱫᱚᱥᱟᱨ (Dosar)",
+      "en": "Second",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "समय / वक्त",
+      "ho": "ओक्तो (Okto)",
+      "mun": "ओक्तो (Okto)",
+      "sat": "ᱚᱠᱛᱚ (Okto)",
+      "en": "Time",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "दिन",
+      "ho": "सिंगी (Singi / Din)",
+      "mun": "दिन (Din)",
+      "sat": "ᱢᱟᱦᱟ (Maha)",
+      "en": "Day",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "रात",
+      "ho": "निदा (Nida)",
+      "mun": "निदा (Nida)",
+      "sat": "ᱧᱤᱫᱟᱹ (Nida)",
+      "en": "Night",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "सुबह",
+      "ho": "सेताः (Setah)",
+      "mun": "सेताः (Setah)",
+      "sat": "ᱥᱮᱛᱟᱜ (Setag)",
+      "en": "Morning",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "शाम",
+      "ho": "अयुब (Ayub)",
+      "mun": "अयुब (Ayub)",
+      "sat": "ᱟᱹᱭᱩᱵ (Ayub)",
+      "en": "Evening",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "आज",
+      "ho": "तिसिंग (Tising)",
+      "mun": "तिसिंग (Tising)",
+      "sat": "ᱛᱮᱦᱮᱧ (Tehen)",
+      "en": "Today",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "कल (बीता हुआ)",
+      "ho": "होला (Hola)",
+      "mun": "होला (Hola)",
+      "sat": "ᱦᱚᱞᱟ (Hola)",
+      "en": "Yesterday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Time",
+      "hi": "कल (आने वाला)",
+      "ho": "गापा (Gapa)",
+      "mun": "गापा (Gapa)",
+      "sat": "ᱜᱟᱯᱟ (Gapa)",
+      "en": "Tomorrow",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "सोमवार",
+      "ho": "सोमवार (Sombar)",
+      "mun": "सोमवार (Sombar)",
+      "sat": "ᱚᱛᱮ ᱢᱟᱦᱟ (Ote Maha)",
+      "en": "Monday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "मंगलवार",
+      "ho": "मोंगोलवार (Mongolbar)",
+      "mun": "मोंगोलवार (Mongolbar)",
+      "sat": "ᱵᱟᱞᱮ ᱢᱟᱦᱟ (Bale Maha)",
+      "en": "Tuesday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "बुधवार",
+      "ho": "बुधवार (Budhbar)",
+      "mun": "बुधवार (Budhbar)",
+      "sat": "ᱥᱟᱹᱜᱩᱱ ᱢᱟᱦᱟ (Sagun Maha)",
+      "en": "Wednesday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "गुरुवार / बृहस्पतिवार",
+      "ho": "गुरुवार (Gurubar)",
+      "mun": "बिरहस्पतिवार",
+      "sat": "ᱥᱟᱹᱨᱫᱤ ᱢᱟᱦᱟ (Sardi Maha)",
+      "en": "Thursday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "शुक्रवार",
+      "ho": "सुक्रुवार (Sukrubar)",
+      "mun": "सुक्रुवार (Sukrubar)",
+      "sat": "ᱡᱟᱹᱨᱩᱢ ᱢᱟᱦᱟ (Jarum Maha)",
+      "en": "Friday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "शनिवार",
+      "ho": "सोनीवार (Sonibar)",
+      "mun": "सोनीवार (Sonibar)",
+      "sat": "ᱧᱩᱦᱩᱢ ᱢᱟᱦᱟ (Nuhum Maha)",
+      "en": "Saturday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Days",
+      "hi": "रविवार",
+      "ho": "रुइवार (Ruibar)",
+      "mun": "रुइवार (Ruibar)",
+      "sat": "ᱥᱤᱸᱜᱮ ᱢᱟᱦᱟ (Singe Maha)",
+      "en": "Sunday",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Months",
+      "hi": "महीना",
+      "ho": "चान्दु (Chandu)",
+      "mun": "चान्दु (Chandu)",
+      "sat": "ᱪᱟᱸᱫᱚ (Chando)",
+      "en": "Month",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Months",
+      "hi": "साल / वर्ष",
+      "ho": "सिरमा (Sirma)",
+      "mun": "सिरमा (Sirma)",
+      "sat": "ᱥᱮᱨᱢᱟ (Serma)",
+      "en": "Year",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "पेड़ / वृक्ष",
+      "ho": "दारू (Daru)",
+      "mun": "दारू (Daru)",
+      "sat": "ᱫᱟᱨᱮ (Dare)",
+      "en": "Tree",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "पत्ता",
+      "ho": "साकाम (Sakam)",
+      "mun": "साकाम (Sakam)",
+      "sat": "ᱥᱟᱠᱟᱢ (Sakam)",
+      "en": "Leaf",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "फूल",
+      "ho": "बा (Baa)",
+      "mun": "बा (Baa)",
+      "sat": "ᱵᱟᱦᱟ (Baha)",
+      "en": "Flower",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "नदी",
+      "ho": "गाड़ा (Gada)",
+      "mun": "गाड़ा (Gada)",
+      "sat": "ᱜᱟᱰᱟ (Gada)",
+      "en": "River",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "पहाड़ / पर्वत",
+      "ho": "बुरू (Buru)",
+      "mun": "बुरू (Buru)",
+      "sat": "ᱵᱩᱨᱩ (Buru)",
+      "en": "Mountain / Hill",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "जंगल / वन",
+      "ho": "बीर (Bir)",
+      "mun": "बीर (Bir)",
+      "sat": "ᱵᱤᱨ (Bir)",
+      "en": "Forest",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "मिट्टी",
+      "ho": "हासा (Hasa)",
+      "mun": "हासा (Hasa)",
+      "sat": "ᱦᱟᱥᱟ (Hasa)",
+      "en": "Soil / Earth",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "पत्थर",
+      "ho": "दीरी (Diri)",
+      "mun": "दीरी (Diri)",
+      "sat": "ᱫᱷᱤᱨᱤ (Dhiri)",
+      "en": "Stone",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "सूरज",
+      "ho": "सिंगी (Singi)",
+      "mun": "सिंगी (Singi)",
+      "sat": "ᱥᱤᱧ ᱪᱟᱸᱫᱚ (Sin Chando)",
+      "en": "Sun",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "चाँद",
+      "ho": "चान्दु (Chandu)",
+      "mun": "चान्दु (Chandu)",
+      "sat": "ᱧᱤᱫᱟᱹ ᱪᱟᱸᱫᱚ (Nida Chando)",
+      "en": "Moon",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "तारा",
+      "ho": "इपिल (Ipil)",
+      "mun": "इपिल (Ipil)",
+      "sat": "ᱤᱯᱤᱞ (Ipil)",
+      "en": "Star",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "हवा / वायु",
+      "ho": "होयो (Hoyo)",
+      "mun": "होयो (Hoyo)",
+      "sat": "ᱦᱚᱭ (Hoy)",
+      "en": "Air / Wind",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Nature",
+      "hi": "आग",
+      "ho": "सेंगेल (Sengel)",
+      "mun": "सेंगेल (Sengel)",
+      "sat": "ᱥᱮᱸᱜᱮᱞ (Sengel)",
+      "en": "Fire",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Agriculture",
+      "hi": "खेत / भूमि",
+      "ho": "ओते (Ote / Khet)",
+      "mun": "ओते (Ote)",
+      "sat": "ᱠᱷᱮᱛ (Khet)",
+      "en": "Farm / Field",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Agriculture",
+      "hi": "धान / चावल",
+      "ho": "बाबा (Baba)",
+      "mun": "बाबा (Baba)",
+      "sat": "ᱦᱳᱲᱳ (Horo)",
+      "en": "Paddy / Grain",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Agriculture",
+      "hi": "हल",
+      "ho": "नाएल (Na-el)",
+      "mun": "नाएल (Nael)",
+      "sat": "ᱱᱟᱦᱮᱞ (Nahel)",
+      "en": "Plough",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Agriculture",
+      "hi": "किसान",
+      "ho": "किसान (Kisan)",
+      "mun": "चासी (Chasi)",
+      "sat": "ᱪᱟᱹᱥᱤ (Chasi)",
+      "en": "Farmer",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Agriculture",
+      "hi": "बीज",
+      "ho": "जां (Jang)",
+      "mun": "जां (Jang)",
+      "sat": "ᱡᱟᱝ (Jang)",
+      "en": "Seed",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Household",
+      "hi": "घर / मकान",
+      "ho": "ओड़ाः (Orah)",
+      "mun": "ओड़ाः (Orah)",
+      "sat": "ᱚᱲᱟᱜ (Orag)",
+      "en": "House",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Household",
+      "hi": "दरवाजा / कपाट",
+      "ho": "दुआरी (Duari)",
+      "mun": "दुआरी (Duari)",
+      "sat": "ᱫᱩᱣᱟᱹᱨ (Duar)",
+      "en": "Door",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Household",
+      "hi": "झाड़ू",
+      "ho": "जोनों (Jonoh)",
+      "mun": "जोनों (Jonoh)",
+      "sat": "ᱡᱚᱱᱚᱜ (Jonog)",
+      "en": "Broom",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Household",
+      "hi": "बर्तन",
+      "ho": "तासली (Bhanda)",
+      "mun": "भांडा (Bhanda)",
+      "sat": "ᱵᱟᱹᱴᱤ (Bati)",
+      "en": "Utensil / Pot",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Clothing",
+      "hi": "कपड़ा / वस्त्र",
+      "ho": "लुगुम (Lugum)",
+      "mun": "किचरीः (Kichrih)",
+      "sat": "ᱞᱩᱜᱽᱲᱤ (Lugri)",
+      "en": "Clothes",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Clothing",
+      "hi": "धोती",
+      "ho": "धोती (Dhoti)",
+      "mun": "धोती (Dhoti)",
+      "sat": "ᱫᱷᱩᱛᱤ (Dhuti)",
+      "en": "Dhoti",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Clothing",
+      "hi": "साड़ी",
+      "ho": "साड़ी (Sari)",
+      "mun": "साड़ी (Sari)",
+      "sat": "ᱥᱟᱹᱲᱤ (Sari)",
+      "en": "Saree",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Transport",
+      "hi": "गाड़ी",
+      "ho": "गाड़ी (Gadi)",
+      "mun": "गाड़ी (Gadi)",
+      "sat": "ᱜᱟᱹᱰᱤ (Gadi)",
+      "en": "Vehicle / Cart",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Transport",
+      "hi": "सड़क / रास्ता",
+      "ho": "होरा (Hora)",
+      "mun": "होरा (Hora)",
+      "sat": "ᱦᱚᱨ (Hor)",
+      "en": "Road / Path",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Transport",
+      "hi": "साइकिल",
+      "ho": "साइकिल (Cycle)",
+      "mun": "साइकिल (Cycle)",
+      "sat": "ᱥᱟᱭᱠᱮᱞ (Saykel)",
+      "en": "Bicycle",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Directions",
+      "hi": "पूर्व",
+      "ho": "सामंग (Samang)",
+      "mun": "सामंग (Samang)",
+      "sat": "ᱥᱟᱢᱟᱝ (Samang)",
+      "en": "East",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Directions",
+      "hi": "पश्चिम",
+      "ho": "तायम (Tayam)",
+      "mun": "तायम (Tayam)",
+      "sat": "ᱯᱟᱪᱷᱮ (Pachhe)",
+      "en": "West",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Directions",
+      "hi": "उत्तर",
+      "ho": "उत्तर (Uttar)",
+      "mun": "उत्तर (Uttar)",
+      "sat": "ᱠᱚᱸᱭᱮ (Koye)",
+      "en": "North",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Directions",
+      "hi": "दक्षिण",
+      "ho": "दक्षिण (Dakhin)",
+      "mun": "दखिन (Dakhin)",
+      "sat": "ᱮᱛᱚᱢ (Etom)",
+      "en": "South",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Weather",
+      "hi": "बारिश / वर्षा",
+      "ho": "दाः गामा (Dah Gama)",
+      "mun": "दाः गामा (Dah Gama)",
+      "sat": "ᱫᱟᱜ ᱡᱟᱹᱲᱤ (Dag Jari)",
+      "en": "Rain",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Weather",
+      "hi": "धूप / गरमी",
+      "ho": "जेते (Jete)",
+      "mun": "जेते (Jete)",
+      "sat": "ᱥᱤᱛᱩᱝ (Situng)",
+      "en": "Sunlight / Heat",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Weather",
+      "hi": "ठंड / सर्दी",
+      "ho": "राबां (Rabang)",
+      "mun": "राबां (Rabang)",
+      "sat": "ᱨᱟᱵᱟᱝ (Rabang)",
+      "en": "Cold / Winter",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Nouns",
+      "hi": "मनुष्य / आदमी",
+      "ho": "होड़ो (Horo)",
+      "mun": "होड़ो (Horo)",
+      "sat": "ᱦᱚᱲ (Hor)",
+      "en": "Human / Person",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Nouns",
+      "hi": "नाम",
+      "ho": "नुतुम (Nutum)",
+      "mun": "नुतुम (Nutum)",
+      "sat": "ᱧᱩᱛᱩᱢ (Nutum)",
+      "en": "Name",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Nouns",
+      "hi": "गाँव",
+      "ho": "हातू (Hatu)",
+      "mun": "हातू (Hatu)",
+      "sat": "ᱟᱹᱛᱩ (Atu)",
+      "en": "Village",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Nouns",
+      "hi": "भाषा",
+      "ho": "काजी (Kaji / Jagor)",
+      "mun": "काजी (Kaji)",
+      "sat": "ᱯᱟᱹᱨᱥᱤ (Parsi)",
+      "en": "Language",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "खाना",
+      "ho": "जोम (Jom)",
+      "mun": "जोम (Jom)",
+      "sat": "ᱡᱚᱢ (Jom)",
+      "en": "To Eat",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "पीना",
+      "ho": "नू (Nu)",
+      "mun": "नू (Nu)",
+      "sat": "ᱧᱩ (Nu)",
+      "en": "To Drink",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "पढ़ना",
+      "ho": "पड़ाव (Parhao)",
+      "mun": "पड़ाव (Parhao)",
+      "sat": "ᱯᱟᱲᱦᱟᱣ (Parhao)",
+      "en": "To Read / Study",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "लिखना",
+      "ho": "ओल (Ol)",
+      "mun": "ओल (Ol)",
+      "sat": "ᱚᱞ (Ol)",
+      "en": "To Write",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "जाना",
+      "ho": "सेन (Sen)",
+      "mun": "सेन (Sen)",
+      "sat": "ᱪᱟᱞᱟᱣ (Chalaw)",
+      "en": "To Go",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "आना",
+      "ho": "हिजुः (Hijuh)",
+      "mun": "हिजुः (Hijuh)",
+      "sat": "ᱦᱤᱡᱩᱜ (Hijug)",
+      "en": "To Come",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "सोना",
+      "ho": "गितिः (Gitih)",
+      "mun": "गितिः (Gitih)",
+      "sat": "ᱜᱤᱛᱤᱡ (Gitij)",
+      "en": "To Sleep",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "खेलना",
+      "ho": "इनेज (Inej)",
+      "mun": "इनेज (Inej)",
+      "sat": "ᱮᱱᱮᱡ (Enej)",
+      "en": "To Play",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "गाना",
+      "ho": "दुरंग (Durang)",
+      "mun": "दुरंग (Durang)",
+      "sat": "ᱥᱮᱨᱮᱧ (Seren)",
+      "en": "To Sing",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Verbs",
+      "hi": "हँसना",
+      "ho": "लांदा (Landa)",
+      "mun": "लांदा (Landa)",
+      "sat": "ᱞᱟᱸᱫᱟ (Landa)",
+      "en": "To Laugh",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "अच्छा / सुंदर",
+      "ho": "बुगिया (Bugiya)",
+      "mun": "बुगिन (Bugin)",
+      "sat": "ᱱᱟᱯᱟᱭ (Napay)",
+      "en": "Good / Beautiful",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "बड़ा",
+      "ho": "मारांग (Marang)",
+      "mun": "मारांग (Marang)",
+      "sat": "ᱢᱟᱨᱟᱝ (Marang)",
+      "en": "Big",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "छोटा",
+      "ho": "हुडिंग (Huding)",
+      "mun": "हुडिंग (Huding)",
+      "sat": "ᱦᱩᱰᱤᱧ (Hudin)",
+      "en": "Small",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "मीठा",
+      "ho": "सिबिल (Sibil)",
+      "mun": "सिबिल (Sibil)",
+      "sat": "ᱦᱮᱲᱮᱢ (Herem)",
+      "en": "Sweet",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "नया",
+      "ho": "नावा (Nawa)",
+      "mun": "नावा (Nawa)",
+      "sat": "ᱱᱟᱣᱟ (Nawa)",
+      "en": "New",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Common Adjectives",
+      "hi": "पुराना",
+      "ho": "मारे (Mare)",
+      "mun": "मारे (Mare)",
+      "sat": "ᱢᱟᱨᱮ (Mare)",
+      "en": "Old",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Science",
+      "hi": "विज्ञान",
+      "ho": "बिग्यान (Bigyan)",
+      "mun": "बिग्यान (Bigyan)",
+      "sat": "ᱵᱤᱨᱫᱟᱹ (Birda)",
+      "en": "Science / Knowledge",
+      "confidence": 0.95,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Science",
+      "hi": "ऊर्जा / शक्ति",
+      "ho": "पेड़ेः (Pereh)",
+      "mun": "पेड़ेः (Pereh)",
+      "sat": "ᱫᱟᱲᱮ (Dare)",
+      "en": "Energy / Force",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Science",
+      "hi": "प्रकाश / रोशनी",
+      "ho": "मारसाल (Marsal)",
+      "mun": "मारसाल (Marsal)",
+      "sat": "ᱢᱟᱨᱥᱟᱞ (Marsal)",
+      "en": "Light",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Science",
+      "hi": "अंधेरा",
+      "ho": "नुतुब (Nutub)",
+      "mun": "नुतुब (Nutub)",
+      "sat": "ᱧᱩᱛ (Nut)",
+      "en": "Darkness",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Science",
+      "hi": "तापमान / गर्मी",
+      "ho": "ललो (Lolo)",
+      "mun": "ललो (Lolo)",
+      "sat": "ᱞᱚᱞᱚ (Lolo)",
+      "en": "Heat / Temperature",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "गणित / हिसाब",
+      "ho": "हिसाब (Hisab / Lekha)",
+      "mun": "लेखा (Lekha)",
+      "sat": "ᱞᱮᱠᱷᱟ (Lekha)",
+      "en": "Mathematics",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "जोड़ / योग (+)",
+      "ho": "मेशा (Mesha)",
+      "mun": "मेशा (Mesha)",
+      "sat": "ᱢᱮᱥᱟ (Mesa)",
+      "en": "Addition (+)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "घटाव (-)",
+      "ho": "घटाव (Ghatao)",
+      "mun": "घटाव (Ghatao)",
+      "sat": "ᱠᱚᱢ (Kom)",
+      "en": "Subtraction (-)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "गुणा (×)",
+      "ho": "गुना (Guna)",
+      "mun": "गुना (Guna)",
+      "sat": "ᱜᱟᱵᱟᱬ (Gaban)",
+      "en": "Multiplication (×)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "भाग (÷)",
+      "ho": "हाटिंग (Hating)",
+      "mun": "हाटिंग (Hating)",
+      "sat": "ᱦᱟᱹᱴᱤᱧ (Hatin)",
+      "en": "Division (÷)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    },
+    {
+      "category": "Mathematics",
+      "hi": "बराबर (=)",
+      "ho": "समान (Saman / Barabar)",
+      "mun": "बराबर (Barabar)",
+      "sat": "ᱵᱟᱨᱟᱵᱟᱹᱨᱤ (Barabari)",
+      "en": "Equals (=)",
+      "confidence": 1.0,
+      "status": "VERIFIED"
+    }
+  ]
+}
