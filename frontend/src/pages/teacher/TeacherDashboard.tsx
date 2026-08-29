@@ -36,6 +36,7 @@ export function TeacherDashboard() {
       color: c.primary,
       bg: c.primaryLight,
       screen: 'Classroom',
+      params: { screen: 'ClassroomManagement' },
     },
     {
       icon: '📋',
@@ -43,6 +44,7 @@ export function TeacherDashboard() {
       color: c.secondary,
       bg: '#FEF3C7',
       screen: 'Assignments',
+      params: { screen: 'Assignments' },
     },
     {
       icon: '🎤',
@@ -50,6 +52,7 @@ export function TeacherDashboard() {
       color: '#7C3AED',
       bg: '#EDE9FE',
       screen: 'AI',
+      params: { screen: 'VoiceTranslation' },
     },
     {
       icon: '📷',
@@ -57,6 +60,7 @@ export function TeacherDashboard() {
       color: '#0284C7',
       bg: '#E0F2FE',
       screen: 'AI',
+      params: { screen: 'OCRScanner' },
     },
     {
       icon: '📝',
@@ -64,6 +68,7 @@ export function TeacherDashboard() {
       color: '#EA580C',
       bg: '#FFEDD5',
       screen: 'AI',
+      params: { screen: 'OMRScanner' },
     },
     {
       icon: '📊',
@@ -71,6 +76,7 @@ export function TeacherDashboard() {
       color: '#059669',
       bg: '#D1FAE5',
       screen: 'Home',
+      params: { screen: 'TeacherAnalytics' },
     },
   ];
 
@@ -123,7 +129,7 @@ export function TeacherDashboard() {
             {quickActions.map((a, i) => (
               <TouchableOpacity
                 key={i}
-                onPress={() => nav.navigate(a.screen)}
+                onPress={() => nav.navigate(a.screen, a.params)}
                 style={[
                   styles.actionCard,
                   { backgroundColor: a.bg, borderColor: a.color },

@@ -53,7 +53,7 @@ export function StudentDashboard() {
       sub: 'Class 1-5 Lessons',
       color: c.primary,
       bg: c.primaryLight,
-      action: () => nav.navigate('Learn'),
+      action: () => nav.navigate('Learn', { screen: 'LearningPath' }),
     },
     {
       icon: '🃏',
@@ -93,7 +93,7 @@ export function StudentDashboard() {
       sub: 'Live Teacher Broadcast',
       color: '#EA580C',
       bg: '#FFEDD5',
-      action: () => nav.navigate('JoinClassroom'),
+      action: () => nav.navigate('Home', { screen: 'JoinClassroom' }),
     },
   ];
 
