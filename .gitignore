@@ -34,8 +34,10 @@ ai_models/
 *.onnx
 *.safetensors
 
-# Node / React Native / Expo
+# Node / React Native / Expo / Vite Web
 node_modules/
+web/node_modules/
+web/dist/
 .expo/
 npm-debug.*
 *.jks

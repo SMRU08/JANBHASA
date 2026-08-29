@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Audio } from 'expo-av';
+import * as Speech from 'expo-speech';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/Button';
-import { Card } from '../../components/Card';
+import { AnimatedCard } from '../../components/AnimatedCard';
+import { ConfettiEffect } from '../../components/ConfettiEffect';
+import { TribalMotifBar } from '../../components/VisualIllustrations';
 import { useTheme } from '../../theme';
 import { useAuthStore } from '../../store/authStore';
 import { useGamificationStore } from '../../store/gamificationStore';
-import { synthesize } from '../../services/ttsService';
-import { translate } from '../../services/translationService';
+import { translateOfflineFull } from '../../services/offlineNlpEngine';
 
 const SAMPLE_STORIES = [
   {
@@ -17,6 +19,7 @@ const SAMPLE_STORIES = [
     title_hi: 'चालाक लोमड़ी और कौवा',
     title_en: 'The Clever Fox and the Crow',
     emoji: '🦊',
+    cover_gradient: ['#EA580C', '#F97316'] as [string, string],
     paragraphs_hi: [
       'एक बार एक कौवे को रोटी का एक टुकड़ा मिला। वह पेड़ की डाल पर बैठ गया।',
       'एक भूखी लोमड़ी वहाँ आई। उसने कौवे के मुँह में रोटी देखी।',
@@ -26,13 +29,14 @@ const SAMPLE_STORIES = [
     ],
     moral_hi: 'झूठी तारीफ करने वालों से हमेशा सावधान रहें।',
     moral_en: 'Beware of flatterers.',
-    xp_reward: 30
+    xp_reward: 35
   },
   {
     id: 2,
     title_hi: 'कछुआ और खरगोश की दौड़',
     title_en: 'The Tortoise and the Hare',
     emoji: '🐢',
+    cover_gradient: ['#059669', '#10B981'] as [string, string],
     paragraphs_hi: [
       'एक खरगोश को अपनी तेज़ चाल पर बहुत घमंड था। उसने एक कछुए को दौड़ लगाने की चुनौती दी।',
       'दौड़ शुरू हुई। खरगोश बहुत तेजी से दौड़ा और बहुत आगे निकल गया।',
@@ -42,7 +46,24 @@ const SAMPLE_STORIES = [
     ],
     moral_hi: 'लगातार और धैर्यपूर्वक प्रयास करने वाले की हमेशा जीत होती है।',
     moral_en: 'Slow and steady wins the race.',
-    xp_reward: 30
+    xp_reward: 35
+  },
+  {
+    id: 3,
+    title_hi: 'सच्चा मित्र और भालू',
+    title_en: 'Two Friends and the Bear',
+    emoji: '🐻',
+    cover_gradient: ['#7C3AED', '#8B5CF6'] as [string, string],
+    paragraphs_hi: [
+      'दो मित्र एक जंगल से होकर जा रहे थे। अचानक उनके सामने एक भालू आ गया।',
+      'पहला मित्र तुरंत पास के एक ऊंचे पेड़ पर चढ़ गया।',
+      'दूसरे मित्र को पेड़ पर चढ़ना नहीं आता था, वह जमीन पर सांस रोककर लेट गया।',
+      'भालू उसके पास आया, उसे सूंघा और मरा हुआ समझकर चला गया।',
+      'पेड़ से उतरकर पहले मित्र ने पूछा, "भालू ने तुम्हारे कान में क्या कहा?" दूसरे ने कहा, "जो मुसीबत में छोड़ दे, वह सच्चा दोस्त नहीं होता।"'
+    ],
+    moral_hi: 'सच्चा मित्र वही है जो मुसीबत में साथ निभाए।',
+    moral_en: 'A friend in need is a friend indeed.',
+    xp_reward: 35
   }
 ];
 
@@ -51,74 +72,41 @@ export function StoryModeScreen() {
   const c = theme.colors;
   const { user } = useAuthStore();
   const { addXp } = useGamificationStore();
-  const [selectedStory, setSelectedStory] = useState<any>(SAMPLE_STORIES[0]);
-  const [translatedParagraphs, setTranslatedParagraphs] = useState<string[]>([]);
-  const [translatedMoral, setTranslatedMoral] = useState<string>('');
-  const [isTranslating, setIsTranslating] = useState(false);
+  const [selectedStory, setSelectedStory] = useState(SAMPLE_STORIES[0]);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [readCompleted, setReadCompleted] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const targetLang = user?.selected_language || 'hi';
+  const targetLang = (user?.selected_language as any) || 'hi';
 
-  const handleSelectStory = async (story: any) => {
+  const handleSelectStory = (story: any) => {
     setSelectedStory(story);
     setReadCompleted(false);
-    if (sound) {
-      await sound.unloadAsync();
-      setSound(null);
+    setShowConfetti(false);
+    if (isPlaying) {
+      Speech.stop();
       setIsPlaying(false);
-    }
-
-    if (targetLang !== 'hi') {
-      setIsTranslating(true);
-      try {
-        const transParas = await Promise.all(
-          story.paragraphs_hi.map((p: string) => translate(p, 'hi', targetLang))
-        );
-        const transM = await translate(story.moral_hi, 'hi', targetLang);
-        setTranslatedParagraphs(transParas);
-        setTranslatedMoral(transM);
-      } catch (err) {
-        console.error('Translation error in story:', err);
-      } finally {
-        setIsTranslating(false);
-      }
-    } else {
-      setTranslatedParagraphs([]);
-      setTranslatedMoral('');
     }
   };
 
   const handleReadAloud = async () => {
-    if (isPlaying && sound) {
-      await sound.stopAsync();
+    if (isPlaying) {
+      Speech.stop();
       setIsPlaying(false);
       return;
     }
 
-    const fullText = (translatedParagraphs.length > 0 ? translatedParagraphs : selectedStory.paragraphs_hi).join(' ');
-    const lang = translatedParagraphs.length > 0 ? targetLang : 'hi';
-    const audioUrl = await synthesize(fullText, lang);
-
-    if (audioUrl) {
-      try {
-        if (sound) {
-          await sound.unloadAsync();
-        }
-        const { sound: s } = await Audio.Sound.createAsync({ uri: audioUrl });
-        setSound(s);
-        setIsPlaying(true);
-        s.setOnPlaybackStatusUpdate((status: any) => {
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-          }
-        });
-        await s.playAsync();
-      } catch (e) {
-        console.warn('Audio play failed', e);
-        setIsPlaying(false);
-      }
+    const fullText = selectedStory.paragraphs_hi.join(' ');
+    setIsPlaying(true);
+    try {
+      await Speech.speak(fullText, {
+        language: 'hi-IN',
+        rate: 0.85,
+        onDone: () => setIsPlaying(false),
+        onError: () => setIsPlaying(false),
+      });
+    } catch {
+      setIsPlaying(false);
     }
   };
 
@@ -126,83 +114,109 @@ export function StoryModeScreen() {
     if (!readCompleted) {
       addXp(selectedStory.xp_reward);
       setReadCompleted(true);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1600);
     }
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.background }}>
-      <Header title="Story Time 📖" subtitle="कहानियों से सीखें" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Story Selector */}
+      <ConfettiEffect active={showConfetti} count={28} />
+      <Header
+        title="Tribal Story Time 📖"
+        subtitle="कहानियों से सीखें • लोककथाएं"
+        variant="gradient"
+        gradientColors={['#059669', '#10B981']}
+      />
+
+      <ScrollView contentContainerStyle={{ padding: 18, paddingBottom: 40 }}>
+        {/* Story Selector Horizontal Scroll */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
-          {SAMPLE_STORIES.map((s) => (
-            <TouchableOpacity
-              key={s.id}
-              onPress={() => handleSelectStory(s)}
-              style={[
-                styles.storyTab,
-                {
-                  backgroundColor: selectedStory.id === s.id ? c.primary : c.card,
-                  borderColor: selectedStory.id === s.id ? c.primary : c.border
-                }
-              ]}
-            >
-              <Text style={{ fontSize: 20, marginRight: 6 }}>{s.emoji}</Text>
-              <Text style={{ color: selectedStory.id === s.id ? '#fff' : c.text, fontWeight: '700' }}>
-                {s.title_hi}
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {SAMPLE_STORIES.map((s) => {
+            const isSelected = selectedStory.id === s.id;
+            return (
+              <AnimatedCard
+                key={s.id}
+                onPress={() => handleSelectStory(s)}
+                style={[
+                  styles.storyTabCard,
+                  {
+                    backgroundColor: isSelected ? (theme.isDark ? '#064E3B' : '#ECFDF5') : c.card,
+                    borderColor: isSelected ? '#10B981' : c.border,
+                  },
+                ]}
+              >
+                <Text style={{ fontSize: 24, marginRight: 8 }}>{s.emoji}</Text>
+                <View>
+                  <Text style={{ color: isSelected ? '#059669' : c.text, fontWeight: '800', fontSize: 13 }}>
+                    {s.title_hi}
+                  </Text>
+                  <Text style={{ color: c.textMuted, fontSize: 10 }}>{s.title_en}</Text>
+                </View>
+              </AnimatedCard>
+            );
+          })}
         </ScrollView>
 
-        {/* Story Card */}
-        <Card style={{ marginBottom: 16 }}>
-          <View style={styles.storyHeader}>
-            <Text style={styles.storyEmoji}>{selectedStory.emoji}</Text>
-            <Text style={[styles.storyTitle, { color: c.text }]}>{selectedStory.title_hi}</Text>
-            <Text style={[styles.storySub, { color: c.textMuted }]}>{selectedStory.title_en}</Text>
-          </View>
+        {/* Story Book Frame */}
+        <View style={[styles.bookFrame, { backgroundColor: c.card, borderColor: c.border }]}>
+          {/* Story Cover Banner */}
+          <LinearGradient
+            colors={selectedStory.cover_gradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.coverBanner}
+          >
+            <Text style={{ fontSize: 52 }}>{selectedStory.emoji}</Text>
+            <Text style={styles.storyCoverTitle}>{selectedStory.title_hi}</Text>
+            <Text style={styles.storyCoverSub}>{selectedStory.title_en}</Text>
+          </LinearGradient>
 
-          {isTranslating ? (
-            <Text style={{ color: c.textSecondary, textAlign: 'center', padding: 20 }}>
-              Translating to your language... ⏳
-            </Text>
-          ) : (
-            <View style={{ marginTop: 12 }}>
-              {selectedStory.paragraphs_hi.map((para: string, idx: number) => (
-                <View key={idx} style={{ marginBottom: 14 }}>
-                  <Text style={[styles.paraHi, { color: c.text }]}>{para}</Text>
-                  {translatedParagraphs[idx] ? (
-                    <Text style={[styles.paraTrans, { color: c.primary }]}>
-                      {translatedParagraphs[idx]}
-                    </Text>
-                  ) : null}
+          <TribalMotifBar color={theme.isDark ? '#F59E0B' : '#D97706'} height={12} />
+
+          {/* Story Paragraphs */}
+          <View style={{ padding: 16 }}>
+            {selectedStory.paragraphs_hi.map((para, idx) => {
+              const transText = targetLang !== 'hi' ? translateOfflineFull(para, 'hi', targetLang) : '';
+              return (
+                <View key={idx} style={styles.paragraphBox}>
+                  <View style={styles.paraIndex}>
+                    <Text style={{ color: '#FFFFFF', fontSize: 10, fontWeight: '900' }}>{idx + 1}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.paraHindi, { color: c.text }]}>{para}</Text>
+                    {transText && transText !== para && (
+                      <Text style={[styles.paraTrans, { color: '#059669' }]}>
+                        {transText}
+                      </Text>
+                    )}
+                  </View>
                 </View>
-              ))}
+              );
+            })}
 
-              <View style={[styles.moralBox, { backgroundColor: c.warningLight, borderColor: c.warning }]}>
-                <Text style={[styles.moralTitle, { color: c.warningDark || '#E65100' }]}>💡 सीख (Moral):</Text>
-                <Text style={[styles.moralText, { color: c.text }]}>{selectedStory.moral_hi}</Text>
-                {translatedMoral ? (
-                  <Text style={[styles.moralTrans, { color: c.primaryDark }]}>{translatedMoral}</Text>
-                ) : null}
-              </View>
+            {/* Moral of Story Box */}
+            <View style={[styles.moralBox, { backgroundColor: theme.isDark ? '#78350F' : '#FFFBEB', borderColor: '#F59E0B' }]}>
+              <Text style={{ color: '#D97706', fontSize: 13, fontWeight: '900' }}>💡 कहानी की सीख (Moral):</Text>
+              <Text style={[styles.moralHindi, { color: c.text }]}>{selectedStory.moral_hi}</Text>
+              <Text style={{ color: c.textMuted, fontSize: 12, fontStyle: 'italic', marginTop: 2 }}>{selectedStory.moral_en}</Text>
             </View>
-          )}
-        </Card>
+          </View>
+        </View>
 
-        {/* Controls */}
-        <View style={styles.buttonRow}>
+        {/* Action Controls */}
+        <View style={styles.controlsRow}>
           <Button
-            title={isPlaying ? "⏹️ Stop Audio" : "🔊 Listen Story"}
+            title={isPlaying ? '⏹️ Stop Story' : '🔊 Listen Story'}
             onPress={handleReadAloud}
             variant="outline"
             style={{ flex: 1, marginRight: 8 }}
           />
           <Button
-            title={readCompleted ? "✅ Completed (+30 XP)" : "⭐ Mark Read (+30 XP)"}
+            title={readCompleted ? '✅ Read (+35 XP)' : '⭐ Finished (+35 XP)'}
             onPress={handleCompleteStory}
             disabled={readCompleted}
+            variant="primary"
             style={{ flex: 1 }}
           />
         </View>
@@ -212,34 +226,82 @@ export function StoryModeScreen() {
 }
 
 const styles = StyleSheet.create({
-  storyTab: {
+  storyTabCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1.5,
-    marginRight: 10
+    marginRight: 10,
   },
-  storyHeader: {
+  bookFrame: {
+    borderRadius: 24,
+    borderWidth: 1.5,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    marginBottom: 16,
+  },
+  coverBanner: {
     alignItems: 'center',
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#ddd',
-    paddingBottom: 14
+    paddingVertical: 24,
+    paddingHorizontal: 16,
   },
-  storyEmoji: { fontSize: 48, marginBottom: 6 },
-  storyTitle: { fontSize: 20, fontWeight: '800', textAlign: 'center' },
-  storySub: { fontSize: 13, marginTop: 2 },
-  paraHi: { fontSize: 16, lineHeight: 26, fontWeight: '500' },
-  paraTrans: { fontSize: 15, lineHeight: 24, fontStyle: 'italic', marginTop: 4 },
+  storyCoverTitle: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '900',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  storyCoverSub: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  paragraphBox: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    gap: 10,
+  },
+  paraIndex: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#059669',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 3,
+  },
+  paraHindi: {
+    fontSize: 16,
+    lineHeight: 26,
+    fontWeight: '600',
+  },
+  paraTrans: {
+    fontSize: 14,
+    lineHeight: 22,
+    fontStyle: 'italic',
+    marginTop: 4,
+    fontWeight: '700',
+  },
   moralBox: {
-    borderRadius: 12,
-    borderWidth: 1,
+    borderRadius: 16,
+    borderWidth: 1.5,
     padding: 14,
-    marginTop: 10
+    marginTop: 8,
   },
-  moralTitle: { fontSize: 14, fontWeight: '800', marginBottom: 4 },
-  moralText: { fontSize: 15, fontWeight: '600' },
-  moralTrans: { fontSize: 14, marginTop: 4, fontStyle: 'italic' },
-  buttonRow: { flexDirection: 'row', marginTop: 8 }
+  moralHindi: {
+    fontSize: 15,
+    fontWeight: '800',
+    marginTop: 4,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+  },
 });
