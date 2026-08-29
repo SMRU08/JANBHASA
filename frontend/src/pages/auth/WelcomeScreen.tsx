@@ -1,97 +1,81 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import { LanguageSelector } from '../../components/LanguageSelector';
-import { Button } from '../../components/Button';
-import { useTheme } from '../../theme';
-import { useLanguageStore } from '../../store/languageStore';
-import { SUPPORTED_LANGUAGES } from '../../locales/i18n';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { StudentHeroIllustration } from '../../components/VisualIllustrations';
+
+const { width } = Dimensions.get('window');
+
+const FLOATING_SPEECH_BUBBLES = [
+  { text: 'हिंदी', x: 20, y: 15 },
+  { text: 'ଓଡ଼ିଆ', x: width - 90, y: 30 },
+  { text: 'हो', x: width - 70, y: 110 },
+  { text: 'संताली', x: 15, y: 120 },
+  { text: 'मुंडारी', x: width - 95, y: 180 },
+  { text: 'Gondi', x: 25, y: 190 },
+];
 
 export function WelcomeScreen() {
-  const theme = useTheme();
-  const c = theme.colors;
-  const { t } = useTranslation();
   const nav = useNavigation<any>();
-  const { selectedLanguage, setSelectedLanguage } = useLanguageStore();
-  const [selected, setSelected] = useState(selectedLanguage || 'hi');
-  const [loading, setLoading] = useState(false);
-
-  const handleContinue = async () => {
-    setLoading(true);
-    await setSelectedLanguage(selected);
-    setLoading(false);
-    nav.navigate('RoleSelection');
-  };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Cultural Hero Header */}
-        <View style={styles.heroSection}>
-          <View style={[styles.logoBadge, { backgroundColor: c.primaryLight }]}>
-            <Text style={styles.logoEmoji}>🏫</Text>
+        {/* Brand Logo & Header */}
+        <View style={styles.brandHeader}>
+          <View style={styles.logoBubble}>
+            <Text style={styles.logoAi}>Ai</Text>
           </View>
-          <Text style={[styles.appTitle, { color: c.text }]}>JANBHASHA</Text>
-          <View style={[styles.hindiPill, { backgroundColor: c.secondaryLight }]}>
-            <Text style={[styles.hindiTitle, { color: c.secondaryDark }]}>जनभाषा • ᱡᱳᱦᱟᱨ • ଓଡ଼ିଆ</Text>
-          </View>
-          <Text style={[styles.tagline, { color: c.textSecondary }]}>
-            "Teach in Hindi. Learn in Your Mother Tongue."
-          </Text>
+          <Text style={styles.brandTitle}>JANBHASHA</Text>
+          <Text style={styles.taglineBold}>Teach in Hindi. Learn in Your Mother Tongue.</Text>
+          <Text style={styles.taglineSub}>AI-Powered Multilingual Education for Everyone</Text>
         </View>
 
-        {/* Language Selection Card */}
-        <View style={[styles.card, { backgroundColor: c.surface, borderColor: c.border }]}>
-          <View style={styles.cardHeader}>
-            <Text style={[styles.sectionIcon, { color: c.primary }]}>🌐</Text>
-            <View>
-              <Text style={[styles.sectionTitle, { color: c.text }]}>
-                {t('welcome.select_language')}
-              </Text>
-              <Text style={[styles.sectionSub, { color: c.textSecondary }]}>
-                Choose your native language for lessons and audio
-              </Text>
+        {/* Hero Visual Area with Floating Tribal Dialect Bubbles */}
+        <View style={styles.heroVisualWrapper}>
+          {/* Floating Language Pills */}
+          {FLOATING_SPEECH_BUBBLES.map((bubble, i) => (
+            <View
+              key={i}
+              style={[
+                styles.floatingBubble,
+                { top: bubble.y, left: bubble.x },
+              ]}
+            >
+              <Text style={styles.bubbleText}>{bubble.text}</Text>
             </View>
-          </View>
+          ))}
 
-          <LanguageSelector
-            languages={SUPPORTED_LANGUAGES}
-            selected={selected}
-            onSelect={setSelected}
-            columns={2}
-          />
+          {/* Teacher & Students Illustration Graphic */}
+          <View style={styles.illustrationCard}>
+            <StudentHeroIllustration />
+          </View>
         </View>
 
-        <View style={{ height: 20 }} />
+        {/* Action Buttons */}
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity
+            onPress={() => nav.navigate('RoleSelection' as any)}
+            style={styles.primaryBtn}
+            activeOpacity={0.85}
+          >
+            <LinearGradient
+              colors={['#2563EB', '#1D4ED8']}
+              style={styles.btnGradient}
+            >
+              <Text style={styles.primaryBtnText}>Get Started</Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
-        {/* Action Button */}
-        <Button
-          title={t('welcome.continue')}
-          onPress={handleContinue}
-          loading={loading}
-          disabled={!selected}
-          fullWidth
-          size="lg"
-          icon="arrow-forward"
-          iconPosition="right"
-        />
-
-        {/* Trust Badges */}
-        <View style={styles.badgeRow}>
-          <View style={[styles.microBadge, { backgroundColor: c.surface, borderColor: c.border }]}>
-            <Text style={{ fontSize: 13 }}>🔒</Text>
-            <Text style={[styles.microText, { color: c.textSecondary }]}>100% Offline</Text>
-          </View>
-          <View style={[styles.microBadge, { backgroundColor: c.surface, borderColor: c.border }]}>
-            <Text style={{ fontSize: 13 }}>🇮🇳</Text>
-            <Text style={[styles.microText, { color: c.textSecondary }]}>NEP 2020 Aligned</Text>
-          </View>
-          <View style={[styles.microBadge, { backgroundColor: c.surface, borderColor: c.border }]}>
-            <Text style={{ fontSize: 13 }}>❤️</Text>
-            <Text style={[styles.microText, { color: c.textSecondary }]}>Free Education</Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => nav.navigate('LanguageSelection' as any)}
+            style={styles.secondaryBtn}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.secondaryBtnText}>Select Language</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -101,99 +85,126 @@ export function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   scroll: {
-    padding: 20,
-    paddingBottom: 40,
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    justifyContent: 'space-between',
   },
-  heroSection: {
+  brandHeader: {
     alignItems: 'center',
-    marginBottom: 24,
     marginTop: 8,
   },
-  logoBadge: {
-    width: 80,
-    height: 80,
+  logoBubble: {
+    width: 48,
+    height: 48,
     borderRadius: 24,
+    backgroundColor: '#3B82F6',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    shadowColor: '#059669',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  logoEmoji: {
-    fontSize: 44,
-  },
-  appTitle: {
-    fontSize: 30,
-    fontWeight: '900',
-    letterSpacing: 1.5,
-  },
-  hindiPill: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginTop: 6,
     marginBottom: 8,
+    shadowColor: '#3B82F6',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
-  hindiTitle: {
-    fontSize: 13,
-    fontWeight: '800',
+  logoAi: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '900',
   },
-  tagline: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    paddingHorizontal: 20,
-    marginTop: 2,
-  },
-  card: {
-    borderRadius: 24,
-    borderWidth: 1.5,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-    gap: 10,
-  },
-  sectionIcon: {
+  brandTitle: {
     fontSize: 26,
+    fontWeight: '900',
+    color: '#0F172A',
+    letterSpacing: 0.5,
   },
-  sectionTitle: {
-    fontSize: 17,
+  taglineBold: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#1E293B',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  taglineSub: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#64748B',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  heroVisualWrapper: {
+    position: 'relative',
+    height: 320,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 12,
+  },
+  floatingBubble: {
+    position: 'absolute',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
+  },
+  bubbleText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#1E293B',
+  },
+  illustrationCard: {
+    width: width - 48,
+    height: 260,
+    borderRadius: 24,
+    overflow: 'hidden',
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionsContainer: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  primaryBtn: {
+    borderRadius: 18,
+    overflow: 'hidden',
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  btnGradient: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: '800',
   },
-  sectionSub: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  badgeRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginTop: 24,
-  },
-  microBadge: {
-    flexDirection: 'row',
+  secondaryBtn: {
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    paddingVertical: 15,
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
-  microText: {
-    fontSize: 11,
-    fontWeight: '700',
+  secondaryBtnText: {
+    color: '#0F172A',
+    fontSize: 15,
+    fontWeight: '800',
   },
 });

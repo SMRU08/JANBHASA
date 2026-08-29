@@ -1,444 +1,511 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Audio } from 'expo-av';
-import QRCode from 'react-native-qrcode-svg';
-import { useTranslation } from 'react-i18next';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Header } from '../../components/Header';
-import { Button } from '../../components/Button';
-import { StudentCard } from '../../components/OfflineBanner';
-import { PulsingMic } from '../../components/PulsingMic';
-import { LiveAudioWaveform, TribalMotifBar } from '../../components/VisualIllustrations';
-import { useTheme } from '../../theme';
-import { useClassroomStore } from '../../store/classroomStore';
-import { broadcastToStudents, endSession } from '../../services/classroomService';
-import { transcribeAudio } from '../../services/sttService';
-import { translateBatch } from '../../services/translationService';
-import { useAuthStore } from '../../store/authStore';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Speech from 'expo-speech';
+import { LiveWaveform } from '../../components/LiveWaveform';
 
-export function LiveClassroomScreen({ route }: any) {
-  const theme = useTheme();
-  const c = theme.colors;
-  const { t } = useTranslation();
+const { width } = Dimensions.get('window');
+
+export function LiveClassroomScreen() {
   const nav = useNavigation<any>();
-  const { user } = useAuthStore();
-  const { sessionId, students, wsInstance, messages } = useClassroomStore();
-  const [recording, setRecording] = useState(false);
-  const [transcribedText, setTranscribedText] = useState('');
-  const [textInput, setTextInput] = useState('');
-  const [busyTab, setBusyTab] = useState<'voice' | 'text' | 'qr' | 'students'>('voice');
-  const recordingRef = useRef<Audio.Recording | null>(null);
-  const sessionData = route?.params?.sessionData || { session_id: sessionId || 'JAN-2024-LIVE' };
 
-  const startRecording = async () => {
-    try {
-      await Audio.requestPermissionsAsync();
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-      const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-      recordingRef.current = recording;
-      setRecording(true);
-    } catch {
-      Alert.alert('Microphone Error', 'Could not start recording.');
-    }
-  };
+  const [isLive, setIsLive] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
+  const [selectedStudentLang, setSelectedStudentLang] = useState('Odia');
+  const [activeTab, setActiveTab] = useState<'teacher' | 'two-way'>('teacher');
+  const [studentCount] = useState(28);
 
-  const stopAndTranslate = async () => {
-    if (!recordingRef.current) return;
-    setRecording(false);
-    await recordingRef.current.stopAndUnloadAsync();
-    const uri = recordingRef.current.getURI();
-    recordingRef.current = null;
-    if (!uri) return;
+  const teacherHindiText = 'हमारा विषय है - जल संरक्षण की आवश्यकता।';
+  const studentOdiaText = 'ଆମର ବିଷୟ ହେଉଛି - ଜଳ ସଂରକ୍ଷଣର ଆବଶ୍ୟକତା ।';
 
-    const sourceLang = user?.selected_language || 'hi';
-    const stt = await transcribeAudio(uri, sourceLang);
-    if (stt.success && stt.text) {
-      setTranscribedText(stt.text);
-      const targetLangs = ['en', 'hi', 'or', 'sat', 'ho', 'mun'].filter(l => l !== sourceLang);
-      const translations = await translateBatch(stt.text, sourceLang, targetLangs);
-      broadcastToStudents(wsInstance, {
-        message_type: 'translation',
-        source_text: stt.text,
-        source_lang: sourceLang,
-        translations,
-      });
-    }
-  };
-
-  const sendText = async () => {
-    if (!textInput.trim()) return;
-    const sourceLang = user?.selected_language || 'hi';
-    const targetLangs = ['en', 'hi', 'or', 'sat', 'ho', 'mun'].filter(l => l !== sourceLang);
-    const translations = await translateBatch(textInput, sourceLang, targetLangs);
-    broadcastToStudents(wsInstance, {
-      message_type: 'text',
-      source_text: textInput,
-      source_lang: sourceLang,
-      translations,
-    });
-    setTextInput('');
-  };
-
-  const handleEndSession = async () => {
-    Alert.alert('End Broadcast?', 'All connected students will be disconnected.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'End Broadcast',
-        style: 'destructive',
-        onPress: async () => {
-          if (sessionId) await endSession(sessionId);
-          nav.popToTop();
-        },
-      },
-    ]);
+  const handleSpeak = (text: string) => {
+    Speech.stop();
+    Speech.speak(text, { language: 'hi-IN', rate: 0.85 });
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: c.background }}>
-      {/* On-Air Studio Header */}
+    <SafeAreaView style={styles.container}>
+      {/* Dark Classroom Background */}
       <LinearGradient
-        colors={['#065F46', '#047857']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.topBar}
-      >
-        <View style={styles.onAirBox}>
-          <View style={styles.redDot} />
-          <Text style={styles.onAirText}>ON AIR</Text>
+        colors={['#0B132B', '#030712', '#0B132B']}
+        style={StyleSheet.absoluteFillObject}
+      />
+
+      {/* Top Status Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.liveIndicator}>
+          <View style={styles.liveDot} />
+          <Text style={styles.liveText}>● LIVE</Text>
+          <View style={styles.participantsBadge}>
+            <Ionicons name="people" size={12} color="#FFFFFF" />
+            <Text style={styles.participantsText}>{studentCount}</Text>
+          </View>
         </View>
 
-        <View style={{ alignItems: 'center' }}>
-          <Text style={styles.sessionTitle}>Live Classroom Audio Hub</Text>
-          <Text style={styles.sessionId}>ID: {sessionData.session_id}</Text>
-        </View>
-
-        <TouchableOpacity onPress={handleEndSession} style={styles.endBtn} activeOpacity={0.8}>
-          <Text style={styles.endBtnText}>END</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-
-      {/* Tabs */}
-      <View style={[styles.tabs, { backgroundColor: c.surface }]}>
-        {(['voice', 'text', 'qr', 'students'] as const).map(tab => (
+        <View style={styles.modeTabs}>
           <TouchableOpacity
-            key={tab}
-            onPress={() => setBusyTab(tab)}
-            style={[styles.tab, busyTab === tab && { borderBottomColor: c.primary, borderBottomWidth: 3 }]}
+            onPress={() => setActiveTab('teacher')}
+            style={[styles.modeTab, activeTab === 'teacher' && styles.modeTabActive]}
           >
-            <Text
-              style={{
-                color: busyTab === tab ? c.primary : c.textMuted,
-                fontWeight: '800',
-                fontSize: 12,
-              }}
-            >
-              {tab === 'voice' ? '🎤 Voice' : tab === 'text' ? '💬 Text' : tab === 'qr' ? '📷 QR Code' : `👥 Students (${students.length})`}
+            <Text style={[styles.modeTabText, activeTab === 'teacher' && styles.modeTabTextActive]}>
+              Teacher Hub
             </Text>
           </TouchableOpacity>
-        ))}
+          <TouchableOpacity
+            onPress={() => setActiveTab('two-way')}
+            style={[styles.modeTab, activeTab === 'two-way' && styles.modeTabActive]}
+          >
+            <Text style={[styles.modeTabText, activeTab === 'two-way' && styles.modeTabTextActive]}>
+              Two-Way Live
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.networkBadge}>
+          <Text style={styles.networkText}>Good Network</Text>
+          <Ionicons name="cellular" size={12} color="#10B981" />
+        </View>
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 18 }}>
-        {busyTab === 'voice' && (
-          <View style={{ alignItems: 'center', paddingVertical: 10 }}>
-            {/* Live Audio Visualizer */}
-            <View style={[styles.waveBox, { backgroundColor: theme.isDark ? '#064E3B' : '#ECFDF5' }]}>
-              <LiveAudioWaveform active={recording} color="#10B981" />
-              <Text style={{ color: recording ? '#EF4444' : '#059669', fontSize: 11, fontWeight: '800', marginTop: 4 }}>
-                {recording ? '● STREAMING LIVE AUDIO' : 'READY TO BROADCAST'}
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {activeTab === 'teacher' ? (
+          /* PANEL 1: TEACHER SPEAKING (HINDI) */
+          <View style={styles.panelContent}>
+            {/* Teacher Blackboard Card */}
+            <View style={styles.blackboardCard}>
+              <View style={styles.blackboardHeader}>
+                <Text style={styles.blackboardTitle}>जल संरक्षण क्यों जरूरी हैं ?</Text>
+              </View>
+              <Text style={styles.blackboardBody}>
+                • पानी जीवन के लिए आवश्यक है{'\n'}
+                • जल बचाओ, जीवन बचाओ{'\n'}
+                • इस सब की जिम्मेदारी है
               </Text>
             </View>
 
-            {/* Pulsing Recording Microphone */}
-            <PulsingMic
-              isRecording={recording}
-              onPressIn={startRecording}
-              onPressOut={stopAndTranslate}
-              size={120}
-              icon="🎤"
-              subLabel={recording ? 'RELEASE' : 'HOLD'}
-              colors={['#10B981', '#059669']}
-              pulseColor="rgba(16, 185, 129, 0.35)"
-            />
+            {/* Teacher Audio Waveform & Live Transcript */}
+            <View style={styles.teacherAudioCard}>
+              <View style={styles.audioHeaderRow}>
+                <Text style={styles.audioRoleTag}>Teacher (Hindi)</Text>
+                <TouchableOpacity onPress={() => handleSpeak(teacherHindiText)}>
+                  <Ionicons name="volume-medium" size={18} color="#60A5FA" />
+                </TouchableOpacity>
+              </View>
+              <LiveWaveform state="listening" height={60} barCount={24} />
 
-            <Text style={{ color: c.textSecondary, marginTop: 14, fontSize: 13, textAlign: 'center', fontWeight: '600' }}>
-              {recording
-                ? '🎙️ Broadcasting live... Release to translate to all tribal languages'
-                : '👆 Hold mic button to speak — auto-translates to students in ≤3s'}
-            </Text>
+              <Text style={styles.transcriptTag}>Live Transcript (Hindi)</Text>
+              <Text style={styles.transcriptText}>{teacherHindiText}</Text>
+            </View>
 
-            {/* Live Transcript Display */}
-            {transcribedText ? (
-              <View style={[styles.transcriptCard, { backgroundColor: c.card, borderColor: c.border }]}>
-                <View style={styles.transcriptHeader}>
-                  <Text style={{ color: c.textMuted, fontSize: 10, fontWeight: '800' }}>YOUR SPEECH (BROADCAST):</Text>
-                  <View style={styles.statusPill}>
-                    <Text style={{ color: '#065F46', fontSize: 9, fontWeight: '900' }}>SENT ✅</Text>
-                  </View>
+            {/* Voice Output To Students Card */}
+            <View style={styles.outputCard}>
+              <View style={styles.outputHeader}>
+                <Text style={styles.outputTag}>Voice Output To Students</Text>
+                <View style={styles.langSelectPill}>
+                  <Text style={styles.langSelectText}>Odia</Text>
+                  <Ionicons name="chevron-down" size={12} color="#FFFFFF" />
                 </View>
-                <Text style={{ color: c.text, fontSize: 16, fontWeight: '700', marginTop: 6, lineHeight: 22 }}>
-                  "{transcribedText}"
-                </Text>
-                <Text style={{ color: '#10B981', fontSize: 11, fontWeight: '700', marginTop: 8 }}>
-                  Translated into Santali, Ho, Mundari & Odia
-                </Text>
               </View>
-            ) : null}
-          </View>
-        )}
 
-        {busyTab === 'text' && (
-          <View>
-            <TextInput
-              style={[styles.textArea, { backgroundColor: c.card, borderColor: c.border, color: c.text }]}
-              value={textInput}
-              onChangeText={setTextInput}
-              placeholder="Type lesson instructions to broadcast..."
-              placeholderTextColor={c.textMuted}
-              multiline
-              numberOfLines={4}
-            />
-            <Button
-              title="Send to All Students 📤"
-              onPress={sendText}
-              fullWidth
-              disabled={!textInput.trim()}
-              style={{ marginTop: 14 }}
-            />
-            <View style={[styles.historyBox, { backgroundColor: c.card, borderColor: c.border }]}>
-              <Text style={{ color: c.textMuted, fontSize: 11, fontWeight: '800', marginBottom: 10 }}>
-                RECENT BROADCAST MESSAGES:
-              </Text>
-              {messages.length === 0 ? (
-                <Text style={{ color: c.textMuted, fontSize: 12 }}>No messages sent yet in this session.</Text>
-              ) : (
-                messages.slice(0, 5).map((m) => (
-                  <View key={m.id} style={styles.msgItem}>
-                    <Text style={{ color: c.text, fontSize: 13, fontWeight: '600' }}>📢 {m.source_text}</Text>
-                  </View>
-                ))
-              )}
+              <LiveWaveform state="speaking" height={55} barCount={24} />
+
+              <View style={styles.speakingIndicatorRow}>
+                <View style={[styles.liveDot, { backgroundColor: '#10B981' }]} />
+                <Text style={styles.speakingIndicatorText}>Speaking in Odia...</Text>
+              </View>
             </View>
           </View>
-        )}
-
-        {busyTab === 'qr' && (
-          <View style={{ alignItems: 'center', paddingVertical: 10 }}>
-            <Text style={{ color: c.text, fontWeight: '800', fontSize: 16, marginBottom: 16 }}>
-              📷 Students Scan to Join Live Stream
-            </Text>
-
-            {/* High-Resolution QR Container */}
-            <View style={styles.qrCard}>
-              <View style={styles.qrFrame}>
-                <QRCode
-                  value={`janbhasha://session?id=${sessionData.session_id}`}
-                  size={190}
-                  color="#0F172A"
-                  backgroundColor="#FFFFFF"
-                />
+        ) : (
+          /* PANEL 4: TWO-WAY LIVE CLASSROOM COMMUNICATION */
+          <View style={styles.panelContent}>
+            <View style={styles.twoWayHeader}>
+              <View style={styles.roleColumn}>
+                <Text style={styles.roleColTitle}>Teacher (Hindi)</Text>
+                <LiveWaveform state="listening" height={50} barCount={16} />
+                <Text style={styles.roleColStatus}>Speaking...</Text>
               </View>
-              <Text style={styles.qrSessionLabel}>SESSION PASSCODE</Text>
-              <Text style={styles.qrSessionCode}>{sessionData.session_id}</Text>
+
+              {/* Center Bidirectional Icon */}
+              <View style={styles.bidirectionalCircle}>
+                <Ionicons name="swap-horizontal" size={24} color="#FFFFFF" />
+              </View>
+
+              <View style={styles.roleColumn}>
+                <Text style={styles.roleColTitle}>Students (Odia)</Text>
+                <LiveWaveform state="speaking" height={50} barCount={16} />
+                <Text style={[styles.roleColStatus, { color: '#C084FC' }]}>Speaking...</Text>
+              </View>
             </View>
 
-            <TribalMotifBar color={theme.isDark ? '#10B981' : '#059669'} height={12} />
+            {/* Metrics Row */}
+            <View style={styles.metricsGrid}>
+              <View style={styles.metricBox}>
+                <Text style={styles.metricBoxLabel}>Students</Text>
+                <Text style={styles.metricBoxVal}>👥 {studentCount} Online</Text>
+              </View>
 
-            <View style={[styles.instructionBox, { backgroundColor: c.card, borderColor: c.border }]}>
-              <Text style={{ color: c.text, fontWeight: '700', fontSize: 13 }}>📡 Wi-Fi Hotspot Instructions:</Text>
-              <Text style={{ color: c.textSecondary, fontSize: 12, marginTop: 6, lineHeight: 18 }}>
-                1. Enable Wi-Fi Hotspot on this device{'\n'}
-                2. Have students connect to this Hotspot{'\n'}
-                3. Students scan this QR code using the Student app QR scanner
+              <View style={styles.metricBox}>
+                <Text style={styles.metricBoxLabel}>Language</Text>
+                <Text style={styles.metricBoxVal}>Hindi ⇄ Odia</Text>
+              </View>
+
+              <View style={styles.metricBox}>
+                <Text style={styles.metricBoxLabel}>Accuracy</Text>
+                <Text style={[styles.metricBoxVal, { color: '#10B981' }]}>✓ 96% High</Text>
+              </View>
+
+              <View style={styles.metricBox}>
+                <Text style={styles.metricBoxLabel}>Network</Text>
+                <Text style={[styles.metricBoxVal, { color: '#10B981' }]}>📶 Good</Text>
+              </View>
+            </View>
+
+            {/* AI Real-time conversion banner */}
+            <View style={styles.aiLiveBanner}>
+              <Ionicons name="sparkles" size={14} color="#38BDF8" />
+              <Text style={styles.aiLiveBannerText}>
+                AI is translating and converting voice in real-time
               </Text>
             </View>
-          </View>
-        )}
-
-        {busyTab === 'students' && (
-          <View>
-            <Text style={{ color: c.text, fontWeight: '800', fontSize: 15, marginBottom: 12 }}>
-              Connected Students ({students.length})
-            </Text>
-            {students.length === 0 ? (
-              <View style={[styles.emptyBox, { backgroundColor: c.card, borderColor: c.border }]}>
-                <Text style={{ fontSize: 44 }}>👩‍🎓</Text>
-                <Text style={{ color: c.text, fontWeight: '700', fontSize: 15, marginTop: 10 }}>No students connected yet</Text>
-                <Text style={{ color: c.textMuted, fontSize: 12, marginTop: 4, textAlign: 'center' }}>
-                  Ask students to scan the QR code from the QR Code tab to join this live broadcast.
-                </Text>
-              </View>
-            ) : (
-              students.map((s, i) => (
-                <StudentCard key={s.student_id || i} student={{ name: s.name, is_active: true }} />
-              ))
-            )}
           </View>
         )}
       </ScrollView>
+
+      {/* Classroom Control Action Bar */}
+      <View style={styles.controlsBar}>
+        <TouchableOpacity
+          onPress={() => nav.goBack()}
+          style={styles.endClassBtn}
+        >
+          <Ionicons name="call" size={18} color="#FFFFFF" style={{ transform: [{ rotate: '135deg' }] }} />
+          <Text style={styles.endClassText}>End Class</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setIsMuted(!isMuted)}
+          style={[styles.controlBtn, isMuted && { backgroundColor: '#EF4444' }]}
+        >
+          <Ionicons name={isMuted ? 'mic-off' : 'mic'} size={18} color="#FFFFFF" />
+          <Text style={styles.controlBtnText}>{isMuted ? 'Unmute' : 'Mute'}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.controlBtn}>
+          <Ionicons name="people-outline" size={18} color="#FFFFFF" />
+          <Text style={styles.controlBtnText}>Students</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.controlBtn}>
+          <Ionicons name="chatbubble-ellipses-outline" size={18} color="#FFFFFF" />
+          <Text style={styles.controlBtnText}>Chat</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.controlBtn}>
+          <Ionicons name="settings-outline" size={18} color="#FFFFFF" />
+          <Text style={styles.controlBtnText}>Settings</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#030712',
+  },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomLeftRadius: 18,
-    borderBottomRightRadius: 18,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
   },
-  onAirBox: {
+  liveIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
     gap: 6,
   },
-  redDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: '#EF4444',
   },
-  onAirText: {
-    color: '#FFFFFF',
-    fontSize: 10,
+  liveText: {
+    color: '#EF4444',
+    fontSize: 11,
     fontWeight: '900',
-    letterSpacing: 0.5,
   },
-  sessionTitle: {
+  participantsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  participantsText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  sessionId: {
-    color: 'rgba(255, 255, 255, 0.85)',
     fontSize: 10,
     fontWeight: '700',
   },
-  endBtn: {
-    backgroundColor: '#EF4444',
-    borderRadius: 8,
+  modeTabs: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+    borderRadius: 12,
+    padding: 2,
+  },
+  modeTab: {
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 5,
+    borderRadius: 10,
   },
-  endBtnText: {
-    color: '#FFFFFF',
-    fontWeight: '900',
+  modeTabActive: {
+    backgroundColor: '#3B82F6',
+  },
+  modeTabText: {
+    color: '#94A3B8',
     fontSize: 11,
+    fontWeight: '700',
   },
-  tabs: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.06)',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  waveBox: {
-    borderRadius: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    marginBottom: 16,
-    width: '100%',
-  },
-  transcriptCard: {
-    borderRadius: 18,
-    borderWidth: 1.5,
-    padding: 16,
-    marginTop: 18,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  transcriptHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  statusPill: {
-    backgroundColor: '#D1FAE5',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  textArea: {
-    borderRadius: 16,
-    borderWidth: 1.5,
-    padding: 14,
-    fontSize: 15,
-    minHeight: 110,
-    textAlignVertical: 'top',
-  },
-  historyBox: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    marginTop: 16,
-  },
-  msgItem: {
-    paddingVertical: 6,
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
-  },
-  qrCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 22,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 14,
-    elevation: 5,
-    marginBottom: 16,
-  },
-  qrFrame: {
-    padding: 10,
-    borderRadius: 14,
-    backgroundColor: '#F8FAFC',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-  },
-  qrSessionLabel: {
-    color: '#64748B',
-    fontSize: 10,
+  modeTabTextActive: {
+    color: '#FFFFFF',
     fontWeight: '800',
-    letterSpacing: 1,
-    marginTop: 14,
   },
-  qrSessionCode: {
-    color: '#0F172A',
+  networkBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  networkText: {
+    color: '#10B981',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  scroll: {
+    padding: 16,
+    paddingBottom: 30,
+  },
+  panelContent: {
+    gap: 14,
+  },
+  blackboardCard: {
+    backgroundColor: '#064E3B',
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: '#78350F',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  blackboardHeader: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+    paddingBottom: 8,
+    marginBottom: 8,
+  },
+  blackboardTitle: {
+    color: '#FEF08A',
+    fontSize: 16,
     fontWeight: '900',
-    fontSize: 22,
-    letterSpacing: 2,
-    marginTop: 2,
   },
-  instructionBox: {
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 14,
-    width: '100%',
-    marginTop: 12,
+  blackboardBody: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 20,
   },
-  emptyBox: {
+  teacherAudioCard: {
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
     borderRadius: 20,
     borderWidth: 1,
-    padding: 32,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 14,
+  },
+  audioHeaderRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  audioRoleTag: {
+    color: '#94A3B8',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  transcriptTag: {
+    color: '#94A3B8',
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 10,
+  },
+  transcriptText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  outputCard: {
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
+    padding: 14,
+  },
+  outputHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  outputTag: {
+    color: '#C084FC',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  langSelectPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(168, 85, 247, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  langSelectText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  speakingIndicatorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
+  },
+  speakingIndicatorText: {
+    color: '#10B981',
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  twoWayHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(30, 41, 59, 0.8)',
+    borderRadius: 22,
+    padding: 16,
+  },
+  roleColumn: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  roleColTitle: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '800',
+    marginBottom: 6,
+  },
+  roleColStatus: {
+    color: '#60A5FA',
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  bidirectionalCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#8B5CF6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 8,
+    shadowColor: '#8B5CF6',
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+  },
+  metricsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  metricBox: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: 'rgba(30, 41, 59, 0.7)',
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  metricBoxLabel: {
+    color: '#94A3B8',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  metricBoxVal: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '800',
+    marginTop: 3,
+  },
+  aiLiveBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(56, 189, 248, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.3)',
+    borderRadius: 16,
+    padding: 12,
+  },
+  aiLiveBannerText: {
+    color: '#38BDF8',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  controlsBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  endClassBtn: {
+    alignItems: 'center',
+    backgroundColor: '#EF4444',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    gap: 2,
+  },
+  endClassText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  controlBtn: {
+    alignItems: 'center',
+    gap: 2,
+    padding: 6,
+  },
+  controlBtnText: {
+    color: '#94A3B8',
+    fontSize: 10,
+    fontWeight: '600',
   },
 });

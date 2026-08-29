@@ -7,6 +7,7 @@ import { TeacherLoginScreen } from '../pages/auth/TeacherLoginScreen';
 import { TeacherRegisterScreen } from '../pages/auth/TeacherRegisterScreen';
 import { StudentLoginScreen } from '../pages/auth/StudentLoginScreen';
 import { AdminLoginScreen } from '../pages/auth/AdminLoginScreen';
+import { LanguageSelectionScreen } from '../pages/student/LanguageSelectionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ export function AuthNavigator() {
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="RoleSelection" component={RoleSelectionScreen} />
+      <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
       <Stack.Screen name="TeacherLogin" component={TeacherLoginScreen} />
       <Stack.Screen name="TeacherRegister" component={TeacherRegisterScreen} />
       <Stack.Screen name="StudentLogin" component={StudentLoginScreen} />
