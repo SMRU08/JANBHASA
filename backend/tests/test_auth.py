@@ -13,7 +13,7 @@ def test_health():
 
 def test_login_admin():
     res = client.post("/api/auth/login", json={
-        "identifier": "admin@janbhasha.local",
+        "identifier": "admin@gmail.com",
         "password": "Admin@1234",
         "role": "admin"
     })

@@ -4,13 +4,11 @@
   "private": true,
   "description": "JANBHASHA - Offline-First Multilingual Education Platform",
   "scripts": {
-    "postinstall": "npm install --prefix frontend --legacy-peer-deps && npm install --prefix web",
+    "postinstall": "npm install --prefix frontend --legacy-peer-deps",
     "build": "cd frontend && npx expo export --platform web",
-    "build:web": "npm run build --prefix web",
-    "dev": "npm run dev --prefix web",
-    "start": "npm run dev --prefix web",
-    "mobile": "npm start --prefix frontend",
-    "web": "npm run dev --prefix web",
+    "dev": "npm run web --prefix frontend",
+    "start": "npm start --prefix frontend",
+    "web": "npm run web --prefix frontend",
     "android": "npm run android --prefix frontend",
     "ios": "npm run ios --prefix frontend"
   }

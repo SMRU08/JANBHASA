@@ -44,6 +44,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+app.state.model_manager = model_manager
 
 app.add_middleware(
     CORSMiddleware,
@@ -81,7 +82,8 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "models": app.state.model_manager.get_status_summary()}
+    mgr = getattr(app.state, "model_manager", model_manager)
+    return {"status": "ok", "app": "JANBHASHA", "models": mgr.get_status_summary()}
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ def test_supported_languages():
     assert len(data["data"]["languages"]) >= 6
 
 def test_translate_passthrough():
-    res = client.post("/api/translate/translate", json={
+    res = client.post("/api/translate", json={
         "text": "नमस्ते",
         "source_lang": "hi",
         "target_lang": "hi"
@@ -23,7 +23,7 @@ def test_translate_passthrough():
     assert data["data"]["translated_text"] == "नमस्ते"
 
 def test_translate_dictionary_fallback():
-    res = client.post("/api/translate/translate", json={
+    res = client.post("/api/translate", json={
         "text": "नमस्ते",
         "source_lang": "hi",
         "target_lang": "sat"
