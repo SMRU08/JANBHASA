@@ -4,10 +4,10 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "build": "expo export --platform web",
-    "start": "expo start -c --tunnel",
-    "dev": "expo start -c --tunnel",
-    "dev:lan": "expo start -c --lan",
-    "dev:tunnel": "expo start -c --tunnel",
+    "start": "expo start",
+    "dev": "expo start",
+    "dev:lan": "expo start --lan",
+    "dev:tunnel": "expo start --tunnel",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
