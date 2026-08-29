@@ -64,11 +64,11 @@ export function TeacherDashboard() {
     },
     {
       icon: '📝',
-      label: 'OMR Sheet\nAuto-Grade',
-      color: '#EA580C',
-      bg: '#FFEDD5',
+      label: 'Worksheet\nGenerator',
+      color: '#7C3AED',
+      bg: '#EDE9FE',
       screen: 'AI',
-      params: { screen: 'OMRScanner' },
+      params: { screen: 'WorksheetGenerator' },
     },
     {
       icon: '📊',

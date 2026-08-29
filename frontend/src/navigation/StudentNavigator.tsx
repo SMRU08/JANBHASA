@@ -19,6 +19,7 @@ import { StudentProfileScreen } from '../pages/student/StudentProfileScreen';
 import { JoinClassroomScreen } from '../pages/student/JoinClassroomScreen';
 import { StudentClassroomScreen } from '../pages/student/StudentClassroomScreen';
 import { SettingsScreen } from '../pages/common/SettingsScreen';
+import { AccessibilityScreen } from '../pages/common/AccessibilityScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,7 @@ function HomeStack() {
       <Stack.Screen name="StudentProfile" component={StudentProfileScreen} />
       <Stack.Screen name="JoinClassroom" component={JoinClassroomScreen} />
       <Stack.Screen name="StudentClassroom" component={StudentClassroomScreen} />
+      <Stack.Screen name="Accessibility" component={AccessibilityScreen} />
     </Stack.Navigator>
   );
 }

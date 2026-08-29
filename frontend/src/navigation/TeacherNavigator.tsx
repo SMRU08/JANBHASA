@@ -17,7 +17,9 @@ import { VoiceTranslationScreen } from '../pages/teacher/VoiceTranslationScreen'
 import { OCRScannerScreen } from '../pages/teacher/OCRScannerScreen';
 import { OMRScannerScreen } from '../pages/teacher/OMRScannerScreen';
 import { TeacherProfileScreen } from '../pages/teacher/TeacherProfileScreen';
+import { WorksheetGeneratorScreen } from '../pages/teacher/WorksheetGeneratorScreen';
 import { SettingsScreen } from '../pages/common/SettingsScreen';
+import { AccessibilityScreen } from '../pages/common/AccessibilityScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -57,6 +59,7 @@ function AIStack() {
       <Stack.Screen name="VoiceTranslation" component={VoiceTranslationScreen} />
       <Stack.Screen name="OCRScanner" component={OCRScannerScreen} />
       <Stack.Screen name="OMRScanner" component={OMRScannerScreen} />
+      <Stack.Screen name="WorksheetGenerator" component={WorksheetGeneratorScreen} />
     </Stack.Navigator>
   );
 }

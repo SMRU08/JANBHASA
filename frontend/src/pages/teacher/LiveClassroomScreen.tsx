@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Audio } from 'expo-av';
+import QRCode from 'react-native-qrcode-svg';
 import { useTranslation } from 'react-i18next';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/Button';
@@ -23,7 +24,7 @@ export function LiveClassroomScreen({ route }: any) {
   const [recording, setRecording] = useState(false);
   const [transcribedText, setTranscribedText] = useState('');
   const [textInput, setTextInput] = useState('');
-  const [busyTab, setBusyTab] = useState<'voice' | 'text' | 'students'>('voice');
+  const [busyTab, setBusyTab] = useState<'voice' | 'text' | 'qr' | 'students'>('voice');
   const recordingRef = useRef<Audio.Recording | null>(null);
   const sessionData = route?.params?.sessionData || { session_id: sessionId || 'LIVE' };
 
@@ -87,10 +88,10 @@ export function LiveClassroomScreen({ route }: any) {
 
       {/* Tabs */}
       <View style={[styles.tabs, { backgroundColor: c.surface }]}>
-        {(['voice', 'text', 'students'] as const).map(tab => (
+        {(['voice', 'text', 'qr', 'students'] as const).map(tab => (
           <TouchableOpacity key={tab} onPress={() => setBusyTab(tab)} style={[styles.tab, busyTab === tab && { borderBottomColor: c.primary, borderBottomWidth: 2.5 }]}>
-            <Text style={{ color: busyTab === tab ? c.primary : c.textMuted, fontWeight: '700', fontSize: 13 }}>
-              {tab === 'voice' ? '🎤 Voice' : tab === 'text' ? '💬 Text' : `👥 Students (${students.length})`}
+            <Text style={{ color: busyTab === tab ? c.primary : c.textMuted, fontWeight: '700', fontSize: 12 }}>
+              {tab === 'voice' ? '🎤' : tab === 'text' ? '💬' : tab === 'qr' ? '📷 QR' : `👥 (${students.length})`}
             </Text>
           </TouchableOpacity>
         ))}
@@ -128,9 +129,35 @@ export function LiveClassroomScreen({ route }: any) {
             </View>
           </View>
         )}
+        {busyTab === 'qr' && (
+          <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+            <Text style={{ color: c.text, fontWeight: '700', fontSize: 16, marginBottom: 16 }}>
+              📷 Students Scan This QR Code
+            </Text>
+            <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 4 }}>
+              <QRCode
+                value={`janbhasha://session?id=${sessionData.session_id}`}
+                size={200}
+                color="#000"
+                backgroundColor="#fff"
+              />
+            </View>
+            <View style={{ marginTop: 20, alignItems: 'center' }}>
+              <Text style={{ color: c.textMuted, fontSize: 12, marginBottom: 4 }}>Session Code</Text>
+              <Text style={{ color: c.text, fontWeight: '800', fontSize: 22, letterSpacing: 2 }}>
+                {sessionData.session_id}
+              </Text>
+            </View>
+            <View style={[{ backgroundColor: c.card, borderRadius: 12, padding: 14, marginTop: 16, width: '100%', borderWidth: 1, borderColor: c.border }]}>
+              <Text style={{ color: c.textMuted, fontSize: 12 }}>
+                📡 Make sure students are connected to the same Wi-Fi or hotspot. Share the session code above if they cannot scan the QR.
+              </Text>
+            </View>
+          </View>
+        )}
         {busyTab === 'students' && (
           students.length === 0
-            ? <Text style={{ color: c.textMuted, textAlign: 'center', marginTop: 40 }}>No students connected yet. Share QR code.</Text>
+            ? <Text style={{ color: c.textMuted, textAlign: 'center', marginTop: 40 }}>No students connected yet. Share QR code from the QR tab.</Text>
             : students.map((s, i) => <StudentCard key={s.student_id || i} student={{ name: s.name, is_active: true }} />)
         )}
       </ScrollView>
