@@ -4,17 +4,17 @@
  */
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SQLite from 'expo-sqlite';
 
-let db: SQLite.SQLiteDatabase | null = null;
+let db: any = null;
 
 export async function initDatabase(): Promise<void> {
   if (Platform.OS === 'web') {
-    // Web environment uses AsyncStorage fallback
+    // Web environment uses AsyncStorage fallback safely
     return;
   }
 
   try {
+    const SQLite = require('expo-sqlite');
     db = await SQLite.openDatabaseAsync('janbhasha_local.db');
     await db.execAsync(`
       PRAGMA journal_mode = WAL;
