@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../../theme';
 import { useAuthStore } from '../../store/authStore';
 import { useGamificationStore } from '../../store/gamificationStore';
 import { XPBadge, StreakBadge } from '../../components/XPBadge';
-import { Card } from '../../components/Card';
+import { AnimatedCard } from '../../components/AnimatedCard';
+import {
+  StudentHeroIllustration,
+  TribalMotifBar,
+  NipunBharatEmblem,
+} from '../../components/VisualIllustrations';
 import { apiRequest } from '../../services/apiClient';
 
 export function StudentDashboard() {
@@ -49,50 +54,56 @@ export function StudentDashboard() {
   const features = [
     {
       icon: '📖',
-      label: t('student.lessons'),
-      sub: 'Class 1-5 Lessons',
-      color: c.primary,
-      bg: c.primaryLight,
+      label: t('student.lessons') || 'पाठ्यक्रम',
+      sub: 'Class 1-5 FLN Lessons',
+      gradient: ['#059669', '#10B981'] as [string, string],
+      bg: theme.isDark ? '#064E3B' : '#ECFDF5',
+      border: '#10B981',
       action: () => nav.navigate('Learn', { screen: 'LearningPath' }),
     },
     {
       icon: '🃏',
-      label: t('student.flashcards'),
-      sub: 'Multi-lingual Cards',
-      color: '#7C3AED',
-      bg: '#EDE9FE',
+      label: t('student.flashcards') || 'फ्लैशकार्ड्स',
+      sub: 'Multilingual NIPUN Cards',
+      gradient: ['#7C3AED', '#8B5CF6'] as [string, string],
+      bg: theme.isDark ? '#4C1D95' : '#F5F3FF',
+      border: '#8B5CF6',
       action: () => nav.navigate('Learn', { screen: 'Flashcards' }),
     },
     {
       icon: '❓',
-      label: t('student.quiz'),
-      sub: 'Earn XP & Badges',
-      color: c.secondary,
-      bg: '#FEF3C7',
+      label: t('student.quiz') || 'प्रश्नोत्तरी',
+      sub: 'Earn XP & Streak Badges',
+      gradient: ['#D97706', '#F59E0B'] as [string, string],
+      bg: theme.isDark ? '#78350F' : '#FFFBEB',
+      border: '#F59E0B',
       action: () => nav.navigate('Learn', { screen: 'Quiz' }),
     },
     {
       icon: '📚',
-      label: t('student.story_time'),
-      sub: 'Tribal Folk Tales',
-      color: '#059669',
-      bg: '#D1FAE5',
+      label: t('student.story_time') || 'कहानी विधा',
+      sub: 'Tribal Folk Tales & Audio',
+      gradient: ['#0284C7', '#38BDF8'] as [string, string],
+      bg: theme.isDark ? '#0C4A6E' : '#F0F9FF',
+      border: '#38BDF8',
       action: () => nav.navigate('Learn', { screen: 'StoryMode' }),
     },
     {
       icon: '🤖',
-      label: t('student.ai_explain'),
+      label: t('student.ai_explain') || 'AI व्याख्या',
       sub: 'Ask in Mother Tongue',
-      color: '#0284C7',
-      bg: '#E0F2FE',
+      gradient: ['#6366F1', '#818CF8'] as [string, string],
+      bg: theme.isDark ? '#312E81' : '#EEF2FF',
+      border: '#818CF8',
       action: () => nav.navigate('AI'),
     },
     {
       icon: '📡',
-      label: t('student.join_classroom'),
-      sub: 'Live Teacher Broadcast',
-      color: '#EA580C',
-      bg: '#FFEDD5',
+      label: t('student.join_classroom') || 'कक्षा में जुड़ें',
+      sub: 'Live Teacher Hotspot Stream',
+      gradient: ['#EA580C', '#F97316'] as [string, string],
+      bg: theme.isDark ? '#7C2D12' : '#FFF7ED',
+      border: '#F97316',
       action: () => nav.navigate('Home', { screen: 'JoinClassroom' }),
     },
   ];
@@ -103,17 +114,33 @@ export function StudentDashboard() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchData} />}
         showsVerticalScrollIndicator={false}
       >
-        {/* Modern Hero Card */}
-        <View style={[styles.hero, { backgroundColor: c.secondary }]}>
+        {/* Lush Hero Banner */}
+        <LinearGradient
+          colors={theme.isDark ? ['#B45309', '#78350F'] : ['#D97706', '#F59E0B']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.hero}
+        >
           <View style={styles.heroTopRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.heroGreet}>{t('student.hello')}</Text>
-              <Text style={styles.heroName}>{user?.name || 'Student'} 🎓</Text>
+              <View style={styles.roleTag}>
+                <Text style={styles.roleTagText}>🎓 FLN SCHOLAR</Text>
+              </View>
+              <Text style={styles.heroGreet}>{t('student.hello') || 'नमस्ते'},</Text>
+              <Text style={styles.heroName}>{user?.name || 'Student'}</Text>
+              <Text style={styles.heroSub}>Mother Tongue: {user?.selected_language?.toUpperCase() || 'HINDI'}</Text>
             </View>
-            <View style={{ alignItems: 'flex-end', gap: 6 }}>
-              <XPBadge xp={totalXp} level={level} compact />
-              <StreakBadge streak={currentStreak} />
+
+            {/* Realistic Illustration */}
+            <View style={styles.illustrationWrapper}>
+              <StudentHeroIllustration size={96} />
             </View>
+          </View>
+
+          {/* Badges Pill Row */}
+          <View style={styles.badgesRow}>
+            <XPBadge xp={totalXp} level={level} compact />
+            <StreakBadge streak={currentStreak} />
           </View>
 
           {/* Level Progress Bar */}
@@ -123,13 +150,34 @@ export function StudentDashboard() {
               <Text style={styles.levelText}>{xpInCurrentLevel}/100 XP to Level {level + 1}</Text>
             </View>
             <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${xpPercent}%` }]} />
+              <LinearGradient
+                colors={['#FFFFFF', '#FEF3C7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.progressFill, { width: `${xpPercent}%` }]}
+              />
             </View>
           </View>
-        </View>
+        </LinearGradient>
 
-        <View style={{ padding: 18 }}>
-          {/* Stats row */}
+        {/* Tribal Motif Decorator Bar */}
+        <TribalMotifBar color={theme.isDark ? '#F59E0B' : '#D97706'} height={14} />
+
+        <View style={{ paddingHorizontal: 16, paddingBottom: 24 }}>
+          {/* NIPUN Bharat FLN Alignment Banner */}
+          <View style={[styles.nipunBanner, { backgroundColor: theme.isDark ? '#064E3B' : '#D1FAE5', borderColor: '#10B981' }]}>
+            <NipunBharatEmblem size={44} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={[styles.nipunTitle, { color: theme.isDark ? '#A7F3D0' : '#065F46' }]}>
+                NIPUN Bharat FLN Aligned
+              </Text>
+              <Text style={[styles.nipunSub, { color: theme.isDark ? '#6EE7B7' : '#047857' }]}>
+                Foundational Literacy & Numeracy in Ho, Mundari & Santali
+              </Text>
+            </View>
+          </View>
+
+          {/* Stats Row */}
           <View style={styles.statsRow}>
             {[
               { label: 'Level', value: `Lv.${level}`, emoji: '⭐', color: c.xp },
@@ -144,9 +192,9 @@ export function StudentDashboard() {
                   { backgroundColor: c.surface, borderColor: c.border },
                 ]}
               >
-                <Text style={{ fontSize: 22 }}>{s.emoji}</Text>
+                <Text style={{ fontSize: 20 }}>{s.emoji}</Text>
                 <Text style={{ color: s.color, fontWeight: '900', fontSize: 16 }}>{s.value}</Text>
-                <Text style={{ color: c.textSecondary, fontSize: 11, fontWeight: '600' }}>
+                <Text style={{ color: c.textSecondary, fontSize: 10, fontWeight: '700' }}>
                   {s.label}
                 </Text>
               </View>
@@ -157,39 +205,44 @@ export function StudentDashboard() {
           <Text style={[styles.sectionTitle, { color: c.text }]}>Learning Activities 🚀</Text>
           <View style={styles.featureGrid}>
             {features.map((f, i) => (
-              <TouchableOpacity
+              <AnimatedCard
                 key={i}
                 onPress={f.action}
                 style={[
                   styles.featureCard,
-                  { backgroundColor: f.bg, borderColor: f.color },
+                  { backgroundColor: f.bg, borderColor: f.border },
                 ]}
-                activeOpacity={0.85}
               >
-                <Text style={styles.featureIcon}>{f.icon}</Text>
-                <Text style={[styles.featureLabel, { color: f.color }]}>{f.label}</Text>
-                <Text style={[styles.featureSub, { color: f.color }]} numberOfLines={1}>
+                <View style={styles.featureHeaderRow}>
+                  <Text style={styles.featureIcon}>{f.icon}</Text>
+                  <View style={[styles.miniPill, { backgroundColor: f.border }]}>
+                    <Text style={{ color: '#fff', fontSize: 9, fontWeight: '900' }}>FLN</Text>
+                  </View>
+                </View>
+                <Text style={[styles.featureLabel, { color: theme.isDark ? '#F8FAFC' : '#0F172A' }]}>
+                  {f.label}
+                </Text>
+                <Text style={[styles.featureSub, { color: c.textSecondary }]} numberOfLines={2}>
                   {f.sub}
                 </Text>
-              </TouchableOpacity>
+              </AnimatedCard>
             ))}
           </View>
 
           {/* Continue Learning */}
           {recentLessons.length > 0 && (
             <>
-              <Text style={[styles.sectionTitle, { color: c.text, marginTop: 8 }]}>
+              <Text style={[styles.sectionTitle, { color: c.text, marginTop: 10 }]}>
                 📌 Continue Learning
               </Text>
               {recentLessons.map((l, i) => (
-                <TouchableOpacity
+                <AnimatedCard
                   key={i}
                   onPress={() => nav.navigate('Learn')}
                   style={[
                     styles.lessonRow,
                     { backgroundColor: c.surface, borderColor: c.border },
                   ]}
-                  activeOpacity={0.85}
                 >
                   <Text style={{ fontSize: 28, marginRight: 14 }}>{l.icon || '📚'}</Text>
                   <View style={{ flex: 1 }}>
@@ -211,7 +264,7 @@ export function StudentDashboard() {
                   <Text style={{ color: c.primary, fontWeight: '800', fontSize: 13, marginLeft: 8 }}>
                     {l.progress_percent || 0}%
                   </Text>
-                </TouchableOpacity>
+                </AnimatedCard>
               ))}
             </>
           )}
@@ -223,33 +276,63 @@ export function StudentDashboard() {
 
 const styles = StyleSheet.create({
   hero: {
-    padding: 22,
+    padding: 20,
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
     shadowColor: '#D97706',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
+    elevation: 6,
   },
   heroTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  roleTag: {
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 4,
+  },
+  roleTagText: {
+    color: '#FEF3C7',
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 0.5,
   },
   heroGreet: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 13,
-    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 14,
+    fontWeight: '700',
   },
   heroName: {
     color: '#FFFFFF',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '900',
+    letterSpacing: 0.2,
+  },
+  heroSub: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 11,
+    fontWeight: '700',
     marginTop: 2,
   },
+  illustrationWrapper: {
+    marginLeft: 8,
+  },
+  badgesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
   levelProgressBox: {
-    backgroundColor: 'rgba(0,0,0,0.18)',
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
     borderRadius: 14,
     padding: 12,
   },
@@ -261,30 +344,48 @@ const styles = StyleSheet.create({
   levelText: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   progressTrack: {
-    height: 7,
+    height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     overflow: 'hidden',
   },
   progressFill: {
-    height: 7,
+    height: 8,
     borderRadius: 4,
-    backgroundColor: '#FFFFFF',
+  },
+  nipunBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 18,
+    borderWidth: 1.5,
+    padding: 12,
+    marginTop: 10,
+    marginBottom: 16,
+  },
+  nipunTitle: {
+    fontSize: 13,
+    fontWeight: '900',
+    letterSpacing: 0.2,
+  },
+  nipunSub: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 2,
+    lineHeight: 15,
   },
   statsRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 24,
-    marginTop: 4,
+    marginBottom: 20,
   },
   statCard: {
     flex: 1,
     borderRadius: 16,
     borderWidth: 1,
-    padding: 12,
+    paddingVertical: 10,
     alignItems: 'center',
     gap: 2,
     shadowColor: '#000',
@@ -295,48 +396,58 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '900',
     marginBottom: 14,
+    letterSpacing: 0.2,
   },
   featureGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 12,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   featureCard: {
     width: '48%',
     borderRadius: 20,
     borderWidth: 1.5,
-    padding: 16,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    minHeight: 110,
+    padding: 14,
+    minHeight: 116,
+    justifyContent: 'space-between',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  featureHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   featureIcon: {
-    fontSize: 32,
-    marginBottom: 8,
+    fontSize: 28,
+  },
+  miniPill: {
+    borderRadius: 6,
+    paddingHorizontal: 5,
+    paddingVertical: 1,
   },
   featureLabel: {
     fontSize: 14,
     fontWeight: '800',
+    marginBottom: 2,
   },
   featureSub: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
-    marginTop: 2,
-    opacity: 0.85,
+    lineHeight: 14,
   },
   lessonRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: 1,
     padding: 14,
     marginBottom: 10,
