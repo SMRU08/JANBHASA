@@ -158,6 +158,8 @@ The official AI4Bharat model repository [`ai4bharat/indic-parler-tts`](https://h
 
 ## 9. System Architecture
 
+![JANBHASHA System Architecture](./SIH/diagrams/01-system-architecture.png)
+
 ```mermaid
 graph TD
     subgraph UI_Layer [Presentation Layer - React Native & TypeScript]
@@ -222,6 +224,8 @@ graph TD
 
 ## 10. End-to-End Speech Pipeline
 
+![JANBHASHA AI Pipeline](./SIH/diagrams/02-ai-pipeline.png)
+
 ```
 Teacher Speech (Hindi)
          │
@@ -254,6 +258,8 @@ Teacher Speech (Hindi)
 ---
 
 ## 12. Offline Architecture
+
+![JANBHASHA 100% Offline Architecture](./SIH/diagrams/04-offline-architecture.png)
 
 ```
                     AIR-GAPPED ENVIRONMENT (NO INTERNET)
@@ -296,6 +302,8 @@ Janbhasha requires zero internet at runtime. All model files, tokenizers, vocabu
 ---
 
 ## 14. Memory Optimization (2 GB RAM Target)
+
+![Sequential Model Lifecycle on 2GB RAM](./SIH/diagrams/03-speech-to-speech-flow.png)
 
 ### Sequential Model Lifecycle
 ```
@@ -495,6 +503,8 @@ JANBHASHA/
 
 ## 22. Building the Production Release APK
 
+![Production Deployment Flow](./SIH/diagrams/06-deployment-flow.png)
+
 Janbhasha uses strict ABI filtering targeting `arm64-v8a` to minimize package size:
 
 ```bash
@@ -618,6 +628,8 @@ Janbhasha treats indigenous languages with deep cultural respect:
 ---
 
 ## 32. Educational Alignment
+
+![Pedagogical & Social Impact Flow](./SIH/diagrams/07-impact-flow.png)
 
 - **NIPUN Bharat Mission**: Directly targets foundational literacy and numeracy goals for children ages 3–9.
 - **NEP 2020 Mandate**: Fulfills Section 4.11 mandating mother-tongue instruction wherever possible.
