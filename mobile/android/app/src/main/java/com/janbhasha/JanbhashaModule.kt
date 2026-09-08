@@ -1,5 +1,7 @@
 package com.janbhasha
 
+import android.content.Context
+import android.media.AudioManager as AndroidAudioManager
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.common.annotations.FrameworkAPI
@@ -122,6 +124,57 @@ class JanbhashaModule(
             promise.resolve(null)
         } catch (e: Exception) {
             promise.reject("RELEASE_FAILED", e.message ?: "Unknown error", e)
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Bluetooth SCO Audio Controls
+    // Forces audio I/O through connected wireless lapel mics or BT headsets
+    // ----------------------------------------------------------------
+    @ReactMethod
+    fun enableBluetoothSco(promise: Promise) {
+        try {
+            val audioManager = reactContext.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+            if (audioManager == null) {
+                promise.reject("AUDIO_SERVICE_UNAVAILABLE", "Android AudioManager unavailable")
+                return
+            }
+            audioManager.mode = AndroidAudioManager.MODE_IN_COMMUNICATION
+            audioManager.startBluetoothSco()
+            audioManager.isBluetoothScoOn = true
+            Log.i(TAG, "Bluetooth SCO enabled (MODE_IN_COMMUNICATION)")
+            promise.resolve(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to enable Bluetooth SCO: ${e.message}")
+            promise.reject("BLUETOOTH_SCO_FAILED", e.message ?: "Failed to enable Bluetooth SCO", e)
+        }
+    }
+
+    @ReactMethod
+    fun disableBluetoothSco(promise: Promise) {
+        try {
+            val audioManager = reactContext.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+            if (audioManager != null) {
+                audioManager.isBluetoothScoOn = false
+                audioManager.stopBluetoothSco()
+                audioManager.mode = AndroidAudioManager.MODE_NORMAL
+                Log.i(TAG, "Bluetooth SCO disabled (MODE_NORMAL)")
+            }
+            promise.resolve(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to disable Bluetooth SCO: ${e.message}")
+            promise.reject("BLUETOOTH_SCO_DISABLE_FAILED", e.message ?: "Failed to disable Bluetooth SCO", e)
+        }
+    }
+
+    @ReactMethod
+    fun isBluetoothScoOn(promise: Promise) {
+        try {
+            val audioManager = reactContext.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+            val isOn = audioManager?.isBluetoothScoOn ?: false
+            promise.resolve(isOn)
+        } catch (e: Exception) {
+            promise.reject("BLUETOOTH_SCO_QUERY_FAILED", e.message ?: "Failed to query Bluetooth SCO", e)
         }
     }
 

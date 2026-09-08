@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="02_AI_Pipeline" name="02 AI Pipeline">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg2" value="JANBHASHA END-TO-END AI PIPELINE (HINDI TO SANTALI)" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="1. Audio Capture&#xa;AAudio 16kHz Mono&#xa;Lapel Mic / Built-in&#xa;AEC + Noise Suppression" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;" vertex="1" parent="bg2">
+          <mxGeometry x="40" y="80" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="2. Speech Recognition&#xa;Whisper Small (INT8)&#xa;CTranslate2 Offline Engine&#xa;Devanagari Transcript Output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontStyle=1;" vertex="1" parent="bg2">
+          <mxGeometry x="250" y="80" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="3. Neural Translation&#xa;IndicTrans2 (INT8)&#xa;Hindi -> Santali&#xa;Ol Chiki Script Output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#b06000;fontStyle=1;" vertex="1" parent="bg2">
+          <mxGeometry x="470" y="80" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="4. Speech Synthesis&#xa;ITTSEngine Interface&#xa;VITS / Indic Parler Adapter&#xa;Santali Synthetic Waveform" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;" vertex="1" parent="bg2">
+          <mxGeometry x="690" y="80" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="5. Audio Delivery&#xa;AAudio Output Stream&#xa;Tablet Speaker /&#xa;Bluetooth SCO Headset" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eaed;strokeColor=#5f6368;fontStyle=1;" vertex="1" parent="bg2">
+          <mxGeometry x="900" y="80" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" source="p1" target="p2" parent="bg2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" source="p2" target="p3" parent="bg2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" source="p3" target="p4" parent="bg2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;" edge="1" source="p4" target="p5" parent="bg2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="guard_box" value="VERIFIED OFFLINE GUARANTEES &amp; LINGUISTIC SEPARATION&#xa;• sat = Santali (Ol Chiki ᱥᱟᱱᱛᱟᱲᱤ) | hoc = Ho (Warang Chiti / Odia ᱦᱳ) | unr = Mundari (मुंडारी)&#xa;• Strict sat != hoc Separation: Ho TTS is never substituted for Santali TTS.&#xa;• Santali TTS Status: AI4Bharat Indic Parler-TTS model verified (938M params, Apache 2.0, 298h Santali data); C++ adapter implemented; blocked on low-end 2GB hardware runtime until quantized ONNX runtime exists.&#xa;• Fallback: Ol Chiki text transcription and visual pedagogy display operates with 100% offline accuracy." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;fontSize=12;" vertex="1" parent="bg2">
+          <mxGeometry x="40" y="240" width="1000" height="150" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,30 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="07_Impact_Flow" name="07 Impact Flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg7" value="JANBHASHA SIH 2026 SOCIAL &amp; PEDAGOGICAL IMPACT FLOW" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="imp1" value="Language Barrier in Primary Education&#xa;State Teachers Speak Standard Hindi; Tribal Students Speak Santali/Ho/Mundari&#xa;Result: 40%+ Dropout Rates, Severe Cognitive Alienation in Grades 1-3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;fontSize=12;" vertex="1" parent="bg7">
+          <mxGeometry x="140" y="70" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imp2" value="JANBHASHA Deployment in Rural &amp; Tribal Classrooms&#xa;Low-Cost Android Tablet (~2GB RAM) | 100% Offline AI | Hindi -> Santali (Ol Chiki)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;fontSize=12;" vertex="1" parent="bg7">
+          <mxGeometry x="140" y="160" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imp3" value="Real-Time Teacher-Student Communication&#xa;Teacher Speaks Hindi Lesson -> Student Hears/Reads Santali Mother Tongue&#xa;Dual-Language FLN Flashcards &amp; Bilingual Worksheet Generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#b06000;fontStyle=1;fontSize=12;" vertex="1" parent="bg7">
+          <mxGeometry x="140" y="250" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imp4" value="Rapid Foundational Literacy &amp; Numeracy (NIPUN Bharat Alignment)&#xa;Accelerated Concept Retention | Mother Tongue Cognitive Bridge to Standard Hindi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontStyle=1;fontSize=12;" vertex="1" parent="bg7">
+          <mxGeometry x="140" y="340" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="imp5" value="Inclusive, Sustainable Education &amp; Cultural Preservation&#xa;NEP 2020 Mandate Fulfilled | Zero Cloud Recurring Costs | Endangered Script Revival" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#137333;fontStyle=1;fontSize=13;" vertex="1" parent="bg7">
+          <mxGeometry x="140" y="430" width="800" height="70" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -134,6 +134,8 @@ void AudioManager::initRecording(const AudioRecordingConfig& config) {
     AAudioStreamBuilder_setDataCallback(builder, recordCallback, this);
     AAudioStreamBuilder_setPerformanceMode(builder, AAUDIO_PERFORMANCE_MODE_LOW_LATENCY);
     AAudioStreamBuilder_setSharingMode(builder, AAUDIO_SHARING_MODE_EXCLUSIVE);
+    // Enable hardware Acoustic Echo Cancellation (AEC) and Noise Suppression (NS)
+    AAudioStreamBuilder_setInputPreset(builder, AAUDIO_INPUT_PRESET_VOICE_COMMUNICATION);
 
     if (recordStream_) {
         AAudioStream_close(recordStream_);

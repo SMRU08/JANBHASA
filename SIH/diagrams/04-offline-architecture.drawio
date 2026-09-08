@@ -1,0 +1,36 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="04_Offline_Architecture" name="04 Offline Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg4" value="JANBHASHA 100% AIR-GAPPED OFFLINE ARCHITECTURE" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud_cross" value="PUBLIC INTERNET / CLOUD SERVICES&#xa;❌ NO Google Cloud / AWS / Azure&#xa;❌ NO OpenAI / Hugging Face Runtime APIs&#xa;❌ NO Remote Model Downloads&#xa;❌ NO Telemetry / Analytics Trackers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;fontSize=12;" vertex="1" parent="bg4">
+          <mxGeometry x="140" y="70" width="800" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="device_box" value="AIR-GAPPED ANDROID TABLET (Airplane Mode: Active | Wi-Fi: OFF | Cellular: OFF)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;fontSize=13;" vertex="1" parent="bg4">
+          <mxGeometry x="80" y="200" width="920" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="b_app" value="React Native UI&#xa;&amp; Offline Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;fontStyle=1;" vertex="1" parent="device_box">
+          <mxGeometry x="40" y="50" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b_cpp" value="C++ JSI Engine&#xa;&amp; Model Manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1a73e8;fontStyle=1;" vertex="1" parent="device_box">
+          <mxGeometry x="250" y="50" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b_models" value="Local INT8 Models&#xa;Whisper / IndicTrans2&#xa;VITS / Parler Adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;fontStyle=1;" vertex="1" parent="device_box">
+          <mxGeometry x="460" y="50" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b_audio" value="Hardware AAudio&#xa;Microphone &amp; Speaker&#xa;Bluetooth SCO Lapel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b06000;fontStyle=1;" vertex="1" parent="device_box">
+          <mxGeometry x="690" y="50" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="b_pedagogy" value="LOCAL PEDAGOGICAL RESOURCES (On-Device Flash Memory)&#xa;• 50+ NIPUN Bharat Hindi-Santali Bilingual Flashcards&#xa;• 1,200+ Bharatavani Primary Classroom Lexicons &amp; Illustrated Vocabulary Sets&#xa;• Native Offline PDF Worksheet Generator (React Native Printable Canvas)&#xa;• Local SQLite Translation Audit Logs (Zero PII, Zero Cloud Sync)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#5f6368;fontStyle=1;fontSize=11;" vertex="1" parent="device_box">
+          <mxGeometry x="40" y="200" width="830" height="130" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

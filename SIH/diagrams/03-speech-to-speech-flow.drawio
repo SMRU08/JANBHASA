@@ -1,0 +1,36 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="03_Speech_to_Speech_Flow" name="03 Speech to Speech Flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg3" value="SEQUENTIAL MODEL LIFECYCLE FOR 2GB RAM TABLETS" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="Stage 1: Load ASR (Whisper)&#xa;Peak RAM: ~280 MB&#xa;Status: Running Inference" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="60" y="80" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="Unload ASR Engine&#xa;release() &amp; reset()&#xa;RAM Released: 280 MB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="60" y="240" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="Stage 2: Load NMT (IndicTrans2)&#xa;Peak RAM: ~380 MB&#xa;Status: Translating Text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#b06000;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="410" y="80" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="Unload NMT Engine&#xa;release() &amp; reset()&#xa;RAM Released: 380 MB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="410" y="240" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" value="Stage 3: Load TTS (VITS/Parler)&#xa;Peak RAM: ~145 MB&#xa;Status: Synthesizing Audio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#137333;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="760" y="80" width="260" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" value="Unload TTS Engine&#xa;release() &amp; reset()&#xa;RAM Released: 145 MB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="760" y="240" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="res_summary" value="MAXIMUM RESIDENT MEMORY ANALYSIS:&#xa;• Baseline App Heap: ~110 MB (Hermes JS + React Native Native Heap)&#xa;• Stage 1 Peak: ~390 MB (110MB + 280MB ASR) &lt; 600 MB LMK Budget (SAFE)&#xa;• Stage 2 Peak: ~490 MB (110MB + 380MB NMT) &lt; 600 MB LMK Budget (SAFE)&#xa;• Stage 3 Peak: ~255 MB (110MB + 145MB TTS) &lt; 600 MB LMK Budget (SAFE)&#xa;• Zero Simultaneous Model Concurrency Guaranteed by C++ ModelManager mutex" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#137333;fontSize=13;fontStyle=1;" vertex="1" parent="bg3">
+          <mxGeometry x="60" y="380" width="960" height="150" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

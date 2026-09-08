@@ -5,6 +5,7 @@
 #include "../asr/WhisperASREngine.h"
 #include "../translation/IndicTransEngine.h"
 #include "../tts/VITSTTSEngine.h"
+#include "../tts/IndicParlerTTSEngine.h"
 #include "../config/LanguageConfig.h"
 
 #include <android/log.h>
@@ -72,6 +73,19 @@ void ModelManager::loadASR(const std::string& modelId,
         return;
     }
 
+    // Strict sequential loading policy (mandatory for 2GB RAM budget):
+    // Unload any active NMT or TTS engines before allocating ASR memory
+    if (nmtEngine_) {
+        LOGI("ModelManager: Auto-unloading NMT before loading ASR to preserve 2GB RAM budget");
+        nmtEngine_->release();
+        nmtEngine_.reset();
+    }
+    if (ttsEngine_) {
+        LOGI("ModelManager: Auto-unloading TTS before loading ASR to preserve 2GB RAM budget");
+        ttsEngine_->release();
+        ttsEngine_.reset();
+    }
+
     // Lookup manifest entry
     auto entry = manifest_->find(modelId);
     uint32_t ramMb = entry ? entry->estimatedRamMb : 280;
@@ -117,6 +131,18 @@ void ModelManager::loadNMT(const std::string& modelId) {
     if (nmtEngine_ && nmtEngine_->isInitialized()) {
         LOGI("ModelManager: NMT already loaded (%s)", modelId.c_str());
         return;
+    }
+
+    // Strict sequential loading policy (mandatory for 2GB RAM budget):
+    if (asrEngine_) {
+        LOGI("ModelManager: Auto-unloading ASR before loading NMT to preserve 2GB RAM budget");
+        asrEngine_->release();
+        asrEngine_.reset();
+    }
+    if (ttsEngine_) {
+        LOGI("ModelManager: Auto-unloading TTS before loading NMT to preserve 2GB RAM budget");
+        ttsEngine_->release();
+        ttsEngine_.reset();
     }
 
     auto entry = manifest_->find(modelId);
@@ -173,6 +199,18 @@ void ModelManager::loadTTS(const std::string& modelId,
         return;
     }
 
+    // Strict sequential loading policy (mandatory for 2GB RAM budget):
+    if (asrEngine_) {
+        LOGI("ModelManager: Auto-unloading ASR before loading TTS to preserve 2GB RAM budget");
+        asrEngine_->release();
+        asrEngine_.reset();
+    }
+    if (nmtEngine_) {
+        LOGI("ModelManager: Auto-unloading NMT before loading TTS to preserve 2GB RAM budget");
+        nmtEngine_->release();
+        nmtEngine_.reset();
+    }
+
     auto entry = manifest_->find(modelId);
     uint32_t ramMb = entry ? entry->estimatedRamMb : 145;
     assertMemoryBudget(ramMb, modelId);
@@ -180,9 +218,17 @@ void ModelManager::loadTTS(const std::string& modelId,
     notifyState(modelId, ModelState::Loading);
     try {
         std::string modelPath = modelsBasePath_ + "/tts/" + modelId;
-        auto engine = std::make_unique<VITSTTSEngine>();
-        engine->addSupportedLanguage(langCode);
-        engine->initialize(modelPath);
+        std::unique_ptr<ITTSEngine> engine;
+        if (modelId.find("parler") != std::string::npos || langCode == "sat") {
+            auto parlerEngine = std::make_unique<IndicParlerTTSEngine>();
+            parlerEngine->initialize(modelPath);
+            engine = std::move(parlerEngine);
+        } else {
+            auto vitsEngine = std::make_unique<VITSTTSEngine>();
+            vitsEngine->addSupportedLanguage(langCode);
+            vitsEngine->initialize(modelPath);
+            engine = std::move(vitsEngine);
+        }
         ttsEngine_    = std::move(engine);
         currentTtsId_ = modelId;
         statusMap_[modelId] = {modelId, ModelState::Loaded, ramMb, ""};

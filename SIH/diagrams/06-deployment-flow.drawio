@@ -1,0 +1,30 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="06_Deployment_Flow" name="06 Deployment Flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg6" value="JANBHASHA PRODUCTION DEPLOYMENT PIPELINE" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="dep1" value="1. C++ JSI Compilation&#xa;Android NDK 26+&#xa;CMake 3.22.1&#xa;arm64-v8a ABI Filter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;" vertex="1" parent="bg6">
+          <mxGeometry x="50" y="80" width="170" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dep2" value="2. Gradle Release APK&#xa;./gradlew assembleRelease&#xa;Hermes Engine Bytecode&#xa;Size: 22.3 MB (Min Footprint)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#b06000;fontStyle=1;" vertex="1" parent="bg6">
+          <mxGeometry x="260" y="80" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dep3" value="3. Tablet Provisioning&#xa;ADB Direct Sideload / USB&#xa;Zero Play Store Dependency&#xa;SHA-256 Release Sign" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontStyle=1;" vertex="1" parent="bg6">
+          <mxGeometry x="480" y="80" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dep4" value="4. Model Storage Provision&#xa;adb push models/ to internal&#xa;/data/user/0/com.janbhasha/files&#xa;SHA-256 Manifest Verified" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;" vertex="1" parent="bg6">
+          <mxGeometry x="700" y="80" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="dep5" value="5. Field Ready&#xa;Airplane Mode Test&#xa;LMK Memory &lt; 600MB&#xa;Sub-3s Inference" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8eaed;strokeColor=#5f6368;fontStyle=1;" vertex="1" parent="bg6">
+          <mxGeometry x="910" y="80" width="130" height="100" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

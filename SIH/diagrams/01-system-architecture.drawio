@@ -1,0 +1,39 @@
+<mxfile host="app.diagrams.net" modified="2026-09-08T16:00:00.000Z" agent="JanbhashaSIH" version="21.0.0" type="device">
+  <diagram id="01_System_Architecture" name="01 System Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg1" value="JANBHASHA COMPLETE SYSTEM ARCHITECTURE" style="swimlane;whiteSpace=wrap;html=1;fontSize=16;fontStyle=1;fillColor=#f8f9fa;strokeColor=#1a73e8;swimlaneFillColor=#f8f9fa;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="740" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_layer" value="PRESENTATION LAYER (React Native &amp; TypeScript UI)&#xa;Screens: TeacherDashboard, StudentDashboard, LiveClassroom, VoiceTranslator, FLNFlashcards, WorksheetGenerator&#xa;State Management: Zustand Stores (auth, classroom, translation, audio, offline) | Styling: High-Contrast Tribal Accessible Theme" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#1a73e8;fontStyle=1;fontSize=12;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="50" width="1000" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="jsi_bridge" value="REACT NATIVE JSI BRIDGE (global.__janbhasha)&#xa;Zero-Copy JSI HostObject | Typed CallInvoker Dispatch | Direct Hermes Heap Access&#xa;Pass-Through: Audio File URIs (Zero PCM Byte Heap Serialization) | Cancellation Escape Hatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f4ea;strokeColor=#137333;fontStyle=1;fontSize=12;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="160" width="1000" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cpp_engine" value="NATIVE C++ ENGINE CORE (libjanbhasha-native.so - C++17 RAII)&#xa;JanbhashaNativeEngine: Top-level Lifecycle Orchestrator&#xa;ModelManager: Sequential Model Loader &amp; Budget Enforcer | PipelineManager: Async Worker Thread &amp; Task Queue&#xa;MemoryManager: /proc/meminfo Kernel Polling &amp; LMK Guards | AudioManager: AAudio Low-Latency I/O Streamer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef7e0;strokeColor=#b06000;fontStyle=1;fontSize=12;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="260" width="1000" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="m_asr" value="STAGE 1: ASR&#xa;Whisper Small (INT8)&#xa;CTranslate2 Native Runtime&#xa;Target: Hindi Speech -> Devanagari&#xa;Budget: ~280 MB RAM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontSize=11;fontStyle=1;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="380" width="310" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="m_nmt" value="STAGE 2: NMT&#xa;IndicTrans2 (INT8)&#xa;ONNX Runtime / C++ Engine&#xa;Target: Hindi -> Santali (Ol Chiki)&#xa;Budget: ~380 MB RAM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontSize=11;fontStyle=1;" vertex="1" parent="bg1">
+          <mxGeometry x="385" y="380" width="310" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="m_tts" value="STAGE 3: TTS&#xa;ITTSEngine Architecture&#xa;VITS (INT8) / Indic Parler-TTS Adapter&#xa;Target: Santali / Ho Speech Audio&#xa;Budget: ~145 MB RAM (VITS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ceead6;strokeColor=#137333;fontSize=11;fontStyle=1;" vertex="1" parent="bg1">
+          <mxGeometry x="730" y="380" width="310" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="audio_hw" value="HARDWARE AUDIO SUBSYSTEM (AAudio Native API)&#xa;Input: 16 kHz Mono PCM | AAUDIO_INPUT_PRESET_VOICE_COMMUNICATION (Hardware AEC &amp; Noise Suppression)&#xa;Output: 22.05 kHz / 44.1 kHz Playback | Bluetooth SCO Wireless Routing (Lapel Mic / Headsets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce8e6;strokeColor=#c5221f;fontStyle=1;fontSize=12;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="520" width="1000" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="storage_hw" value="OFFLINE HARDWARE &amp; PERSISTENCE LAYER (Target: Low-End Android 9+ Tablets, ~2 GB RAM, ARM64)&#xa;Local Storage: /data/user/0/com.janbhasha/files/models/ | model_manifest.json (SHA-256 Checksums)&#xa;SQLite Local DB: Translation History, Classroom Logs, Offline FLN Flashcards | Zero Outbound Network Requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f3f4;strokeColor=#5f6368;fontStyle=1;fontSize=12;" vertex="1" parent="bg1">
+          <mxGeometry x="40" y="620" width="1000" height="80" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
