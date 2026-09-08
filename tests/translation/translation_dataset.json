@@ -1,0 +1,119 @@
+[
+  {
+    "id": "hi_sat_fln_001",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "classroom_opening",
+    "source": "नमस्ते बच्चों",
+    "reference": "ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹ",
+    "note": "Standard Santhali greeting for children"
+  },
+  {
+    "id": "hi_sat_fln_002",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "numbers",
+    "source": "एक दो तीन चार पाँच",
+    "reference": "ᱢᱤᱫ ᱵᱟᱨ ᱯᱮ ᱯᱩᱱ ᱢᱚᱬᱮ",
+    "note": "Cardinal numbers 1-5 in Santali"
+  },
+  {
+    "id": "hi_sat_fln_003",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "classroom_instruction",
+    "source": "अपनी किताब खोलो",
+    "reference": "ᱟᱢᱟᱜ ᱯᱚᱛᱚᱵ ᱦᱚᱸ ᱠᱚ",
+    "note": "Instruction: Open your book"
+  },
+  {
+    "id": "hi_sat_fln_004",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "arithmetic_fln",
+    "source": "दो जोड़ तीन बराबर पाँच होता है",
+    "reference": "ᱵᱟᱨ ᱠᱷᱚᱱ ᱯᱮ ᱦᱚᱸ ᱢᱚᱬᱮ ᱠᱟᱱᱟ",
+    "note": "2+3=5 in Santali"
+  },
+  {
+    "id": "hi_sat_fln_005",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "shapes_fln",
+    "source": "यह गोल है",
+    "reference": "ᱱᱤᱭᱟ ᱜᱚᱞ ᱠᱟᱱᱟ",
+    "note": "This is round/circle"
+  },
+  {
+    "id": "hi_sat_fln_006",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "colors_fln",
+    "source": "लाल रंग",
+    "reference": "ᱧᱩᱛᱩᱡ ᱨᱚᱸᱜ",
+    "note": "Red colour"
+  },
+  {
+    "id": "hi_sat_fln_007",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "nipun_bharat",
+    "source": "बच्चों को बुनियादी साक्षरता और संख्या ज्ञान होना चाहिए",
+    "reference": "ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚ ᱢᱩᱞ ᱯᱟᱲᱦᱟᱣ ᱟᱨ ᱜᱤᱱᱛᱤ ᱮ ᱧᱮᱞ ᱟᱠᱟᱱᱟ",
+    "note": "NIPUN Bharat — foundational literacy/numeracy"
+  },
+  {
+    "id": "hi_sat_fln_008",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "short_story",
+    "source": "एक जंगल में एक हाथी रहता था",
+    "reference": "ᱢᱤᱫ ᱵᱤᱨ ᱨᱮ ᱢᱤᱫ ᱦᱟᱹᱛᱤ ᱮ ᱛᱷᱤᱨ ᱮᱱᱟ",
+    "note": "Simple story sentence"
+  },
+  {
+    "id": "hi_sat_fln_009",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "mixed_language",
+    "source": "आज हम Santali में पढ़ेंगे",
+    "reference": "ᱛᱮᱦᱮᱧ ᱥᱟᱱᱛᱟᱲᱤ ᱨᱮ ᱟᱵᱚ ᱯᱟᱲᱦᱟᱣ-ᱟ",
+    "note": "Hindi sentence containing English word 'Santali'"
+  },
+  {
+    "id": "hi_sat_fln_010",
+    "src_lang": "hi",
+    "tgt_lang": "sat",
+    "category": "assessment",
+    "source": "बताओ यह क्या है",
+    "reference": "ᱫᱟᱜ ᱧᱩᱛ ᱠᱟᱱᱟ",
+    "note": "Assessment question: Tell me what this is"
+  },
+  {
+    "id": "hi_hoc_001",
+    "src_lang": "hi",
+    "tgt_lang": "hoc",
+    "category": "classroom_opening",
+    "source": "नमस्ते बच्चों",
+    "reference": "Johar diku ko",
+    "note": "Ho language greeting — human review required"
+  },
+  {
+    "id": "hi_hoc_002",
+    "src_lang": "hi",
+    "tgt_lang": "hoc",
+    "category": "numbers",
+    "source": "एक दो तीन",
+    "reference": "mit bar pi",
+    "note": "Ho numbers 1-2-3 — human review required"
+  },
+  {
+    "id": "hi_unr_001",
+    "src_lang": "hi",
+    "tgt_lang": "unr",
+    "category": "classroom_opening",
+    "source": "नमस्ते बच्चों",
+    "reference": "Johar bhai",
+    "note": "Mundari greeting — human review required"
+  }
+]

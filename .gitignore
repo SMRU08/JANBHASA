@@ -1,0 +1,127 @@
+# ============================================================
+# Janbhasha .gitignore
+# Production Git configuration for offline multi-lingual AI
+# ============================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C / C++ extensions and build artifacts
+*.so
+*.dylib
+*.dll
+*.o
+*.obj
+*.a
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Node & React Native dependencies
+node_modules/
+mobile/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Android build outputs & local toolchain configuration
+.gradle/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/app/.cxx/
+mobile/android/local.properties
+mobile/android/.idea/
+mobile/android/captures/
+mobile/android/app/build/outputs/apk/
+
+# Keystores, signing keys & secrets (STRICT SECURITY AUDIT)
+*.jks
+*.keystore
+*.pem
+*.key
+*.p12
+*.pkcs12
+secrets/
+credentials/
+.env
+.env.*
+!.env.example
+
+# Large model binaries and weight checkpoints (> 50 MB)
+# Metadata, JSON configs, tokenizers, and manifests remain tracked.
+models/**/*.bin
+models/**/*.pt
+models/**/*.pth
+models/**/*.safetensors
+models/**/*.onnx
+models/**/*.tflite
+models/**/*.gguf
+models/**/*.bin.*
+
+# Ensure model directory documentation and configs are preserved
+!models/**/README.md
+!models/**/config.json
+!models/**/generation_config.json
+!models/**/tokenizer.json
+!models/**/tokenizer_config.json
+!models/**/vocabulary.json
+!models/**/special_tokens_map.json
+
+# Audio and media temporary outputs
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.aac
+!tests/asr/audio_samples/.gitkeep
+
+# Temporary files & logging
+logs/
+*.log
+temp/
+tmp/
+**/runs/
+*.tfevents*
+
+# OS-generated metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE workspace files
+.idea/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json

@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI Backend (Janbhasha)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000",
+        "--reload"
+      ],
+      "jinja": true,
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/venv/Scripts/python.exe",
+      "env": {
+        "TRANSFORMERS_OFFLINE": "1",
+        "HF_HUB_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1"
+      }
+    },
+    {
+      "name": "Test Local Models (Inference)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/test_models_interactive.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "python": "${workspaceFolder}/venv/Scripts/python.exe",
+      "env": {
+        "TRANSFORMERS_OFFLINE": "1",
+        "HF_HUB_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1"
+      }
+    }
+  ]
+}

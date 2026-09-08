@@ -1,0 +1,9 @@
+﻿{
+  "total_read": 10,
+  "valid": 10,
+  "dropped": 0,
+  "reasons": {},
+  "train_count": 10,
+  "val_count": 0,
+  "test_count": 0
+}

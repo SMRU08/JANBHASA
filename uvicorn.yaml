@@ -1,0 +1,43 @@
+﻿# ==============================================================================
+# uvicorn.yaml — Janbhasha Offline Production Server Configuration
+# Reference: https://www.uvicorn.org/settings/
+# Usage: uvicorn app.main:app --config-file uvicorn.yaml   (NOT directly supported)
+#        See README / Makefile for actual startup commands.
+# This file documents all tunable parameters for self-hosting.
+# ==============================================================================
+
+app: "app.main:app"
+
+# Network binding — localhost only (offline, no external exposure)
+host: "127.0.0.1"
+port: 8000
+
+# Workers: 1 for single-GPU (AI models cannot be fork-shared across processes)
+# Increase ONLY if running on CPU with multiple loaded replicas manually
+workers: 1
+
+# Event loop & concurrency
+loop: "asyncio"
+http: "httptools"
+interface: "asgi3"
+
+# Connection handling
+timeout_keep_alive: 30
+limit_concurrency: 10       # Max simultaneous connections (AI inference is heavy)
+limit_max_requests: 0       # 0 = unlimited
+
+# Logging
+log_level: "info"
+access_log: true
+use_colors: true
+
+# Graceful shutdown
+timeout_graceful_shutdown: 15   # seconds to wait for ongoing requests
+
+# SSL (disabled for localhost — enable for LAN/internal network)
+ssl_keyfile: null
+ssl_certfile: null
+
+# Development only flags (MUST be false in production)
+reload: false
+reload_dirs: null

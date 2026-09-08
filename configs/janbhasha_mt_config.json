@@ -1,0 +1,59 @@
+﻿{
+  "app_name": "Janbhasha Offline AI Engine",
+  "version": "1.0.0",
+  "hardware": {
+    "device": "cpu",
+    "num_threads": 4,
+    "quantization": "int8"
+  },
+  "languages": {
+    "primary_target": "sat",
+    "primary_target_name": "Santhali",
+    "supported_scripts": ["Ol_Chiki", "Devanagari", "Latin"],
+    "supported_pairs": [
+      {"source": "hin", "target": "sat"},
+      {"source": "eng", "target": "sat"},
+      {"source": "sat", "target": "hin"},
+      {"source": "sat", "target": "eng"}
+    ]
+  },
+  "asr": {
+    "engine": "faster-whisper",
+    "model_size_or_path": "models/asr/whisper-small-indic",
+    "fallback_model": "base",
+    "device": "cpu",
+    "compute_type": "int8",
+    "language": "auto",
+    "beam_size": 5
+  },
+  "nlp_preprocessing": {
+    "code_mixed_detection": true,
+    "default_transliteration_script": "Ol_Chiki",
+    "lexicon_override_enabled": true,
+    "lexicon_path": "data/lexicons/santhali_bharatavani_lexicon.json",
+    "punctuation_normalization": true,
+    "confidence_threshold": 0.65
+  },
+  "translation": {
+    "engine": "transformers_offline",
+    "model_path": "models/translation/indictrans2-indic-indic-dist-320M",
+    "tokenizer_path": "models/translation/indictrans2-indic-indic-dist-320M",
+    "max_input_length": 256,
+    "max_target_length": 256,
+    "num_beams": 4
+  },
+  "tts": {
+    "engine": "vits",
+    "model_path": "models/tts/vits_santhali_mms.pth",
+    "config_path": "models/tts/vits_santhali_config.json",
+    "vocoder_path": null,
+    "sample_rate": 22050,
+    "speaker_id": 0,
+    "output_audio_format": "wav"
+  },
+  "data_paths": {
+    "parallel_corpora": "data/datasets/",
+    "lexicons": "data/lexicons/"
+  }
+}
+

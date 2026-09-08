@@ -1,0 +1,62 @@
+[
+  {
+    "id": "sat_tts_001", "language": "sat",
+    "category": "greeting",
+    "text": "ᱡᱚᱦᱟᱨ",
+    "note": "Single word: Johar (greeting)"
+  },
+  {
+    "id": "sat_tts_002", "language": "sat",
+    "category": "classroom",
+    "text": "ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹ",
+    "note": "Hello children"
+  },
+  {
+    "id": "sat_tts_003", "language": "sat",
+    "category": "numbers",
+    "text": "ᱢᱤᱫ ᱵᱟᱨ ᱯᱮ ᱯᱩᱱ ᱢᱚᱬᱮ",
+    "note": "Numbers 1-5"
+  },
+  {
+    "id": "sat_tts_004", "language": "sat",
+    "category": "instruction",
+    "text": "ᱟᱢᱟᱜ ᱯᱚᱛᱚᱵ ᱦᱚᱸ ᱠᱚ",
+    "note": "Open your book"
+  },
+  {
+    "id": "sat_tts_005", "language": "sat",
+    "category": "long_sentence",
+    "text": "ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚ ᱢᱩᱞ ᱯᱟᱲᱦᱟᱣ ᱟᱨ ᱜᱤᱱᱛᱤ ᱮ ᱧᱮᱞ ᱟᱠᱟᱱᱟ",
+    "note": "Long FLN sentence — tests latency under load"
+  },
+  {
+    "id": "sat_tts_006", "language": "sat",
+    "category": "story",
+    "text": "ᱢᱤᱫ ᱵᱤᱨ ᱨᱮ ᱢᱤᱫ ᱦᱟᱹᱛᱤ ᱮ ᱛᱷᱤᱨ ᱮᱱᱟ",
+    "note": "Once upon a time in a forest lived an elephant"
+  },
+  {
+    "id": "sat_tts_007", "language": "sat",
+    "category": "question",
+    "text": "ᱫᱟᱜ ᱧᱩᱛ ᱠᱟᱱᱟ",
+    "note": "Question: What is this?"
+  },
+  {
+    "id": "hi_tts_001", "language": "hi",
+    "category": "greeting",
+    "text": "नमस्ते",
+    "note": "Hindi greeting — Hindi TTS baseline"
+  },
+  {
+    "id": "hi_tts_002", "language": "hi",
+    "category": "classroom",
+    "text": "नमस्ते बच्चों आज हम गिनती सीखेंगे",
+    "note": "Hindi classroom instruction"
+  },
+  {
+    "id": "hi_tts_003", "language": "hi",
+    "category": "numbers",
+    "text": "एक दो तीन चार पाँच छह सात आठ नौ दस",
+    "note": "Hindi numbers 1-10"
+  }
+]

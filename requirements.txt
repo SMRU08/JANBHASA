@@ -1,0 +1,66 @@
+﻿# ==============================================================================
+# Janbhasha Offline AI Engine — Requirements (Python 3.14 Compatible)
+#
+# IMPORTANT: Python 3.14 Compatibility Notes
+# ============================================
+# Python 3.14 (released 2025) is the newest interpreter.
+# Many packages don't yet ship pre-built cp314 wheels, requiring a C/Rust
+# compiler (MSVC) to build from source.
+#
+# Strategy used here:
+#  - Use --only-binary=:all: for packages that have cp314 wheels
+#  - Pin minimum versions that guarantee cp314 wheel existence
+#  - Avoid packages that need compilation without alternatives
+#
+# CONFIRMED cp314-win_amd64 wheels available (as of Sep 2026):
+#  pydantic-core >= 2.48.0  ✓
+#  pydantic >= 2.9.0        ✓
+#  numpy >= 2.0.0           ✓
+#  torch >= 2.14.0          ✓
+#  torchaudio >= 2.11.0     ✓
+#  transformers >= 4.38.0   ✓ (pure Python)
+# ==============================================================================
+
+# ── Web Framework ──────────────────────────────────────────────────────────────
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.9.0              # Requires pydantic-core>=2.48 for cp314 wheel
+pydantic-core>=2.48.0        # cp314-win_amd64 wheel available
+pydantic-settings>=2.5.0
+python-multipart>=0.0.9
+
+# ── Deep Learning Core ─────────────────────────────────────────────────────────
+# Install PyTorch FIRST (separately) via:
+#   pip install torch>=2.14.0 torchaudio>=2.11.0 --only-binary=:all:
+# For CUDA: pip install torch>=2.14.0 torchaudio>=2.11.0 --index-url https://download.pytorch.org/whl/cu124
+torch>=2.14.0
+torchaudio>=2.11.0
+numpy>=2.0.0                 # numpy 2.x has cp314 wheels; numpy 1.x requires MSVC
+scipy>=1.15.0
+
+# ── ASR — faster-whisper ───────────────────────────────────────────────────────
+openai-whisper==20231117
+faster-whisper>=1.0.1
+soundfile>=0.12.1
+librosa>=0.10.1
+
+# ── NLP & Translation — IndicTrans2 ───────────────────────────────────────────
+transformers>=4.38.0
+sentencepiece>=0.2.0
+sacremoses>=0.1.1
+indic-nlp-library>=0.92
+regex>=2023.12.25
+accelerate>=0.27.2
+huggingface-hub>=0.22.0
+
+# ── TTS — VITS / MMS-TTS ──────────────────────────────────────────────────────
+TTS>=0.22.0
+phonemizer>=3.2.1
+
+# ── Utilities ──────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.1
+loguru>=0.7.2
+aiofiles>=23.2.1
+rich>=13.7.1
+httptools>=0.6.1
+websockets>=12.0

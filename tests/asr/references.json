@@ -1,0 +1,94 @@
+[
+  {
+    "id": "hi_fln_001",
+    "file": "hi_fln_001.wav",
+    "reference": "नमस्ते बच्चों आज हम गिनती सीखेंगे",
+    "language": "hi",
+    "category": "classroom_opening",
+    "speaker": "female_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_002",
+    "file": "hi_fln_002.wav",
+    "reference": "एक दो तीन चार पाँच छह सात आठ नौ दस",
+    "language": "hi",
+    "category": "numbers",
+    "speaker": "female_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_003",
+    "file": "hi_fln_003.wav",
+    "reference": "यह अक्षर क है",
+    "language": "hi",
+    "category": "literacy_fln",
+    "speaker": "female_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_004",
+    "file": "hi_fln_004.wav",
+    "reference": "बच्चे अपनी किताब खोलो",
+    "language": "hi",
+    "category": "classroom_instruction",
+    "speaker": "male_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_005",
+    "file": "hi_fln_005.wav",
+    "reference": "दो जोड़ तीन बराबर पाँच",
+    "language": "hi",
+    "category": "arithmetic_fln",
+    "speaker": "female_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_006",
+    "file": "hi_fln_006.wav",
+    "reference": "यह गोल आकार है",
+    "language": "hi",
+    "category": "shapes_fln",
+    "speaker": "male_teacher",
+    "environment": "quiet"
+  },
+  {
+    "id": "hi_fln_007",
+    "file": "hi_fln_007.wav",
+    "reference": "लाल रंग कौन सा है",
+    "language": "hi",
+    "category": "colors_fln",
+    "speaker": "female_teacher",
+    "environment": "classroom_noise"
+  },
+  {
+    "id": "hi_fln_008",
+    "file": "hi_fln_008.wav",
+    "reference": "आज हम Santali में counting सिखाएंगे",
+    "language": "hi",
+    "category": "mixed_language",
+    "speaker": "female_teacher",
+    "environment": "quiet",
+    "note": "Hindi-English code-switch test"
+  },
+  {
+    "id": "hi_fln_009",
+    "file": "hi_fln_009.wav",
+    "reference": "कृपया शांत रहो और सुनो",
+    "language": "hi",
+    "category": "classroom_instruction",
+    "speaker": "male_teacher",
+    "environment": "background_conversation"
+  },
+  {
+    "id": "hi_fln_010",
+    "file": "hi_fln_010.wav",
+    "reference": "निपुण भारत के तहत बच्चों को बुनियादी साक्षरता सीखनी है",
+    "language": "hi",
+    "category": "nipun_bharat",
+    "speaker": "female_teacher",
+    "environment": "quiet",
+    "note": "Long sentence — NIPUN Bharat terminology"
+  }
+]

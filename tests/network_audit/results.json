@@ -1,0 +1,114 @@
+{
+  "summary": {
+    "total": 17,
+    "critical": 0,
+    "high": 1,
+    "medium": 2,
+    "network_audit_passed": false,
+    "tested_at": "2026-09-08T14:45:28.831325Z"
+  },
+  "findings": [
+    {
+      "component": "INTERNET permission",
+      "risk": "HIGH",
+      "detail": "DECLARED",
+      "mitigation": "Verify never exercised at runtime via tcpdump"
+    },
+    {
+      "component": "RECORD_AUDIO",
+      "risk": "NONE",
+      "detail": "DECLARED (required)",
+      "mitigation": ""
+    },
+    {
+      "component": "transformers",
+      "risk": "MEDIUM",
+      "detail": "Downloads models by default",
+      "mitigation": "Set TRANSFORMERS_OFFLINE=1"
+    },
+    {
+      "component": "huggingface-hub",
+      "risk": "MEDIUM",
+      "detail": "Downloads from HF Hub",
+      "mitigation": "Set HF_HUB_OFFLINE=1 + local_files_only=True"
+    },
+    {
+      "component": "react",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native-fs",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native-html-to-pdf",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native-mmkv",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native-print",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "react-native-svg",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "zustand",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "@react-native/metro-config",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "@types/react",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "@types/react-native",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "typescript",
+      "risk": "NONE",
+      "detail": "No known network risk",
+      "mitigation": ""
+    },
+    {
+      "component": "C++ sources",
+      "risk": "NONE",
+      "detail": "No network patterns found",
+      "mitigation": ""
+    }
+  ]
+}

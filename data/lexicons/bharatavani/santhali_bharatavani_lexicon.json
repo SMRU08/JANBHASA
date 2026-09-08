@@ -1,0 +1,26 @@
+﻿{
+  "_metadata": {
+    "source": "Bharatavani Standardized Lexicon & Regional Dictionaries",
+    "version": "1.0",
+    "languages": ["sat_Olck", "hin_Deva", "eng_Latn"]
+  },
+  "lexicon": {
+    "namaste": {"sat_olck": "ᱡᱚᱦᱟᱨ", "hin_deva": "नमस्ते", "meaning": "Greeting / Salutation"},
+    "johar": {"sat_olck": "ᱡᱚᱦᱟᱨ", "hin_deva": "जोहार / नमस्कार", "meaning": "Greeting"},
+    "school": {"sat_olck": "ᱤᱛᱩᱱ ᱟᱥᱲᱟ", "hin_deva": "विद्यालय / स्कूल", "meaning": "School / Educational Institution"},
+    "hospital": {"sat_olck": "ᱨᱟᱱ ᱚᱲᱟᱜ", "hin_deva": "अस्पताल", "meaning": "Hospital / Clinic"},
+    "doctor": {"sat_olck": "ᱨᱟᱨᱟᱱᱤᱡ", "hin_deva": "चिकित्सक / डॉक्टर", "meaning": "Doctor / Physician"},
+    "medicine": {"sat_olck": "ᱨᱟᱱ", "hin_deva": "दवाई / औषधि", "meaning": "Medicine"},
+    "village": {"sat_olck": "ᱟᱹᱛᱩ", "hin_deva": "गाँव / ग्राम", "meaning": "Village"},
+    "panchayat": {"sat_olck": "ᱯᱚᱧᱪᱟᱭᱚᱛ", "hin_deva": "पंचायत", "meaning": "Panchayat"},
+    "water": {"sat_olck": "ᱫᱟᱜ", "hin_deva": "पानी / जल", "meaning": "Water"},
+    "food": {"sat_olck": "ᱫᱟᱠᱟ", "hin_deva": "भोजन / खाना", "meaning": "Food / Rice"},
+    "book": {"sat_olck": "ᱯᱩᱛᱷᱤ", "hin_deva": "किताब / पुस्तक", "meaning": "Book"},
+    "language": {"sat_olck": "ᱯᱟᱹᱨᱥᱤ", "hin_deva": "भाषा", "meaning": "Language"},
+    "name": {"sat_olck": "ᱧᱩᱛᱩᱢ", "hin_deva": "नाम", "meaning": "Name"},
+    "where": {"sat_olck": "ᱚᱠᱟᱨᱮ", "hin_deva": "कहाँ", "meaning": "Where"},
+    "what": {"sat_olck": "ᱪᱮᱫ", "hin_deva": "क्या", "meaning": "What"},
+    "who": {"sat_olck": "ᱚᱠᱚᱭ", "hin_deva": "कौन", "meaning": "Who"},
+    "government": {"sat_olck": "ᱥᱚᱨᱠᱟᱨ", "hin_deva": "सरकार", "meaning": "Government"}
+  }
+}

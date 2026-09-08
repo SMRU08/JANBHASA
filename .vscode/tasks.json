@@ -1,0 +1,99 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Start Backend (FastAPI Uvicorn)",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "backend"
+      },
+      "options": {
+        "env": {
+          "TRANSFORMERS_OFFLINE": "1",
+          "HF_HUB_OFFLINE": "1",
+          "HF_DATASETS_OFFLINE": "1"
+        }
+      }
+    },
+    {
+      "label": "2. Start Frontend (Metro Bundler)",
+      "type": "shell",
+      "command": "npm start",
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "JAVA_HOME": "C:\\Program Files\\Microsoft\\jdk-17.0.20.101-hotspot"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "frontend"
+      }
+    },
+    {
+      "label": "3. Run Mobile App on Android",
+      "type": "shell",
+      "command": "npm run android",
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "JAVA_HOME": "C:\\Program Files\\Microsoft\\jdk-17.0.20.101-hotspot"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "4. Test Local Models (Interactive)",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe scripts/test_models_interactive.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "5. Run TypeScript Check (Frontend)",
+      "type": "shell",
+      "command": ".\\node_modules\\.bin\\tsc.cmd --noEmit",
+      "options": {
+        "cwd": "${workspaceFolder}/mobile"
+      },
+      "problemMatcher": ["$tsc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "6. Download Open Models (No HF Token needed)",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe scripts/download_models.py --models open_only",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "7. Download All Models (Including AI4Bharat)",
+      "type": "shell",
+      "command": ".\\venv\\Scripts\\python.exe scripts/download_models.py --models all",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
