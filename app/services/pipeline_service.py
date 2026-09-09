@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Janbhasha Phase 4 — End-to-End Pipeline Orchestrator
 Chains: ASR → NLP Bilingual Preprocessing → IndicTrans2 Translation → VITS TTS
@@ -102,6 +102,25 @@ class JanbhashaPipelineService:
         """
         wall_start = time.perf_counter()
         logger.info(f"[Pipeline/Text] '{text[:60]}' | {source_lang} → {target_lang}")
+
+        if not text or not text.strip():
+            logger.info("[Pipeline/Text] Received empty or whitespace-only input text.")
+            total_ms = round((time.perf_counter() - wall_start) * 1000, 2)
+            return {
+                "input_text": text or "",
+                "preprocessed_text": "",
+                "is_code_mixed": False,
+                "translated_text": "",
+                "source_lang": source_lang,
+                "target_lang": target_lang,
+                "audio_base64": None,
+                "audio_sample_rate": None,
+                "audio_duration_seconds": None,
+                "asr_transcript": None,
+                "asr_detected_language": None,
+                "asr_language_probability": None,
+                "processing_time_ms": total_ms,
+            }
 
         # ── Step 1: NLP Bilingual Preprocessing (lightweight, runs inline) ─
         nlp_out = nlp_service.analyze_and_clean(text, target_lang=target_lang)
@@ -207,6 +226,17 @@ class JanbhashaPipelineService:
         target_lang: str = "sat_Olck",
     ) -> Dict[str, Any]:
         """NLP clean → translate only — no TTS. Useful for text-translation widgets."""
+        if not text or not text.strip():
+            return {
+                "source_text": text or "",
+                "normalized_text": "",
+                "translated_text": "",
+                "source_lang": source_lang,
+                "target_lang": target_lang,
+                "model_version": Path(self.translation.model_path).name,
+                "inference_time_ms": 0.0,
+            }
+
         nlp_out = nlp_service.analyze_and_clean(text, target_lang=target_lang)
         trans_result = await _run_in_thread(
             self.translation.translate,

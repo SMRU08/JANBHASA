@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Phase 4 — /api/v1/asr endpoint (updated with app.state injection)."""
 
-import os, tempfile
+import asyncio
+import os
+import tempfile
+from typing import Optional
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from app.schemas.pipeline import ASRResponse
 
@@ -27,17 +30,17 @@ def _get_asr(request: Request):
     ),
 )
 async def transcribe_audio(
-    file: UploadFile = File(..., description="Audio file to transcribe"),
-    language: Optional[str] = Form(default=None, description="ISO 639-1 language hint"),
-    word_timestamps: bool = Form(default=True),
+    file: UploadFile = File(..., description="Audio file to transcribe (.wav, .mp3, .flac, .ogg, .m4a)"),
+    language: Optional[str] = Form(default=None, description="ISO 639-1 language hint (e.g. 'hi', 'en', 'sat'). Omit or leave empty for auto-detection."),
+    word_timestamps: bool = Form(default=True, description="Whether to include word-level timestamps"),
     asr=Depends(_get_asr),
 ):
     suffix = os.path.splitext(file.filename or "audio.wav")[1].lower()
     if suffix not in SUPPORTED:
-        raise HTTPException(400, detail=f"Unsupported audio format '{suffix}'.")
+        raise HTTPException(400, detail=f"Unsupported audio format '{suffix}'. Accepted: {sorted(SUPPORTED)}")
 
     clean_language = language.strip() if (language and language.strip()) else None
-    if clean_language in ("auto", "none", "null", ""):
+    if clean_language and clean_language.lower() in ("auto", "none", "null", "", "string"):
         clean_language = None
 
     audio_bytes = await file.read()
@@ -47,5 +50,3 @@ async def transcribe_audio(
     )
     return ASRResponse(**result)
 
-import asyncio
-from typing import Optional

@@ -302,7 +302,15 @@ class JanbhashaTranslationService:
         batch = [t.strip() for t in batch if t.strip()]
 
         if not batch:
-            raise ValueError("[Translation] Input text is empty after stripping.")
+            logger.info("[Translation] Input text is empty after stripping.")
+            return {
+                "source_text": text,
+                "translated_text": "" if is_single else [],
+                "source_lang": source_lang,
+                "target_lang": target_lang,
+                "model_version": Path(self.model_path).name,
+                "inference_time_ms": 0.0,
+            }
 
         logger.info(
             f"[Translation] Translating {len(batch)} segment(s) | "

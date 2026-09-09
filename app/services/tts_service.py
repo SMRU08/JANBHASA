@@ -246,6 +246,12 @@ class JanbhashaTTSService:
             wf.writeframes(audio_int16.tobytes())
         return buffer.getvalue()
 
+    @classmethod
+    def _waveform_to_base64_wav(cls, audio_array, sample_rate: int) -> str:
+        """Helper to convert float32 numpy audio waveform to base64 WAV."""
+        wav_bytes = cls._numpy_to_wav_bytes(audio_array, sample_rate)
+        return base64.b64encode(wav_bytes).decode("utf-8")
+
     # ──────────────────────────────────────────────────────────────────────
     def synthesize(
         self,
@@ -273,7 +279,18 @@ class JanbhashaTTSService:
         self._ensure_loaded()
 
         if not text or not text.strip():
-            raise ValueError("[TTS] Input text cannot be empty.")
+            logger.warning("[TTS] Input text is empty. Returning clean silence fallback.")
+            import numpy as np
+            sample_rate = getattr(self, "_sample_rate", 16000)
+            silent_samples = np.zeros(int(sample_rate * 0.1), dtype=np.float32)
+            audio_b64 = self._waveform_to_base64_wav(silent_samples, sample_rate)
+            return {
+                "audio_base64": audio_b64,
+                "audio_array": silent_samples,
+                "sample_rate": sample_rate,
+                "duration_seconds": 0.1,
+                "inference_time_ms": 0.0,
+            }
 
         text = text.strip()
         logger.info(f"[TTS] Synthesizing: '{text[:60]}...' | speaker={speaker_id}")
@@ -324,7 +341,12 @@ class JanbhashaTTSService:
                 "speaking_rate": self.speaking_rate,
             }
             if speaker_id is not None:
-                inference_kwargs["speaker_id"] = speaker_id
+                # Only pass speaker_id if model actually has multi-speaker embeddings
+                num_speakers = getattr(getattr(self._model, "config", None), "num_speakers", 0)
+                if num_speakers and num_speakers > 1:
+                    inference_kwargs["speaker_id"] = speaker_id
+                else:
+                    logger.debug(f"[TTS] Single-speaker model ignoring speaker_id={speaker_id}")
 
             with torch.inference_mode():
                 output = self._model(**inputs, **{
@@ -350,8 +372,8 @@ class JanbhashaTTSService:
         )
 
         # ── Encode WAV for API transport ──────────────────────────────────
+        audio_b64 = self._waveform_to_base64_wav(audio_np, self._sample_rate)
         wav_bytes = self._numpy_to_wav_bytes(audio_np, self._sample_rate)
-        audio_b64 = base64.b64encode(wav_bytes).decode("utf-8")
 
         # ── Optional file save ────────────────────────────────────────────
         if output_wav_path:

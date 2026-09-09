@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Phase 4 — /api/v1/pipeline endpoints
 Full end-to-end REST endpoints for text-in and audio-in pipelines.
@@ -17,6 +17,7 @@ from app.schemas.pipeline import (
     PipelineTextRequest,
     ErrorResponse,
     VALID_INDICTRANS2_CODES,
+    LANG_ALIASES,
 )
 
 router = APIRouter()
@@ -108,11 +109,21 @@ async def translate_audio_pipeline(
                    f"Accepted: {sorted(SUPPORTED_AUDIO_EXTENSIONS)}"
         )
 
+    # ── Sanitize Swagger form inputs ──────────────────────────────────────
+    clean_asr_lang = asr_language.strip() if (asr_language and asr_language.strip()) else None
+    if clean_asr_lang and clean_asr_lang.lower() in ("auto", "none", "null", "", "string"):
+        clean_asr_lang = None
+
+    clean_target_lang = target_lang.strip() if (target_lang and target_lang.strip()) else "sat_Olck"
+    if clean_target_lang.lower() in ("string", "null", "none", ""):
+        clean_target_lang = "sat_Olck"
+    clean_target_lang = LANG_ALIASES.get(clean_target_lang, clean_target_lang)
+
     # ── Validate target language code ──────────────────────────────────────
-    if target_lang not in VALID_INDICTRANS2_CODES:
+    if clean_target_lang not in VALID_INDICTRANS2_CODES:
         raise HTTPException(
             status_code=422,
-            detail=f"Invalid target_lang '{target_lang}'. "
+            detail=f"Invalid target_lang '{clean_target_lang}'. "
                    f"Valid codes: {sorted(VALID_INDICTRANS2_CODES)}"
         )
 
@@ -129,8 +140,8 @@ async def translate_audio_pipeline(
     try:
         result = await pipeline.process_audio(
             audio_file_path=tmp_path,
-            asr_language=asr_language,
-            target_lang=target_lang,
+            asr_language=clean_asr_lang,
+            target_lang=clean_target_lang,
             return_audio=return_audio,
             speaker_id=speaker_id,
         )

@@ -23,6 +23,49 @@ VALID_INDICTRANS2_CODES = {
     "kon_Deva", "snd_Arab", "kas_Arab", "kas_Deva",
 }
 
+LANG_ALIASES: Dict[str, str] = {
+    "hi": "hin_Deva",
+    "hin": "hin_Deva",
+    "hindi": "hin_Deva",
+    "en": "eng_Latn",
+    "eng": "eng_Latn",
+    "english": "eng_Latn",
+    "sat": "sat_Olck",
+    "santali": "sat_Olck",
+    "santhali": "sat_Olck",
+    "bn": "ben_Beng",
+    "ben": "ben_Beng",
+    "bengali": "ben_Beng",
+    "te": "tel_Telu",
+    "tel": "tel_Telu",
+    "telugu": "tel_Telu",
+    "ta": "tam_Taml",
+    "tam": "tam_Taml",
+    "tamil": "tam_Taml",
+    "kn": "kan_Knda",
+    "kan": "kan_Knda",
+    "kannada": "kan_Knda",
+    "ml": "mal_Mlym",
+    "mal": "mal_Mlym",
+    "malayalam": "mal_Mlym",
+    "mr": "mar_Deva",
+    "mar": "mar_Deva",
+    "marathi": "mar_Deva",
+    "gu": "guj_Gujr",
+    "guj": "guj_Gujr",
+    "gujarati": "guj_Gujr",
+    "pa": "pan_Guru",
+    "pan": "pan_Guru",
+    "punjabi": "pan_Guru",
+    "or": "ory_Orya",
+    "ory": "ory_Orya",
+    "odia": "ory_Orya",
+    "oriya": "ory_Orya",
+    "ur": "urd_Arab",
+    "urd": "urd_Arab",
+    "urdu": "urd_Arab",
+}
+
 
 class OfflineServiceStatus(BaseModel):
     """Status block returned from health-check endpoints."""
@@ -82,10 +125,10 @@ class ASRResponse(BaseModel):
 
 class NLPProcessRequest(BaseModel):
     text: str = Field(
-        ...,
+        default="नमस्ते बच्चों, आज हम स्कूल जाएंगे",
         min_length=1,
         max_length=2048,
-        examples=["ᱡᱚᱦᱟᱨ! aapka hospital kahan hai?"],
+        examples=["नमस्ते बच्चों, आज हम स्कूल जाएंगे", "ᱡᱚᱦᱟᱨ! aapka hospital kahan hai?"],
         description="Raw bilingual or code-mixed input query"
     )
     target_script: str = Field(
@@ -94,12 +137,21 @@ class NLPProcessRequest(BaseModel):
         description="Target IndicTrans2 language code for normalization"
     )
 
-    @field_validator("text")
+    @field_validator("text", mode="before")
     @classmethod
-    def text_must_not_be_blank(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("text must not be blank or whitespace-only.")
-        return v
+    def text_must_not_be_blank(cls, v: Any) -> str:
+        v_str = str(v).strip() if v is not None else ""
+        if not v_str or v_str.lower() == "string":
+            return "नमस्ते बच्चों, आज हम स्कूल जाएंगे"
+        return v_str
+
+    @field_validator("target_script", mode="before")
+    @classmethod
+    def sanitize_target_script(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "sat_Olck"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
 
 
 class TokenScriptTag(BaseModel):
@@ -123,7 +175,7 @@ class NLPProcessResponse(BaseModel):
 
 class TranslationRequest(BaseModel):
     text: str = Field(
-        ...,
+        default="नमस्ते, आप कैसे हैं?",
         min_length=1,
         max_length=2048,
         examples=["नमस्ते, आप कैसे हैं?"],
@@ -140,20 +192,37 @@ class TranslationRequest(BaseModel):
         description="IndicTrans2 target language code"
     )
 
-    @field_validator("source_lang", "target_lang")
+    @field_validator("text", mode="before")
     @classmethod
-    def validate_lang_code(cls, v: str) -> str:
-        if v not in VALID_INDICTRANS2_CODES:
-            raise ValueError(
-                f"'{v}' is not a valid IndicTrans2 language code. "
-                f"Valid codes: {sorted(VALID_INDICTRANS2_CODES)}"
-            )
-        return v
+    def text_must_not_be_blank(cls, v: Any) -> str:
+        v_str = str(v).strip() if v is not None else ""
+        if not v_str or v_str.lower() == "string":
+            return "नमस्ते, आप कैसे हैं?"
+        return v_str
+
+    @field_validator("source_lang", mode="before")
+    @classmethod
+    def sanitize_source_lang(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "hin_Deva"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
+
+    @field_validator("target_lang", mode="before")
+    @classmethod
+    def sanitize_target_lang(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "sat_Olck"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
 
     @model_validator(mode="after")
     def src_tgt_must_differ(self) -> TranslationRequest:
         if self.source_lang == self.target_lang:
-            raise ValueError("source_lang and target_lang must be different.")
+            if self.source_lang == "hin_Deva":
+                self.target_lang = "sat_Olck"
+            else:
+                self.target_lang = "hin_Deva"
         return self
 
 
@@ -172,14 +241,15 @@ class TranslationResponse(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str = Field(
-        ...,
+        default="नमस्ते बच्चों, आज हम पढ़ाई करेंगे।",
         min_length=1,
         max_length=1024,
-        examples=["ᱡᱚᱦᱟᱨ!"],
+        examples=["नमस्ते बच्चों, आज हम पढ़ाई करेंगे।", "ᱡᱚᱦᱟᱨ!"],
         description="Text in target language to synthesize to speech"
     )
     language: str = Field(
-        default="sat_Olck",
+        default="hin_Deva",
+        examples=["hin_Deva", "sat_Olck"],
         description="Target language code (informational)"
     )
     speaker_id: Optional[int] = Field(
@@ -187,6 +257,24 @@ class TTSRequest(BaseModel):
         ge=0,
         description="Speaker ID for multi-speaker VITS models"
     )
+
+    @field_validator("text", mode="before")
+    @classmethod
+    def text_must_not_be_blank(cls, v: Any) -> str:
+        v_str = str(v).strip() if v is not None else ""
+        if not v_str or v_str.lower() == "string":
+            return "नमस्ते बच्चों, आज हम पढ़ाई करेंगे।"
+        return v_str
+
+    @field_validator("speaker_id", mode="before")
+    @classmethod
+    def sanitize_speaker_id(cls, v: Any) -> Optional[int]:
+        if v in ("string", "", "null", "none", None):
+            return None
+        try:
+            return int(v)
+        except (ValueError, TypeError):
+            return None
 
 
 class TTSResponse(BaseModel):
@@ -203,10 +291,10 @@ class TTSResponse(BaseModel):
 class PipelineTextRequest(BaseModel):
     """Request for the text-in → translated audio-out pipeline."""
     text: str = Field(
-        ...,
+        default="मैं स्कूल जाना चाहता हूँ",
         min_length=1,
         max_length=2048,
-        examples=["मैं अस्पताल जाना चाहता हूँ"],
+        examples=["मैं स्कूल जाना चाहता हूँ", "नमस्ते बच्चों, आज हम गणित पढ़ेंगे"],
         description="Source text (Hindi, English, or code-mixed)"
     )
     source_lang: str = Field(
@@ -216,6 +304,7 @@ class PipelineTextRequest(BaseModel):
     )
     target_lang: str = Field(
         default="sat_Olck",
+        examples=["sat_Olck", "hin_Deva"],
         description="IndicTrans2 target language code"
     )
     return_audio: bool = Field(
@@ -224,24 +313,47 @@ class PipelineTextRequest(BaseModel):
     )
     speaker_id: Optional[int] = Field(default=None, ge=0)
 
-    @field_validator("text")
+    @field_validator("text", mode="before")
     @classmethod
-    def text_must_not_be_blank(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("text must not be blank or whitespace-only.")
-        return v
+    def text_must_not_be_blank(cls, v: Any) -> str:
+        v_str = str(v).strip() if v is not None else ""
+        if not v_str or v_str.lower() == "string":
+            return "मैं स्कूल जाना चाहता हूँ"
+        return v_str
 
-    @field_validator("source_lang", "target_lang")
+    @field_validator("source_lang", mode="before")
     @classmethod
-    def validate_lang_code(cls, v: str) -> str:
-        if v not in VALID_INDICTRANS2_CODES:
-            raise ValueError(f"'{v}' is not a valid IndicTrans2 language code.")
-        return v
+    def sanitize_source_lang(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "hin_Deva"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
+
+    @field_validator("target_lang", mode="before")
+    @classmethod
+    def sanitize_target_lang(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "sat_Olck"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
+
+    @field_validator("speaker_id", mode="before")
+    @classmethod
+    def sanitize_speaker_id(cls, v: Any) -> Optional[int]:
+        if v in ("string", "", "null", "none", None):
+            return None
+        try:
+            return int(v)
+        except (ValueError, TypeError):
+            return None
 
     @model_validator(mode="after")
     def src_tgt_must_differ(self) -> "PipelineTextRequest":
         if self.source_lang == self.target_lang:
-            raise ValueError("source_lang and target_lang must be different.")
+            if self.source_lang == "hin_Deva":
+                self.target_lang = "sat_Olck"
+            else:
+                self.target_lang = "hin_Deva"
         return self
 
 
