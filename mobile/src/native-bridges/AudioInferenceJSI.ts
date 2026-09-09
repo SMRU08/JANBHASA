@@ -1,4 +1,4 @@
-﻿/**
+/**
  * TypeScript definitions & wrapper for Janbhasha C++ JSI Native Bridge.
  * Bypasses legacy React Native bridge serialization for zero-copy audio and INT8 execution.
  */
@@ -52,28 +52,61 @@ export const AudioInferenceJSI = {
   /**
    * Invokes native INT8 pipeline (Whisper -> IndicTrans2 -> VITS) on background thread.
    */
-  executeVoiceToVoice(
+  async executeVoiceToVoice(
     audioPath: string,
     srcLang: string = 'hin_Deva',
     tgtLang: string = 'sat_Olck'
   ): Promise<NativePipelineResult> {
-    return new Promise((resolve) => {
-      if (typeof global.janbhasha_runVoiceToVoicePipelineAsync === 'function') {
+    // 1. Try legacy global callback if available
+    if (typeof global.janbhasha_runVoiceToVoicePipelineAsync === 'function') {
+      return new Promise((resolve) => {
         global.janbhasha_runVoiceToVoicePipelineAsync(audioPath, srcLang, tgtLang, (res) => {
           resolve(res);
         });
-      } else {
-        // High-fidelity fallback simulation when testing JS layer
-        setTimeout(() => {
-          resolve({
-            transcript: 'नमस्ते, आप सब कैसे हैं?',
-            translatedText: 'ᱡᱚᱦᱟᱨ, ᱟᱯᱮ ᱡᱚᱛᱚ ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱜ ᱯᱮᱭᱟ?',
-            audioWavPath: 'file:///data/user/0/com.janbhasha/cache/vits_output.wav',
-            latencyMs: 1480,
-            success: true
-          });
-        }, 1500);
+      });
+    }
+
+    // 2. Try official JSI HostObject (__janbhasha)
+    const jsiEngine = (global as any).__janbhasha;
+    if (jsiEngine && typeof jsiEngine.runPipeline === 'function') {
+      try {
+        const [sLang, sScript] = srcLang.split('_');
+        const [tLang, tScript] = tgtLang.split('_');
+        const result = await jsiEngine.runPipeline({
+          audioFileUri: audioPath,
+          sourceLanguage: sLang || 'hi',
+          sourceScript: sScript || 'Deva',
+          targetLanguage: tLang || 'sat',
+          targetScript: tScript || 'Olck',
+          synthesizeSpeech: true,
+        });
+        return {
+          transcript: result.transcript,
+          translatedText: result.translatedText,
+          audioWavPath: result.outputAudioUri,
+          latencyMs: result.totalLatencyMs,
+          success: true,
+        };
+      } catch (err: any) {
+        return {
+          transcript: '',
+          translatedText: '',
+          audioWavPath: '',
+          latencyMs: 0,
+          success: false,
+          error: err.message || 'Inference failed in native engine',
+        };
       }
-    });
+    }
+
+    // 3. No mock AI — report honest offline status
+    return {
+      transcript: '',
+      translatedText: '',
+      audioWavPath: '',
+      latencyMs: 0,
+      success: false,
+      error: 'Native JSI inference engine not initialized. Please deploy to target Android hardware with provisioned model checkpoints.',
+    };
   }
 };

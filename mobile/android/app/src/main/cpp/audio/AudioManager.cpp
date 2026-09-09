@@ -133,9 +133,10 @@ void AudioManager::initRecording(const AudioRecordingConfig& config) {
     AAudioStreamBuilder_setFramesPerDataCallback(builder, config.framesPerBurst);
     AAudioStreamBuilder_setDataCallback(builder, recordCallback, this);
     AAudioStreamBuilder_setPerformanceMode(builder, AAUDIO_PERFORMANCE_MODE_LOW_LATENCY);
-    AAudioStreamBuilder_setSharingMode(builder, AAUDIO_SHARING_MODE_EXCLUSIVE);
+#if __ANDROID_API__ >= 28
     // Enable hardware Acoustic Echo Cancellation (AEC) and Noise Suppression (NS)
     AAudioStreamBuilder_setInputPreset(builder, AAUDIO_INPUT_PRESET_VOICE_COMMUNICATION);
+#endif
 
     if (recordStream_) {
         AAudioStream_close(recordStream_);

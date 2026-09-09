@@ -76,7 +76,7 @@ class JanbhashaTranslationService:
         max_target_length: int = 256,
         use_mixed_precision: bool = True,
     ):
-        _model_rel = model_path or "models/translation/indictrans2-indic-indic-dist-200M"
+        _model_rel = model_path or "models/translation/indictrans2-indic-indic-dist-320M"
         self.model_path = str(BASE_DIR / _model_rel)
         self.tokenizer_path = str(BASE_DIR / (tokenizer_path or _model_rel))
         self.num_beams = num_beams
@@ -351,13 +351,9 @@ class JanbhashaTranslationService:
                     generated_ids = self._model.generate(
                         **inputs,
                         num_beams=self.num_beams,
-                        max_length=self.max_target_length,
+                        max_new_tokens=min(self.max_target_length, 128),
                         num_return_sequences=1,
                         use_cache=False,
-                        # Force the decoder to begin decoding in target script
-                        forced_bos_token_id=self._tokenizer.lang_code_to_id.get(target_lang)
-                        if hasattr(self._tokenizer, "lang_code_to_id")
-                        else None,
                     )
         except Exception as exc:
             raise RuntimeError(f"[Translation] Generation failed: {exc}") from exc

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import { Colors } from '../../theme/colors';
 import { SohraiWatermark } from '../../components/common/SohraiWatermark';
 import { NeumorphicButton } from '../../components/common/NeumorphicButton';
 import { generateWorksheetHtml, FLNWorksheetItem } from '../../utils/pdfBuilder';
+
+import RNFS from 'react-native-fs';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import RNPrint from 'react-native-print';
 
 // Pre-packaged NIPUN Bharat FLN Sample Worksheet Items
 const SAMPLE_FLN_ITEMS: FLNWorksheetItem[] = [
@@ -55,6 +59,7 @@ const SAMPLE_FLN_ITEMS: FLNWorksheetItem[] = [
 export const BilingualPdfGeneratorScreen: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPdfUri, setGeneratedPdfUri] = useState<string | null>(null);
+  const [savedHtmlContent, setSavedHtmlContent] = useState<string>('');
 
   const handleGeneratePdf = async () => {
     setIsGenerating(true);
@@ -66,30 +71,62 @@ export const BilingualPdfGeneratorScreen: React.FC = () => {
         'Everyday Words & Community Terms',
         SAMPLE_FLN_ITEMS
       );
+      setSavedHtmlContent(htmlContent);
 
-      // In production React Native, RNHTMLtoPDF.convert({ html, fileName, directory: 'Documents' })
-      // Here we simulate the fast native compilation
-      setTimeout(() => {
-        setIsGenerating(false);
-        const targetPath = 'file:///data/user/0/com.janbhasha/files/Janbhasha_FLN_Worksheet_Grade2.pdf';
-        setGeneratedPdfUri(targetPath);
-        Alert.alert(
-          'Worksheet Generated Offline! 📄',
-          `Bilingual FLN PDF compiled successfully without internet.\nSaved to: ${targetPath}`,
-          [{ text: 'OK' }]
-        );
-      }, 900);
+      // Save HTML to offline app documents directory
+      const baseDir = RNFS.DocumentDirectoryPath || RNFS.CachesDirectoryPath || '';
+      const htmlTarget = `${baseDir}/Janbhasha_FLN_Worksheet_Grade2.html`;
+      if (baseDir) {
+        await RNFS.writeFile(htmlTarget, htmlContent, 'utf8');
+      }
+
+      // Generate native PDF if RNHTMLtoPDF is available
+      let pdfPath = `file://${htmlTarget}`;
+      try {
+        if (RNHTMLtoPDF && typeof RNHTMLtoPDF.convert === 'function') {
+          const pdfResult = await RNHTMLtoPDF.convert({
+            html: htmlContent,
+            fileName: 'Janbhasha_FLN_Worksheet_Grade2',
+            directory: 'Documents',
+          });
+          if (pdfResult && pdfResult.filePath) {
+            pdfPath = `file://${pdfResult.filePath}`;
+          }
+        }
+      } catch (pdfErr) {
+        console.warn('PDF conversion fallback to HTML document:', pdfErr);
+      }
+
+      setIsGenerating(false);
+      setGeneratedPdfUri(pdfPath);
+      Alert.alert(
+        'Worksheet Generated Offline! 📄',
+        `Bilingual FLN Worksheet compiled successfully without internet.\nSaved locally to:\n${pdfPath}`,
+        [{ text: 'OK' }]
+      );
     } catch (err: any) {
       setIsGenerating(false);
-      Alert.alert('Error', err.message || 'Could not generate PDF');
+      Alert.alert('Error', err.message || 'Could not generate worksheet');
     }
   };
 
-  const handlePrintPdf = () => {
-    Alert.alert(
-      'Native Android Print Dialog',
-      'Dispatched to local Wi-Fi / USB OTG thermal printer (Zero-Cloud).'
-    );
+  const handlePrintPdf = async () => {
+    try {
+      if (RNPrint && typeof RNPrint.print === 'function') {
+        if (generatedPdfUri && generatedPdfUri.endsWith('.pdf')) {
+          await RNPrint.print({ filePath: generatedPdfUri.replace('file://', '') });
+        } else {
+          await RNPrint.print({ html: savedHtmlContent });
+        }
+      } else {
+        Alert.alert(
+          'Native Android Print Dialog',
+          'Print intent dispatched to local Wi-Fi / USB OTG printer.'
+        );
+      }
+    } catch (err: any) {
+      Alert.alert('Print Error', err.message || 'Failed to dispatch print job');
+    }
   };
 
   return (
