@@ -1,4 +1,4 @@
-﻿{
+{
   "app_name": "Janbhasha Offline AI Engine",
   "version": "1.0.0",
   "hardware": {
@@ -44,8 +44,8 @@
   },
   "tts": {
     "engine": "vits",
-    "model_path": "models/tts/vits_santhali_mms.pth",
-    "config_path": "models/tts/vits_santhali_config.json",
+    "model_path": "models/tts/vits-hindi-mms",
+    "config_path": "models/tts/vits-hindi-mms/config.json",
     "vocoder_path": null,
     "sample_rate": 22050,
     "speaker_id": 0,

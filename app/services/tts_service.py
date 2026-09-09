@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Janbhasha Offline TTS Service — Phase 3
 Engine: VITS (Variational Inference with adversarial learning for end-to-end TTS)
@@ -105,6 +105,18 @@ class JanbhashaTTSService:
         Expected files: config.json, tokenizer_config.json, model weights.
         """
         p = Path(self.model_path)
+
+        if not p.exists() or not p.is_dir():
+            for fallback in ["vits-hindi-mms", "vits-ho-mms", "vits-mundari-mms"]:
+                fb_path = BASE_DIR / "models" / "tts" / fallback
+                if fb_path.exists() and fb_path.is_dir():
+                    logger.warning(
+                        f"[TTS] Configured model '{self.model_path}' not found. "
+                        f"Falling back to available local model '{fb_path}'."
+                    )
+                    self.model_path = str(fb_path)
+                    p = fb_path
+                    break
 
         if not p.exists() or not p.is_dir():
             raise FileNotFoundError(
@@ -285,6 +297,24 @@ class JanbhashaTTSService:
             inputs = {k: v.to(self.device) for k, v in inputs.items()}
         except Exception as exc:
             raise RuntimeError(f"[TTS] Tokenisation failed: {exc}") from exc
+
+        # Guard against empty/unsupported token sequences which crash VITS attention layers
+        input_ids = inputs.get("input_ids")
+        if input_ids is None or input_ids.shape[-1] <= 1:
+            logger.warning(
+                f"[TTS] Input text has unsupported characters for this TTS model "
+                f"({input_ids.shape[-1] if input_ids is not None else 0} valid token(s)). "
+                f"Returning clean silence fallback."
+            )
+            sample_rate = getattr(self, "_sample_rate", 16000)
+            silent_samples = np.zeros(int(sample_rate * 0.5), dtype=np.float32)
+            audio_b64 = self._waveform_to_base64_wav(silent_samples, sample_rate)
+            return {
+                "audio_base64": audio_b64,
+                "sample_rate": sample_rate,
+                "duration_seconds": 0.5,
+                "inference_time_ms": round((time.perf_counter() - t0) * 1000, 2),
+            }
 
         # ── Inference (VITS is deterministic in eval mode) ────────────────
         try:

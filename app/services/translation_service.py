@@ -218,6 +218,7 @@ class JanbhashaTranslationService:
                 self.tokenizer_path,
                 local_files_only=True,      # ← Offline enforcement
                 use_fast=False,             # IndicTrans2 requires slow (SentencePiece) tokenizer
+                trust_remote_code=True,
             )
         except Exception as exc:
             raise RuntimeError(
@@ -231,6 +232,7 @@ class JanbhashaTranslationService:
                 local_files_only=True,      # ← Offline enforcement
                 torch_dtype=self.dtype,
                 low_cpu_mem_usage=True,     # Reduces peak RAM during load
+                trust_remote_code=True,
             )
             self._model.eval()
             self._model.to(self.device)
@@ -317,8 +319,10 @@ class JanbhashaTranslationService:
             )
         else:
             # Fallback: manual language-tag injection matching IndicTrans2 format
+            s_lang = source_lang.strip("_")
+            t_lang = target_lang.strip("_")
             batch_preprocessed = [
-                f"__{source_lang}__ {sent} __{target_lang}__" for sent in batch
+                f"{s_lang} {t_lang} {sent}" for sent in batch
             ]
 
         # ── Tokenise ─────────────────────────────────────────────────────
@@ -349,6 +353,7 @@ class JanbhashaTranslationService:
                         num_beams=self.num_beams,
                         max_length=self.max_target_length,
                         num_return_sequences=1,
+                        use_cache=False,
                         # Force the decoder to begin decoding in target script
                         forced_bos_token_id=self._tokenizer.lang_code_to_id.get(target_lang)
                         if hasattr(self._tokenizer, "lang_code_to_id")
@@ -373,9 +378,10 @@ class JanbhashaTranslationService:
             translated_batch = [t.strip() for t in decoded_tokens]
 
         inference_ms = round((time.perf_counter() - t0) * 1000, 2)
+        safe_preview = translated_batch[0][:60].encode("ascii", "backslashreplace").decode("ascii")
         logger.success(
             f"[Translation] Done in {inference_ms}ms | "
-            f"output[0]='{translated_batch[0][:60]}...'"
+            f"output[0]='{safe_preview}...'"
         )
 
         return {
