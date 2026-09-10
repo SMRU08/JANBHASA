@@ -1,0 +1,528 @@
+{
+  "status": "success",
+  "type": "data",
+  "data": {
+    "data": [
+      {
+        "id": "cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+        "name": "Facilities providing Dialysis under PMNDP",
+        "shortDescription": "This dataset contains information on dialysis facilities across India, including facility details, location, dialysis type, number of machines and operational model.",
+        "status": "Active",
+        "organization": {
+          "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+          "name": "Ministry of Health and Family Welfare"
+        },
+        "currentOwner": {
+          "id": "9067d241-4afe-498e-b2be-4c98c6b181fa",
+          "name": "KAUSTUBH GIRI",
+          "designation": "DEPUTY SECRETARY",
+          "organization": {
+            "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+            "name": "Ministry of Health and Family Welfare"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.13",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "NHM programme",
+          "Ministry of Health and Family Welfare"
+        ],
+        "datasetMetadata": {
+          "id": "013a1af7-5a53-4483-9659-cb5637d33530",
+          "license": {
+            "id": 212,
+            "name": "MIT"
+          },
+          "sector": {
+            "id": 203,
+            "name": "Healthcare, Wellness and Family Welfare"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 3,
+          "size": 200052
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "641b24ae-1603-4b6b-92a8-7e7275465967",
+        "name": "Indian PNG Statistics 2003-2004",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 2003–04 provides comprehensive statistical information on India’s petroleum industry, covering industry growth, exploration, crude oil and natural gas reserves and production, refining, sales, consumption, foreign trade, manpower, prices, taxation, transportation, marketing networks, pipelines, energy statistics, and historical petroleum-sector trends through calendar and financial-year data.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "MOPNG",
+          "PPAC",
+          "PNG STATISTICS",
+          "BIOFUEL"
+        ],
+        "datasetMetadata": {
+          "id": "5a23006c-af94-4b99-b56a-4a91b262366e",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 45654313
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "e82ba9ef-eba3-4fad-8bdd-f0ca725cbf5e",
+        "name": "Indian PNG Statistics 2002-2003",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 2002–03 provides comprehensive statistical information on India’s petroleum and natural gas industry, covering industry growth, exploration, crude oil and natural gas reserves and production, refining, sales, consumption, foreign trade, manpower, prices, taxation, transportation, marketing networks, pipelines, CNG, green fuels, and petroleum energy statistics",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "Oil Pipeline",
+          "MOPNG",
+          "BIOFUEL",
+          "PNG STATISTICS"
+        ],
+        "datasetMetadata": {
+          "id": "dd404bdd-59bf-4967-b4d4-8187fe60ad1c",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 45575327
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "79fcd90d-3f6f-466f-ac9e-bf077e4d653b",
+        "name": "Indian PNG Statistics 2001-2002",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 2001–02 provides comprehensive statistical information on India’s petroleum and natural gas sector, covering industry growth, exploration, crude oil and natural gas reserves and production, refining, sales, consumption, foreign trade, manpower, prices, taxation, transportation, pipelines, marketing networks, petroleum energy and sectoral trends.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "MOPNG",
+          "PNG STATISTICS",
+          "BIOFUEL"
+        ],
+        "datasetMetadata": {
+          "id": "353510eb-d92d-46d0-b1d2-ebeb24d14fee",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 43217982
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "40c38d62-6d97-448e-b2dd-6d9562be2a29",
+        "name": "Indian PNG Statistics 2000-2001",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 2000–01 provides comprehensive statistical information on India’s petroleum and natural gas sector, covering industry growth, exploration, crude oil and natural gas reserves and production, refining, sales, consumption, foreign trade, manpower, prices, taxation, transportation, marketing networks, pipelines, CNG, green fuels and energy statistics.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "PPAC",
+          "MOPNG",
+          "BIOFUEL",
+          "PNG STATISTICS"
+        ],
+        "datasetMetadata": {
+          "id": "f6bbd548-3706-4654-a9a8-75feded978f7",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 40529635
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "f891638d-659d-4a4a-a579-d10a2e0265a1",
+        "name": "Indian PNG Statistics 1997-1998 and 1998-1999",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 1997-1998 provides comprehensive statistical information on India’s petroleum and natural gas sector, covering industry growth, exploration, crude oil and natural gas reserves and production, refining, sales, consumption, foreign trade, manpower, prices, taxation, transportation, marketing networks, pipelines, CNG, green fuels and energy statistics.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "MOPNG",
+          "PPAC",
+          "PNG STATISTICS",
+          "BIOFUEL"
+        ],
+        "datasetMetadata": {
+          "id": "d3e47c77-2714-46fd-86d4-5e066d75e2e9",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 37987662
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "06e343be-35f3-481f-b659-4bb620e60f3c",
+        "name": "Indian PNG Statistics 1995-1996",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 1998–99 provides detailed statistical coverage of India’s petroleum and natural gas sector, including natural gas reserves, production and utilisation, refining capacity and output, petroleum consumption, foreign trade, manpower, prices, taxation, transportation and marketing infrastructure, supported by extensive historical and state-wise data.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "BIOFUEL",
+          "Exploration and Production",
+          "PNG STATISTICS",
+          "MOPNG"
+        ],
+        "datasetMetadata": {
+          "id": "40df2884-c788-4345-8200-63e6ee8b48a3",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 48004649
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "c6dd0d5d-e715-4858-a3b8-ace236b428ab",
+        "name": "Meghalaya QA Dataset",
+        "shortDescription": "Meghalaya QA Dataset contains comprehensive information about Meghalaya, covering various aspects such as history, geography, culture, economy, governance and more.",
+        "status": "Active",
+        "organization": {
+          "id": "8cea5570-6a71-41db-bd6f-cec240bfafd3",
+          "name": "SolFinder Research"
+        },
+        "currentOwner": {
+          "id": "06f1bb56-ffb1-4623-990a-2139ac60a1f8",
+          "name": "Prateek Khanna",
+          "designation": "",
+          "organization": {
+            "id": "8cea5570-6a71-41db-bd6f-cec240bfafd3",
+            "name": "SolFinder Research"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.75",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "Question answering",
+          "Meghalaya",
+          "dataset"
+        ],
+        "datasetMetadata": {
+          "id": "85c57661-7386-4a7a-a501-80dbafb553b7",
+          "license": {
+            "id": 217,
+            "name": "Attribution 4.0 International (CC BY- 4.0)"
+          },
+          "sector": {
+            "id": 1600,
+            "name": "Sector Agnostic"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 3,
+          "size": 289520
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "6483a941-74fb-4166-8f80-ffdeddb0bed1",
+        "name": "Indian PNG Statistics 1994-1995",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 1995–96 provides extensive statistical information on India’s petroleum and natural gas sector, covering natural gas reserves and production, refining, petroleum consumption and sales, foreign trade, manpower, prices, taxation, transportation, marketing networks and energy statistics, together with historical time-series and state-wise industry data.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "PNG STATISTICS",
+          "Exploration and Production",
+          "BIOFUEL",
+          "MOPNG"
+        ],
+        "datasetMetadata": {
+          "id": "9aa2fa16-a322-4754-b6ef-8c935afa55e5",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 2,
+          "size": 44689597
+        },
+        "accessType": "HOSTED"
+      },
+      {
+        "id": "630c3537-e189-45ca-9e3b-25a7f20aa889",
+        "name": "Indian PNG Statistics 1993-1994",
+        "shortDescription": "Indian Petroleum and Natural Gas Statistics 1993–94 provides statistical coverage of India’s petroleum industry, including industry progress, crude oil exploration, refining, petroleum-product consumption and sales, market participation, trade, prices, taxation, transportation and energy. It combines current-year information with historical time-series data covering petroleum industry development since 1947–48.",
+        "status": "Active",
+        "organization": {
+          "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+          "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+        },
+        "currentOwner": {
+          "id": "9f91769e-461f-4c5f-ada4-e699536eae31",
+          "name": "Arun Verma",
+          "designation": "",
+          "organization": {
+            "id": "9ba1cb8a-20fc-465c-b69b-c694be2e87f7",
+            "name": "Petroleum Planning & Analysis Cell (PPAC), Ministry of Petroleum and Natural Gas (MoPNG)"
+          },
+          "role": {
+            "id": 287,
+            "name": "CONTRIBUTOR"
+          }
+        },
+        "version_score": "4.5",
+        "dataset_source": "Internal",
+        "dataset_external_url": null,
+        "vote": {
+          "upvotes": 0
+        },
+        "tags": [
+          "Exploration and Production",
+          "BIOFUEL",
+          "MOPNG",
+          "PPAC",
+          "PNG STATISTICS"
+        ],
+        "datasetMetadata": {
+          "id": "991d40d4-64d9-4d26-a108-be0eed711aee",
+          "license": {
+            "id": 2325,
+            "name": "Open Government License, India"
+          },
+          "sector": {
+            "id": 193,
+            "name": "Chemical, Mining and Natural Resources"
+          }
+        },
+        "stats": {
+          "downloads": 0,
+          "views": 4,
+          "size": 36508015
+        },
+        "accessType": "HOSTED"
+      }
+    ],
+    "total": 1059,
+    "page": 1,
+    "size": 10
+  }
+}

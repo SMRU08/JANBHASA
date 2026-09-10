@@ -1,66 +1,96 @@
-﻿import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { BootValidationScreen } from './src/screens/boot/BootValidationScreen';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, BackHandler } from 'react-native';
+import { useAppStore } from './src/store/useAppStore';
+import { JanbhashaTheme } from './src/theme/janbhashaTheme';
+
+// Screens
+import { SplashScreen } from './src/screens/onboarding/SplashScreen';
+import { LanguageSelectionScreen } from './src/screens/onboarding/LanguageSelectionScreen';
+import { RoleSelectionScreen } from './src/screens/onboarding/RoleSelectionScreen';
 import { TeacherDashboardScreen } from './src/screens/dashboard/TeacherDashboardScreen';
-import { LiveClassroomScreen } from './src/screens/classroom/LiveClassroomScreen';
-import { BilingualPdfGeneratorScreen } from './src/screens/pdf/BilingualPdfGeneratorScreen';
-import { NipunFlashcardsScreen } from './src/screens/flashcards/NipunFlashcardsScreen';
-import { NeumorphicButton } from './src/components/common/NeumorphicButton';
-import { Colors } from './src/theme/colors';
+import { StudentDashboardScreen } from './src/screens/dashboard/StudentDashboardScreen';
+import { LiveTranslationScreen } from './src/screens/translator/LiveTranslationScreen';
+import { AudioOutputScreen } from './src/screens/settings/AudioOutputScreen';
+import { ClassroomScreen } from './src/screens/classroom/ClassroomScreen';
+import { CurriculumScreen } from './src/screens/curriculum/CurriculumScreen';
+import { LessonDetailsScreen } from './src/screens/curriculum/LessonDetailsScreen';
+import { WorksheetScreen } from './src/screens/pdf/WorksheetScreen';
+import { FlashcardsScreen } from './src/screens/flashcards/FlashcardsScreen';
+import { ModelStatusScreen } from './src/screens/settings/ModelStatusScreen';
+import { SettingsScreen } from './src/screens/settings/SettingsScreen';
+import { ProfileScreen } from './src/screens/profile/ProfileScreen';
+import { VoiceConversationScreen } from './src/screens/conversation/VoiceConversationScreen';
+import { OfflineDictionaryScreen } from './src/screens/dictionary/OfflineDictionaryScreen';
+import { OfflineModelManagerScreen } from './src/screens/settings/OfflineModelManagerScreen';
 
 export default function App() {
-  const [isBooted, setIsBooted] = useState(false);
-  const [currentScreen, setCurrentScreen] = useState<string>('Dashboard');
+  const { currentScreen, goBack, refreshHealth } = useAppStore();
 
-  if (!isBooted) {
-    return <BootValidationScreen onValidated={() => setIsBooted(true)} />;
-  }
+  useEffect(() => {
+    refreshHealth();
 
-  const renderScreen = () => {
+    const onBackPress = () => {
+      if (currentScreen !== 'Splash' && currentScreen !== 'TeacherDashboard' && currentScreen !== 'StudentDashboard') {
+        goBack();
+        return true;
+      }
+      return false;
+    };
+
+    const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => sub.remove();
+  }, [currentScreen, goBack, refreshHealth]);
+
+  const renderCurrentScreen = () => {
     switch (currentScreen) {
-      case 'LiveClassroom':
-        return <LiveClassroomScreen />;
-      case 'BilingualPdf':
-        return <BilingualPdfGeneratorScreen />;
-      case 'NipunFlashcards':
-        return <NipunFlashcardsScreen />;
+      case 'Splash':
+        return <SplashScreen />;
+      case 'LanguageSelection':
+        return <LanguageSelectionScreen />;
+      case 'RoleSelection':
+        return <RoleSelectionScreen />;
+      case 'TeacherDashboard':
+        return <TeacherDashboardScreen />;
+      case 'StudentDashboard':
+        return <StudentDashboardScreen />;
+      case 'LiveTranslation':
+        return <LiveTranslationScreen />;
+      case 'AudioOutput':
+        return <AudioOutputScreen />;
+      case 'Classroom':
+      case 'StudentClassroom':
+        return <ClassroomScreen />;
+      case 'Curriculum':
+        return <CurriculumScreen />;
+      case 'LessonDetails':
+        return <LessonDetailsScreen />;
+      case 'Worksheets':
+        return <WorksheetScreen />;
+      case 'Flashcards':
+        return <FlashcardsScreen />;
+      case 'ModelStatus':
+        return <ModelStatusScreen />;
+      case 'Settings':
+        return <SettingsScreen />;
+      case 'Profile':
+        return <ProfileScreen />;
+      case 'VoiceConversation':
+        return <VoiceConversationScreen />;
+      case 'OfflineDictionary':
+        return <OfflineDictionaryScreen />;
+      case 'OfflineModelManager':
+        return <OfflineModelManagerScreen />;
       default:
-        return <TeacherDashboardScreen onNavigate={(screen) => setCurrentScreen(screen)} />;
+        return <TeacherDashboardScreen />;
     }
   };
 
-  return (
-    <View style={styles.container}>
-      {currentScreen !== 'Dashboard' && (
-        <View style={styles.topBackNav}>
-          <NeumorphicButton
-            onPress={() => setCurrentScreen('Dashboard')}
-            zone="primary"
-            title="◀ DASHBOARD"
-            style={styles.backBtn}
-          />
-        </View>
-      )}
-      {renderScreen()}
-    </View>
-  );
+  return <View style={styles.container}>{renderCurrentScreen()}</View>;
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.slate,
-  },
-  topBackNav: {
-    backgroundColor: Colors.background.slate,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 4,
-    zIndex: 10,
-  },
-  backBtn: {
-    minHeight: 48,
-    alignSelf: 'flex-start',
-    paddingHorizontal: 16,
+    backgroundColor: JanbhashaTheme.colors.creamBg,
   },
 });

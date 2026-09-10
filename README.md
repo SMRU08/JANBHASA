@@ -12,7 +12,13 @@
 
 ---
 
-## 1. Hero Section
+> [!IMPORTANT]
+> **🚀 Quick Installation & Setup**:
+> - **Download Release APK**: [`Janbhasha_v1.0_Release.apk`](Janbhasha_v1.0_Release.apk) (23.1 MB Production Android APK)
+> - **Step-by-Step Setup Guide**: [`HOW_TO_INSTALL_APP_AND_MODELS.md`](HOW_TO_INSTALL_APP_AND_MODELS.md) (Complete guide on phone installation, offline models setup, and audio routing)
+> - **100% Offline-Ready**: Works in Airplane Mode without Wi-Fi or cellular network!
+
+---
 
 Janbhasha is an offline-first native Android educational platform designed to eliminate linguistic barriers in primary schools across Eastern India (Jharkhand, Odisha, and West Bengal). It facilitates mother-tongue-based instruction for indigenous students speaking **Santali (Ol Chiki script)**, **Ho**, and **Mundari**, converting live instructional speech from standard Hindi into localized tribal languages in real time. Operating entirely on low-cost Android tablets (~2 GB RAM) without internet access, cloud APIs, or recurring server costs, Janbhasha directly empowers teachers, engages students, and accelerates Foundational Literacy and Numeracy (FLN).
 

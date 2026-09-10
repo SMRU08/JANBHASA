@@ -1,0 +1,158 @@
+[
+  {
+    "model": "Whisper Small Santali (Ol Chiki)",
+    "task": "ASR (Speech-to-Text)",
+    "languages": [
+      "sat"
+    ],
+    "script": "Ol Chiki",
+    "parameters": 241000000,
+    "model_size_mb": 966.9,
+    "quantization": "FP32 (Convertible to INT8 at ~75 MB via whisper.cpp/ONNX)",
+    "license": "Apache-2.0",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "Whisper Small Indic Multilingual",
+    "task": "ASR (Speech-to-Text)",
+    "languages": [
+      "hi",
+      "sat",
+      "bn",
+      "te",
+      "ta",
+      "mr"
+    ],
+    "script": "Devanagari, Ol Chiki, Bengali, etc.",
+    "parameters": 241000000,
+    "model_size_mb": 966.9,
+    "quantization": "INT8 / CTranslate2 (~280 MB RAM)",
+    "license": "Apache-2.0",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "IndicTrans2 Indic-Indic Distilled 320M",
+    "task": "NMT (Text Translation)",
+    "languages": [
+      "hin_Deva",
+      "sat_Olck",
+      "ben_Beng",
+      "tel_Telu",
+      "tam_Taml"
+    ],
+    "script": "Devanagari, Ol Chiki, Indic Scripts",
+    "parameters": 320000000,
+    "model_size_mb": 1280.0,
+    "quantization": "INT8 (~180 MB ONNX target)",
+    "license": "MIT",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "IndicTrans2 English-Santali Open",
+    "task": "NMT (Text Translation)",
+    "languages": [
+      "eng_Latn",
+      "sat_Olck"
+    ],
+    "script": "Latin, Ol Chiki",
+    "parameters": 200000000,
+    "model_size_mb": 800.0,
+    "quantization": "INT8 ONNX",
+    "license": "MIT",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "Meta MMS-TTS Hindi",
+    "task": "TTS (Text-to-Speech)",
+    "languages": [
+      "hi"
+    ],
+    "script": "Devanagari",
+    "parameters": 35000000,
+    "model_size_mb": 145.2,
+    "quantization": "FP32 VITS Normalizing Flow (~70 MB ONNX)",
+    "license": "CC-BY-NC-4.0",
+    "commercial_use": false,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "Meta MMS-TTS Santali (Designated facebook/mms-tts-sat)",
+    "task": "TTS (Text-to-Speech)",
+    "languages": [
+      "sat"
+    ],
+    "script": "Ol Chiki",
+    "parameters": 0,
+    "model_size_mb": 0.0,
+    "quantization": "Unavailable (Meta repo returned HTTP 404)",
+    "license": "CC-BY-NC-4.0 (Projected)",
+    "commercial_use": false,
+    "offline": true,
+    "android_supported": false,
+    "2gb_ram_tested": false
+  },
+  {
+    "model": "IndicTTS Santali Mono Male (Phase 3 ONNX)",
+    "task": "TTS (Text-to-Speech)",
+    "languages": [
+      "sat"
+    ],
+    "script": "Ol Chiki",
+    "parameters": 28000000,
+    "model_size_mb": 58.4,
+    "quantization": "INT8 ONNX Piper/VITS",
+    "license": "CC-BY-4.0",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "sherpa-onnx Streaming VAD + ASR",
+    "task": "VAD & Streaming ASR",
+    "languages": [
+      "hi",
+      "sat",
+      "en"
+    ],
+    "script": "Multi-script",
+    "parameters": 18000000,
+    "model_size_mb": 36.2,
+    "quantization": "INT8 ONNX",
+    "license": "Apache-2.0",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  },
+  {
+    "model": "Vosk Hindi Small",
+    "task": "ASR (Speech-to-Text)",
+    "languages": [
+      "hi"
+    ],
+    "script": "Devanagari",
+    "parameters": 25000000,
+    "model_size_mb": 42.0,
+    "quantization": "Kaldi HMM-DNN INT8",
+    "license": "Apache-2.0",
+    "commercial_use": true,
+    "offline": true,
+    "android_supported": true,
+    "2gb_ram_tested": true
+  }
+]

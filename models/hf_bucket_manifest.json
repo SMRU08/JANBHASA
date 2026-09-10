@@ -1,0 +1,25 @@
+{
+  "repository": "Ashraf01k/vernacular-pedagogy-santhali",
+  "files": {
+    "sat_piper_model.onnx": {
+      "path": "models\\tts\\sat_piper\\sat_piper_model.onnx",
+      "size_bytes": 63516051,
+      "sha256": "ae73d3472ac3c08730341efb76edf569956096c0e8f7f0a4f0dfccb01f515e44"
+    },
+    "sat_piper_model.onnx.json": {
+      "path": "models\\tts\\sat_piper\\sat_piper_model.onnx.json",
+      "size_bytes": 3378,
+      "sha256": "7ef65521619c1ea6baa2d34fb4f094297125ad95faabe507d2ab4953b06395dc"
+    },
+    "fln_lexicon.sqlite": {
+      "path": "models\\dictionary\\fln_lexicon.sqlite",
+      "size_bytes": 184320,
+      "sha256": "2e35a1ffdba11693de38eb31efe3e2df07b0de76e8bff2f69344874cb0c951c0"
+    },
+    "indictrans2_sat_int8_ct2.tar.gz": {
+      "path": "models\\translation\\indictrans2_sat_ct2\\indictrans2_sat_int8_ct2.tar.gz",
+      "size_bytes": 300195122,
+      "sha256": "3ad71e6eb09419c2b1cc428d8b9a4efcec01b2da924a6693f84d61199d3e15e7"
+    }
+  }
+}

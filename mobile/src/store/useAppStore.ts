@@ -1,44 +1,129 @@
-﻿import { create } from 'zustand';
-import { AudioInferenceJSI } from '../native-bridges/AudioInferenceJSI';
+import { create } from 'zustand';
+import { apiService, HealthResponse } from '../services/apiService';
+import { audioService, BluetoothDevice } from '../services/audioService';
 
-export type UserRole = 'teacher' | 'student';
-export type TargetLanguage = 'sat_Olck' | 'hoc_Wara' | 'unr_Deva';
+export type AppScreen =
+  | 'Splash'
+  | 'LanguageSelection'
+  | 'RoleSelection'
+  | 'TeacherLogin'
+  | 'StudentLogin'
+  | 'TeacherDashboard'
+  | 'StudentDashboard'
+  | 'LiveTranslation'
+  | 'AudioOutput'
+  | 'Classroom'
+  | 'StudentClassroom'
+  | 'Curriculum'
+  | 'LessonDetails'
+  | 'Worksheets'
+  | 'Flashcards'
+  | 'ModelStatus'
+  | 'Settings'
+  | 'Profile'
+  | 'VoiceConversation'
+  | 'OfflineDictionary'
+  | 'OfflineModelManager';
+
+export type AppLanguage = 'hi' | 'en' | 'sat';
+export type UserRole = 'teacher' | 'student' | null;
+export type AudioOutputMode = 'speaker' | 'bluetooth';
 
 interface AppState {
+  currentScreen: AppScreen;
+  screenHistory: AppScreen[];
+  appLanguage: AppLanguage;
   role: UserRole;
-  targetLanguage: TargetLanguage;
-  isInitialized: boolean;
-  freeRAM_MB: number;
-  isLowMemory: boolean;
-  modelIntegrity: {
-    whisperInt8: boolean;
-    indicTrans2Int8: boolean;
-    vitsInt8: boolean;
-  };
+  audioOutput: AudioOutputMode;
+  selectedBluetoothDevice: BluetoothDevice | null;
+  serverUrl: string;
+  isOfflineMode: boolean;
+  health: HealthResponse | null;
+  healthLatencyMs: number;
+  selectedSubject: any | null;
+  selectedWorksheet: any | null;
+
+  // Actions
+  navigate: (screen: AppScreen) => void;
+  goBack: () => void;
+  setAppLanguage: (lang: AppLanguage) => void;
   setRole: (role: UserRole) => void;
-  setTargetLanguage: (lang: TargetLanguage) => void;
-  checkSystemHealth: () => void;
+  setAudioOutput: (mode: AudioOutputMode) => void;
+  setSelectedBluetoothDevice: (dev: BluetoothDevice | null) => void;
+  setServerUrl: (url: string) => void;
+  toggleOfflineMode: () => void;
+  refreshHealth: () => Promise<void>;
+  setSelectedSubject: (subject: any) => void;
+  setSelectedWorksheet: (worksheet: any) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  role: 'teacher',
-  targetLanguage: 'sat_Olck',
-  isInitialized: false,
-  freeRAM_MB: 1200,
-  isLowMemory: false,
-  modelIntegrity: {
-    whisperInt8: true,
-    indicTrans2Int8: true,
-    vitsInt8: true,
+export const useAppStore = create<AppState>((set, get) => ({
+  currentScreen: 'Splash',
+  screenHistory: [],
+  appLanguage: 'en',
+  role: null,
+  audioOutput: 'speaker',
+  selectedBluetoothDevice: null,
+  serverUrl: 'http://localhost:8000',
+  isOfflineMode: false,
+  health: null,
+  healthLatencyMs: 0,
+  selectedSubject: null,
+  selectedWorksheet: null,
+
+  navigate: (screen: AppScreen) => {
+    const current = get().currentScreen;
+    if (current === screen) return;
+    set((state) => ({
+      currentScreen: screen,
+      screenHistory: [...state.screenHistory, current],
+    }));
   },
-  setRole: (role) => set({ role }),
-  setTargetLanguage: (targetLanguage) => set({ targetLanguage }),
-  checkSystemHealth: () => {
-    const mem = AudioInferenceJSI.getMemoryStatus();
+
+  goBack: () => {
+    const history = get().screenHistory;
+    if (history.length === 0) {
+      const role = get().role;
+      if (role === 'teacher') set({ currentScreen: 'TeacherDashboard' });
+      else if (role === 'student') set({ currentScreen: 'StudentDashboard' });
+      else set({ currentScreen: 'RoleSelection' });
+      return;
+    }
+    const previous = history[history.length - 1];
     set({
-      freeRAM_MB: mem.freeRAM_MB,
-      isLowMemory: mem.isLowMemory,
-      isInitialized: true,
+      currentScreen: previous,
+      screenHistory: history.slice(0, history.length - 1),
     });
   },
+
+  setAppLanguage: (appLanguage) => set({ appLanguage }),
+  setRole: (role) => set({ role }),
+
+  setAudioOutput: async (audioOutput) => {
+    set({ audioOutput });
+    try {
+      await audioService.setAudioOutputMode(audioOutput);
+    } catch (err) {
+      console.warn('setAudioOutput failed:', err);
+    }
+  },
+
+  setSelectedBluetoothDevice: (selectedBluetoothDevice) => set({ selectedBluetoothDevice }),
+
+  setServerUrl: (serverUrl) => {
+    apiService.setBaseUrl(serverUrl);
+    set({ serverUrl });
+  },
+
+  toggleOfflineMode: () => set((state) => ({ isOfflineMode: !state.isOfflineMode })),
+
+  refreshHealth: async () => {
+    const res = await apiService.checkHealth();
+    if (res.isHealthy && res.data) {
+      set({ health: res.data, healthLatencyMs: res.latencyMs });
+    }
+  },
+
+  setSelectedSubject: (selectedSubject) => set({ selectedSubject }),
+  setSelectedWorksheet: (selectedWorksheet) => set({ selectedWorksheet }),
 }));

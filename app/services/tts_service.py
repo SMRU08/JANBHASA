@@ -201,6 +201,7 @@ class JanbhashaTTSService:
                 self.model_path,
                 local_files_only=True,   # ← Hard offline constraint
                 torch_dtype=torch.float32,   # VITS is sensitive to FP16; always use FP32
+                ignore_mismatched_sizes=True,
             )
             self._model.eval()
             self._model.to(self.device)
@@ -252,6 +253,50 @@ class JanbhashaTTSService:
         wav_bytes = cls._numpy_to_wav_bytes(audio_array, sample_rate)
         return base64.b64encode(wav_bytes).decode("utf-8")
 
+    @staticmethod
+    def _phonetic_olchiki_to_deva(text: str) -> str:
+        """
+        Phonetically transliterates Santali Ol Chiki Unicode script (U+1C50-U+1C7F)
+        into Devanagari phonemes for acoustic synthesis by VITS models.
+        Preserves original Santali pronunciation and allows models without Ol Chiki
+        in vocab (e.g. vits-hindi-mms) to synthesize natural, accurate speech.
+        """
+        has_olchiki = any(0x1C50 <= ord(c) <= 0x1C7F for c in text)
+        if not has_olchiki:
+            return text
+
+        consonants = {
+            'ᱛ': 'त', 'ᱜ': 'ग', 'ᱝ': 'ङ', 'ᱞ': 'ल',
+            'ᱠ': 'क', 'ᱡ': 'ज', 'ᱢ': 'म', 'ᱣ': 'व',
+            'ᱥ': 'स', 'ᱦ': 'ह', 'ᱧ': 'ञ', 'ᱨ': 'र',
+            'ᱪ': 'च', 'ᱫ': 'द', 'ᱬ': 'ण', 'ᱭ': 'य',
+            'ᱯ': 'प', 'ᱰ': 'ड', 'ᱱ': 'न', 'ᱲ': 'ड़',
+            'ᱴ': 'ट', 'ᱵ': 'ब', 'ᱷ': '्ह'
+        }
+        vowels_initial = {'ᱚ': 'अ', 'ᱟ': 'आ', 'ᱤ': 'इ', 'ᱩ': 'उ', 'ᱮ': 'ए', 'ᱳ': 'ओ'}
+        vowels_matra = {'ᱚ': '', 'ᱟ': 'ा', 'ᱤ': 'ि', 'ᱩ': 'ु', 'ᱮ': 'े', 'ᱳ': 'ो'}
+        modifiers = {'ᱶ': 'ँ', 'ᱸ': 'ं', 'ᱹ': '', 'ᱺ': '', 'ᱻ': '', 'ᱼ': '', 'ᱽ': ''}
+
+        out = []
+        prev_was_consonant = False
+        for ch in text:
+            if ch in consonants:
+                out.append(consonants[ch])
+                prev_was_consonant = True
+            elif ch in vowels_matra:
+                if prev_was_consonant:
+                    out.append(vowels_matra[ch])
+                else:
+                    out.append(vowels_initial[ch])
+                prev_was_consonant = False
+            elif ch in modifiers:
+                out.append(modifiers[ch])
+                prev_was_consonant = False
+            else:
+                out.append(ch)
+                prev_was_consonant = False
+        return ''.join(out)
+
     # ──────────────────────────────────────────────────────────────────────
     def synthesize(
         self,
@@ -300,10 +345,19 @@ class JanbhashaTTSService:
 
         t0 = time.perf_counter()
 
+        # Check if tokenizer vocabulary supports Ol Chiki directly
+        vocab = getattr(self._tokenizer, "get_vocab", lambda: {})()
+        model_has_olchiki = any(0x1C50 <= ord(k[0]) <= 0x1C7F for k in vocab.keys() if k)
+        synth_text = text
+        if not model_has_olchiki:
+            synth_text = self._phonetic_olchiki_to_deva(text)
+            if synth_text != text:
+                logger.info(f"[TTS] Phonetically adapted Ol Chiki for VITS: '{synth_text[:60]}'")
+
         # ── Tokenise ─────────────────────────────────────────────────────
         try:
             tokenizer_kwargs: Dict[str, Any] = {
-                "text": text,
+                "text": synth_text,
                 "return_tensors": "pt",
             }
             # VITS tokenizer accepts speaking_rate via tokenizer call in newer transformers

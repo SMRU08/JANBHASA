@@ -1,0 +1,57 @@
+{
+  "test_name": "JANBHASHA STRICT OFFLINE AIR-GAP MODEL AUDIT",
+  "timestamp": "2026-09-10T19:22:15Z",
+  "air_gap_enforced": true,
+  "environment": {
+    "TRANSFORMERS_OFFLINE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "network_guard": "ACTIVE (socket.connect blocked for external IPs)"
+  },
+  "results": {
+    "translation_indictrans2": {
+      "status": "PASS",
+      "load_time_ms": 8529.3,
+      "inference_time_ms": 1997.1,
+      "pure_ol_chiki": true,
+      "sample_output": "\u1c5f\u1c64 \u1c61\u1c73\u1c78 \u1c65\u1c5a\u1c71\u1c5b\u1c5f\u1c5e\u1c64 \u1c75\u1c77\u1c5f\u1c65\u1c5f \u1c65\u1c64\u1c60\u1c77\u1c5a\u1c5e\u1c5a\u1c66\u1c69\u1c76, \u1c66\u1c6e\u1c5e\u1c73\u1c7e"
+    },
+    "tts_vits_santali": {
+      "status": "PASS",
+      "load_time_ms": 722.5,
+      "synthesis_time_ms": 858.9,
+      "duration_seconds": 1.33,
+      "sample_rate": 16000,
+      "output_file": "D:\\Additional\\PROJECT\\JANBHASHA\\outputs\\offline_test_santali_tts.wav"
+    },
+    "tts_mms_hindi": {
+      "status": "PASS",
+      "load_time_ms": 706.0,
+      "synthesis_time_ms": 1186.6,
+      "duration_seconds": 2.75,
+      "sample_rate": 16000
+    },
+    "tts_mms_ho": {
+      "status": "PASS",
+      "load_time_ms": 695.9,
+      "synthesis_time_ms": 610.0,
+      "duration_seconds": 0.66
+    },
+    "tts_mms_mundari": {
+      "status": "PASS",
+      "load_time_ms": 754.7,
+      "synthesis_time_ms": 592.5,
+      "duration_seconds": 0.72
+    },
+    "asr_whisper_small": {
+      "status": "PASS",
+      "load_time_ms": 481.3,
+      "inference_time_ms": 6286.4
+    },
+    "asr_whisper_ct2_int8": {
+      "status": "PASS",
+      "load_time_ms": 1236.9,
+      "quantization": "int8"
+    }
+  },
+  "all_models_verified_offline": true
+}

@@ -1,0 +1,7 @@
+{
+  "nmt_train_pairs": 18000,
+  "nmt_val_pairs": 2000,
+  "asr_manifest": "D:\\Additional\\PROJECT\\JANBHASHA\\data\\training\\asr\\metadata.tsv",
+  "tts_manifest": "D:\\Additional\\PROJECT\\JANBHASHA\\data\\training\\tts\\metadata.csv",
+  "unified_directory_ready": true
+}

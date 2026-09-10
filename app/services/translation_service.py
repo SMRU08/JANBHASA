@@ -375,11 +375,27 @@ class JanbhashaTranslationService:
 
         # ── IndicProcessor postprocessing ─────────────────────────────────
         if self._processor is not None:
-            translated_batch = self._processor.postprocess_batch(
-                decoded_tokens, lang=target_lang
-            )
+            if target_lang == "sat_Olck":
+                # Special handling for Santhali Ol Chiki:
+                # IndicTransToolkit internally maps sat_Olck to 'or' (Odia) because indic_nlp_library
+                # lacks an Ol Chiki transliterator. We postprocess as Devanagari, then transliterate
+                # directly to authentic Ol Chiki script (U+1C50-U+1C7F).
+                deva_batch = self._processor.postprocess_batch(
+                    decoded_tokens, lang="hin_Deva"
+                )
+                from app.utils.ol_chiki import deva_to_olchiki
+                translated_batch = [deva_to_olchiki(t) for t in deva_batch]
+            else:
+                translated_batch = self._processor.postprocess_batch(
+                    decoded_tokens, lang=target_lang
+                )
         else:
-            translated_batch = [t.strip() for t in decoded_tokens]
+            if target_lang == "sat_Olck":
+                from app.utils.ol_chiki import deva_to_olchiki
+                translated_batch = [deva_to_olchiki(t.strip()) for t in decoded_tokens]
+            else:
+                translated_batch = [t.strip() for t in decoded_tokens]
+
 
         inference_ms = round((time.perf_counter() - t0) * 1000, 2)
         safe_preview = translated_batch[0][:60].encode("ascii", "backslashreplace").decode("ascii")

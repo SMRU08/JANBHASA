@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Colors } from '../../theme/colors';
 import { SohraiWatermark } from '../../components/common/SohraiWatermark';
@@ -8,12 +8,12 @@ import { useAppStore } from '../../store/useAppStore';
 export const BootValidationScreen: React.FC<{ onValidated: () => void }> = ({ onValidated }) => {
   const [statusMessage, setStatusMessage] = useState('Checking Android Hardware & RAM allocation...');
   const [ramReport, setRamReport] = useState<string>('');
-  const { checkSystemHealth } = useAppStore();
+  const { refreshHealth } = useAppStore();
 
   useEffect(() => {
     const runBootCheck = async () => {
       // Step 1: Query C++ JSI direct kernel memory
-      checkSystemHealth();
+      refreshHealth();
       const mem = AudioInferenceJSI.getMemoryStatus();
       setRamReport(`Free RAM: ${mem.freeRAM_MB.toFixed(0)} MB / Resident Budget: ${mem.residentBudget_MB} MB`);
 
@@ -35,7 +35,7 @@ export const BootValidationScreen: React.FC<{ onValidated: () => void }> = ({ on
     };
 
     runBootCheck();
-  }, [checkSystemHealth, onValidated]);
+  }, [refreshHealth, onValidated]);
 
   return (
     <SafeAreaView style={styles.container}>

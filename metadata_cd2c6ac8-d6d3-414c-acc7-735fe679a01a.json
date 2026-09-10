@@ -1,0 +1,88 @@
+{
+  "status": "success",
+  "type": "dataset",
+  "identifier": "cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+  "dataset_id": "cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+  "data": {
+    "id": "cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+    "name": "Facilities providing Dialysis under PMNDP",
+    "shortDescription": "This dataset contains information on dialysis facilities across India, including facility details, location, dialysis type, number of machines and operational model.",
+    "fullDescription": "This dataset provides comprehensive information on dialysis facilities across different districts of India. It includes details such as facility name, facility type, dialysis type, NIN and HFR identifiers, address, pincode, district, state, total number of dialysis machines, and operation type. The dataset can be used to understand the availability, distribution, and infrastructure of dialysis services across the state.",
+    "purpose": "To provide a structured overview of dialysis facilities and their available infrastructure in India, enabling analysis of dialysis service coverage, facility distribution, machine capacity, and operational models.",
+    "status": "Active",
+    "baseDirectory": "/aikosh-datasetprivate/dataset/cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+    "organization": {
+      "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+      "name": "Ministry of Health and Family Welfare"
+    },
+    "currentOwner": {
+      "id": "9067d241-4afe-498e-b2be-4c98c6b181fa",
+      "name": "KAUSTUBH GIRI",
+      "designation": "DEPUTY SECRETARY",
+      "organization": {
+        "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+        "name": "Ministry of Health and Family Welfare"
+      },
+      "role": {
+        "id": 287,
+        "name": "CONTRIBUTOR"
+      }
+    },
+    "createdAt": "2026-09-02T07:12:43.733Z",
+    "remark": "ok",
+    "version_score": "4.13",
+    "dataset_source": "Internal",
+    "externally_hosted": null,
+    "dataset_external_url": null,
+    "relatedDataset": null,
+    "relatedModel": null,
+    "fileDownloadableUrl": null,
+    "vote": {
+      "upvotes": 0
+    },
+    "bdpDatasetID": null,
+    "filePath": null,
+    "fileSource": null,
+    "tags": [
+      "NHM programme",
+      "Ministry of Health and Family Welfare"
+    ],
+    "datasetMetadata": {
+      "id": "013a1af7-5a53-4483-9659-cb5637d33530",
+      "datasetId": "cd2c6ac8-d6d3-414c-acc7-735fe679a01a",
+      "author": "Ministry of Health",
+      "redirectionSource": null,
+      "platform": "Hosted",
+      "dataType": "Primary",
+      "license": "MIT",
+      "datasetType": "Structured",
+      "frequency": "Static",
+      "sector": "Healthcare, Wellness and Family Welfare",
+      "likes": "0",
+      "permission": "",
+      "sourceOrg": {
+        "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+        "name": "Ministry of Health and Family Welfare"
+      },
+      "uploadedBy": {
+        "id": "9067d241-4afe-498e-b2be-4c98c6b181fa",
+        "name": "KAUSTUBH GIRI",
+        "designation": "DEPUTY SECRETARY",
+        "organization": {
+          "id": "366ba8a6-5b0a-4a27-b73d-36e59bf4478b",
+          "name": "Ministry of Health and Family Welfare"
+        },
+        "role": {
+          "id": 287,
+          "name": "CONTRIBUTOR"
+        }
+      }
+    },
+    "stats": {
+      "downloads": 2,
+      "views": 9,
+      "size": 200052
+    },
+    "permissionType": "Open"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "splits": [
+    {
+      "dataset": "misniitdelhi/AdiBhasha",
+      "config": "default",
+      "split": "train"
+    },
+    {
+      "dataset": "misniitdelhi/AdiBhasha",
+      "config": "default",
+      "split": "test"
+    }
+  ],
+  "pending": [],
+  "failed": []
+}

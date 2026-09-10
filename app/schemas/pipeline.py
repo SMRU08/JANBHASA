@@ -140,7 +140,10 @@ class NLPProcessRequest(BaseModel):
     @field_validator("text", mode="before")
     @classmethod
     def text_must_not_be_blank(cls, v: Any) -> str:
-        v_str = str(v).strip() if v is not None else ""
+        v_str = str(v) if v is not None else ""
+        # Remove hidden line breaks, carriage returns, tabs, and unprintable control characters
+        v_str = re.sub(r'[\r\n\t]+', ' ', v_str)
+        v_str = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', v_str).strip()
         if not v_str or v_str.lower() == "string":
             return "नमस्ते बच्चों, आज हम स्कूल जाएंगे"
         return v_str
@@ -195,7 +198,9 @@ class TranslationRequest(BaseModel):
     @field_validator("text", mode="before")
     @classmethod
     def text_must_not_be_blank(cls, v: Any) -> str:
-        v_str = str(v).strip() if v is not None else ""
+        v_str = str(v) if v is not None else ""
+        v_str = re.sub(r'[\r\n\t]+', ' ', v_str)
+        v_str = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', v_str).strip()
         if not v_str or v_str.lower() == "string":
             return "नमस्ते, आप कैसे हैं?"
         return v_str
@@ -241,16 +246,16 @@ class TranslationResponse(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str = Field(
-        default="नमस्ते बच्चों, आज हम पढ़ाई करेंगे।",
+        default="ᱡᱚᱦᱟᱨ! ᱟᱢ ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱜ-ᱟ?",
         min_length=1,
         max_length=1024,
-        examples=["नमस्ते बच्चों, आज हम पढ़ाई करेंगे।", "ᱡᱚᱦᱟᱨ!"],
+        examples=["ᱡᱚᱦᱟᱨ!", "नमस्ते बच्चों, आज हम पढ़ाई करेंगे।"],
         description="Text in target language to synthesize to speech"
     )
     language: str = Field(
-        default="hin_Deva",
-        examples=["hin_Deva", "sat_Olck"],
-        description="Target language code (informational)"
+        default="sat_Olck",
+        examples=["sat_Olck", "hin_Deva"],
+        description="Target language code (sat_Olck for Santali)"
     )
     speaker_id: Optional[int] = Field(
         default=None,
@@ -261,10 +266,20 @@ class TTSRequest(BaseModel):
     @field_validator("text", mode="before")
     @classmethod
     def text_must_not_be_blank(cls, v: Any) -> str:
-        v_str = str(v).strip() if v is not None else ""
+        v_str = str(v) if v is not None else ""
+        v_str = re.sub(r'[\r\n\t]+', ' ', v_str)
+        v_str = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', v_str).strip()
         if not v_str or v_str.lower() == "string":
-            return "नमस्ते बच्चों, आज हम पढ़ाई करेंगे।"
+            return "ᱡᱚᱦᱟᱨ!"
         return v_str
+
+    @field_validator("language", mode="before")
+    @classmethod
+    def sanitize_language(cls, v: Any) -> str:
+        if not v or str(v).strip().lower() in ("string", "null", "none", ""):
+            return "sat_Olck"
+        v_str = str(v).strip()
+        return LANG_ALIASES.get(v_str, v_str)
 
     @field_validator("speaker_id", mode="before")
     @classmethod
@@ -316,7 +331,9 @@ class PipelineTextRequest(BaseModel):
     @field_validator("text", mode="before")
     @classmethod
     def text_must_not_be_blank(cls, v: Any) -> str:
-        v_str = str(v).strip() if v is not None else ""
+        v_str = str(v) if v is not None else ""
+        v_str = re.sub(r'[\r\n\t]+', ' ', v_str)
+        v_str = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', v_str).strip()
         if not v_str or v_str.lower() == "string":
             return "मैं स्कूल जाना चाहता हूँ"
         return v_str

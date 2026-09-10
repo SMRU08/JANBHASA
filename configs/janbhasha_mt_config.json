@@ -44,8 +44,8 @@
   },
   "tts": {
     "engine": "vits",
-    "model_path": "models/tts/vits-hindi-mms",
-    "config_path": "models/tts/vits-hindi-mms/config.json",
+    "model_path": "models/tts/vits-santhali",
+    "config_path": "models/tts/vits-santhali/config.json",
     "vocoder_path": null,
     "sample_rate": 22050,
     "speaker_id": 0,
