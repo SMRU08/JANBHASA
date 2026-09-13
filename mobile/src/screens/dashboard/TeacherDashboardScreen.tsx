@@ -1,9 +1,20 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { JanbhashaTheme } from '../../theme/janbhashaTheme';
 import { JanbhashaHeader } from '../../components/common/JanbhashaHeader';
+import { BluetoothStatusBar } from '../../components/common/BluetoothStatusBar';
 import { BottomNavBar } from '../../components/common/BottomNavBar';
-import { useAppStore, AppScreen } from '../../store/useAppStore';
+import { useAppStore } from '../../store/useAppStore';
+import { avatar_teacher_teacher_dashboard_1_19 } from '../../assets/images';
 
 export const TeacherDashboardScreen: React.FC = () => {
   const { navigate, refreshHealth, health, audioOutput, selectedBluetoothDevice } = useAppStore();
@@ -12,130 +23,129 @@ export const TeacherDashboardScreen: React.FC = () => {
     refreshHealth();
   }, [refreshHealth]);
 
-  const cards: Array<{
-    title: string;
-    sub: string;
-    icon: string;
-    badge?: string;
-    target: AppScreen;
-    accentColor: string;
-  }> = [
-    {
-      title: 'Live Translation',
-      sub: 'Speak Hindi → Hear Santali Ol Chiki',
-      icon: '🎙️',
-      badge: 'PRIMARY',
-      target: 'LiveTranslation',
-      accentColor: JanbhashaTheme.colors.deepGreen,
-    },
-    {
-      title: 'Classroom Broadcast',
-      sub: 'Broadcast live audio to student tablets',
-      icon: '📡',
-      target: 'Classroom',
-      accentColor: JanbhashaTheme.colors.warmOrange,
-    },
-    {
-      title: 'Curriculum Library',
-      sub: 'Grade 1-5 bilingual syllabus & stories',
-      icon: '📚',
-      target: 'Curriculum',
-      accentColor: '#2563EB',
-    },
-    {
-      title: 'Worksheets',
-      sub: 'Match pictures, generate printable PDF',
-      icon: '📝',
-      target: 'Worksheets',
-      accentColor: '#059669',
-    },
-    {
-      title: 'Flashcards',
-      sub: 'Interactive Ol Chiki vocabulary & audio',
-      icon: '🃏',
-      target: 'Flashcards',
-      accentColor: '#D97706',
-    },
-    {
-      title: 'Settings',
-      sub: 'Audio output, Bluetooth, model telemetry',
-      icon: '⚙️',
-      target: 'Settings',
-      accentColor: '#475569',
-    },
-  ];
-
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={JanbhashaTheme.colors.creamBg} barStyle="dark-content" />
-      <JanbhashaHeader
-        rightAction={
-          <TouchableOpacity
-            style={styles.modelStatusPill}
-            onPress={() => navigate('ModelStatus')}
-            activeOpacity={0.7}
-          >
-            <View style={[styles.statusDot, { backgroundColor: health ? '#10B981' : '#F59E0B' }]} />
-            <Text style={styles.statusPillText}>
-              {health ? 'AI Models Ready' : 'Connecting AI...'}
-            </Text>
-          </TouchableOpacity>
-        }
-      />
+      <StatusBar backgroundColor={JanbhashaTheme.colors.surface} barStyle="dark-content" />
+      <JanbhashaHeader showBack={false} />
+      <BluetoothStatusBar />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={styles.welcomeBanner}>
-          <Text style={styles.welcomeTitle}>Teacher Dashboard</Text>
-          <Text style={styles.welcomeSub}>Welcome, Teacher! • ᱡᱚᱦᱟᱨ ᱢᱟᱪᱮᱛ !</Text>
-          <Text style={styles.welcomeInfo}>
-            Ready to bridge classroom instruction into Santali (Ol Chiki) mother-tongue.
-          </Text>
+        {/* Profile Card Header */}
+        <View style={styles.profileHeaderCard}>
+          <Image
+            source={avatar_teacher_teacher_dashboard_1_19}
+            style={styles.teacherAvatar}
+            resizeMode="cover"
+          />
+          <View style={styles.teacherMetaCol}>
+            <View style={styles.roleBadge}>
+              <Text style={styles.roleBadgeText}>EDUCATOR PORTAL</Text>
+            </View>
+            <Text style={styles.teacherName}>Shri Anand Soren</Text>
+            <Text style={styles.teacherSchool}>Govt. Primary School • Mayurbhanj</Text>
+          </View>
         </View>
 
-        <View style={styles.grid}>
-          {cards.map((item, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={styles.card}
-              onPress={() => navigate(item.target)}
-              activeOpacity={0.82}
-            >
-              {item.badge && (
-                <View style={styles.cardBadge}>
-                  <Text style={styles.cardBadgeText}>{item.badge}</Text>
-                </View>
-              )}
-              <View style={[styles.cardIconBox, { backgroundColor: item.accentColor + '15' }]}>
-                <Text style={styles.cardIcon}>{item.icon}</Text>
+        {/* Primary Hero Action: Live Translation */}
+        <TouchableOpacity
+          style={styles.heroActionCard}
+          onPress={() => navigate('LiveTranslation')}
+          activeOpacity={0.88}
+        >
+          <View style={styles.heroCardContent}>
+            <View style={styles.heroIconBox}>
+              <Text style={{ fontSize: 32 }}>🎙️</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={styles.heroTagRow}>
+                <Text style={styles.heroTag}>CORE AI PIPELINE</Text>
+                <Text style={styles.offlineTag}>100% OFFLINE</Text>
               </View>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardSub} numberOfLines={2}>
-                {item.sub}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <View style={styles.quickAccessCard}>
-          <View style={styles.quickLeft}>
-            <Text style={styles.quickEmoji}>{audioOutput === 'bluetooth' ? '🎧' : '🔊'}</Text>
-            <View>
-              <Text style={styles.quickTitle}>Audio Output</Text>
-              <Text style={styles.quickSub}>
-                {audioOutput === 'bluetooth'
-                  ? `Mode 2: Bluetooth (${selectedBluetoothDevice?.name || 'Active'})`
-                  : 'Mode 1: Device Speaker (Built-in Active)'}
+              <Text style={styles.heroTitle}>Live Classroom Translation</Text>
+              <Text style={styles.heroSub}>
+                Speak Hindi → Whisper STT → IndicTrans2 → Santali Ol Chiki → Piper Audio
               </Text>
             </View>
           </View>
+          <View style={styles.heroFooter}>
+            <Text style={styles.heroFooterText}>Tap to start voice lecture →</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* 4-Card Bento Grid */}
+        <View style={styles.bentoGrid}>
+          {/* Bento 1: Classroom Broadcast */}
           <TouchableOpacity
-            style={styles.quickBtn}
-            onPress={() => navigate('AudioOutput')}
-            activeOpacity={0.7}
+            style={styles.bentoCard}
+            onPress={() => navigate('Classroom')}
+            activeOpacity={0.8}
           >
-            <Text style={styles.quickBtnText}>Change →</Text>
+            <View style={[styles.bentoIconBox, { backgroundColor: JanbhashaTheme.colors.mintTag }]}>
+              <Text style={{ fontSize: 24 }}>📡</Text>
+            </View>
+            <Text style={styles.bentoTitle}>Broadcast Lesson</Text>
+            <Text style={styles.bentoSub}>Stream to student tablets & speakers</Text>
+          </TouchableOpacity>
+
+          {/* Bento 2: Bilingual Curriculum */}
+          <TouchableOpacity
+            style={styles.bentoCard}
+            onPress={() => navigate('Curriculum')}
+            activeOpacity={0.8}
+          >
+            <View style={[styles.bentoIconBox, { backgroundColor: JanbhashaTheme.colors.secondaryFixed }]}>
+              <Text style={{ fontSize: 24 }}>📚</Text>
+            </View>
+            <Text style={styles.bentoTitle}>Curriculum Library</Text>
+            <Text style={styles.bentoSub}>Grade 1-5 Hindi & Santali lessons</Text>
+          </TouchableOpacity>
+
+          {/* Bento 3: Worksheet & PDF Generator */}
+          <TouchableOpacity
+            style={styles.bentoCard}
+            onPress={() => navigate('Worksheets')}
+            activeOpacity={0.8}
+          >
+            <View style={[styles.bentoIconBox, { backgroundColor: JanbhashaTheme.colors.tertiaryFixed }]}>
+              <Text style={{ fontSize: 24 }}>📝</Text>
+            </View>
+            <Text style={styles.bentoTitle}>PDF Worksheets</Text>
+            <Text style={styles.bentoSub}>Bilingual printable practice sheets</Text>
+          </TouchableOpacity>
+
+          {/* Bento 4: Audio & Bluetooth */}
+          <TouchableOpacity
+            style={styles.bentoCard}
+            onPress={() => navigate('AudioOutput')}
+            activeOpacity={0.8}
+          >
+            <View style={[styles.bentoIconBox, { backgroundColor: '#EDE9FE' }]}>
+              <Text style={{ fontSize: 24 }}>🔊</Text>
+            </View>
+            <Text style={styles.bentoTitle}>Audio Routing</Text>
+            <Text style={styles.bentoSub}>
+              {audioOutput === 'bluetooth' && selectedBluetoothDevice
+                ? selectedBluetoothDevice.name
+                : 'Device Speaker'}
+            </Text>
           </TouchableOpacity>
         </View>
+
+        {/* AI Health Bar */}
+        <TouchableOpacity
+          style={styles.aiHealthBar}
+          onPress={() => navigate('ModelStatus')}
+          activeOpacity={0.8}
+        >
+          <View style={styles.aiHealthDot} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.aiHealthTitle}>On-Device AI Engine: Operational</Text>
+            <Text style={styles.aiHealthSub}>
+              Whisper Small + IndicTrans2 INT8 + Piper VITS (60 MB ONNX)
+            </Text>
+          </View>
+          <Text style={styles.aiHealthArrow}>Diagnostics ›</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <BottomNavBar />
@@ -146,149 +156,195 @@ export const TeacherDashboardScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: JanbhashaTheme.colors.creamBg,
+    backgroundColor: JanbhashaTheme.colors.surface,
   },
   scrollContent: {
-    padding: 20,
+    padding: JanbhashaTheme.spacing.marginMobile,
     paddingBottom: 24,
   },
-  modelStatusPill: {
+  profileHeaderCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: JanbhashaTheme.colors.white,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: JanbhashaTheme.colors.cardBorder,
-  },
-  statusDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    marginRight: 6,
-  },
-  statusPillText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: JanbhashaTheme.colors.charcoalText,
-  },
-  welcomeBanner: {
-    marginBottom: 20,
-  },
-  welcomeTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: JanbhashaTheme.colors.charcoalText,
-    marginBottom: 4,
-  },
-  welcomeSub: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: JanbhashaTheme.colors.deepGreen,
-    marginBottom: 6,
-  },
-  welcomeInfo: {
-    fontSize: 13,
-    color: JanbhashaTheme.colors.mutedText,
-    lineHeight: 18,
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 14,
-  },
-  card: {
-    width: '48%',
-    backgroundColor: JanbhashaTheme.colors.white,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: JanbhashaTheme.colors.cardBorder,
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLowest,
+    borderRadius: JanbhashaTheme.borderRadius.xl,
     padding: 16,
+    borderWidth: 1,
+    borderColor: JanbhashaTheme.colors.outlineVariant,
+    marginBottom: 16,
     elevation: 2,
     shadowColor: JanbhashaTheme.colors.shadowColor,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
-    position: 'relative',
-    minHeight: 145,
   },
-  cardBadge: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+  teacherAvatar: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    marginRight: 14,
+    borderWidth: 2,
+    borderColor: JanbhashaTheme.colors.primary,
+  },
+  teacherMetaCol: {
+    flex: 1,
+  },
+  roleBadge: {
+    alignSelf: 'flex-start',
     backgroundColor: JanbhashaTheme.colors.mintTag,
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 8,
-  },
-  cardBadgeText: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: JanbhashaTheme.colors.deepGreen,
-  },
-  cardIconBox: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  cardIcon: {
-    fontSize: 24,
-  },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: JanbhashaTheme.colors.charcoalText,
+    borderRadius: JanbhashaTheme.borderRadius.full,
     marginBottom: 4,
   },
-  cardSub: {
+  roleBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.primary,
+    letterSpacing: 0.5,
+  },
+  teacherName: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.onSurface,
+  },
+  teacherSchool: {
     fontSize: 11,
-    color: JanbhashaTheme.colors.mutedText,
-    lineHeight: 15,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
+    fontWeight: '500',
+    marginTop: 2,
   },
-  quickAccessCard: {
-    marginTop: 20,
-    backgroundColor: JanbhashaTheme.colors.white,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: JanbhashaTheme.colors.cardBorder,
-    padding: 16,
+  heroActionCard: {
+    backgroundColor: JanbhashaTheme.colors.primary,
+    borderRadius: JanbhashaTheme.borderRadius.xl,
+    overflow: 'hidden',
+    marginBottom: 16,
+    elevation: 4,
+    shadowColor: JanbhashaTheme.colors.shadowColor,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+  },
+  heroCardContent: {
     flexDirection: 'row',
+    padding: 18,
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
-  quickLeft: {
+  heroIconBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 14,
+  },
+  heroTagRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
   },
-  quickEmoji: {
-    fontSize: 24,
-    marginRight: 12,
+  heroTag: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.mintTag,
+    letterSpacing: 0.5,
   },
-  quickTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: JanbhashaTheme.colors.charcoalText,
+  offlineTag: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: '#FFE082',
+    letterSpacing: 0.5,
   },
-  quickSub: {
+  heroTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.onPrimary,
+    marginBottom: 4,
+  },
+  heroSub: {
     fontSize: 11,
-    color: JanbhashaTheme.colors.mutedText,
+    color: 'rgba(255,255,255,0.85)',
+    lineHeight: 16,
   },
-  quickBtn: {
-    backgroundColor: JanbhashaTheme.colors.creamBgLight,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: JanbhashaTheme.colors.cardBorder,
+  heroFooter: {
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    alignItems: 'flex-end',
   },
-  quickBtnText: {
+  heroFooterText: {
     fontSize: 12,
     fontWeight: '700',
-    color: JanbhashaTheme.colors.deepGreen,
+    color: JanbhashaTheme.colors.onPrimary,
+  },
+  bentoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 16,
+  },
+  bentoCard: {
+    width: '48%',
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLowest,
+    borderRadius: JanbhashaTheme.borderRadius.lg,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: JanbhashaTheme.colors.outlineVariant,
+    elevation: 2,
+    shadowColor: JanbhashaTheme.colors.shadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+  },
+  bentoIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  bentoTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.onSurface,
+    marginBottom: 4,
+  },
+  bentoSub: {
+    fontSize: 10,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
+    lineHeight: 14,
+  },
+  aiHealthBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLow,
+    borderRadius: JanbhashaTheme.borderRadius.lg,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: JanbhashaTheme.colors.outlineVariant,
+  },
+  aiHealthDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#10B981',
+    marginRight: 12,
+  },
+  aiHealthTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.onSurface,
+  },
+  aiHealthSub: {
+    fontSize: 10,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
+    marginTop: 2,
+  },
+  aiHealthArrow: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.primary,
+    marginLeft: 8,
   },
 });

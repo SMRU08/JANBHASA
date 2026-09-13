@@ -144,6 +144,17 @@ class AudioService {
     return true;
   }
 
+  async isSpeechRecognitionAvailable(): Promise<boolean> {
+    if (JanbhashaModule && typeof JanbhashaModule.isSpeechRecognitionAvailable === 'function') {
+      try {
+        return await JanbhashaModule.isSpeechRecognitionAvailable();
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  }
+
   async startSpeechRecognition(language: string = 'hi'): Promise<string> {
     const hasPerm = await this.requestMicrophonePermission();
     if (!hasPerm) {

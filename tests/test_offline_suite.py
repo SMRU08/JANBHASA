@@ -3,7 +3,7 @@ import os
 import socket
 from pathlib import Path
 
-REPO_ROOT = Path(r"D:\Additional\PROJECT\JANBHASHA")
+REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from app.utils.ol_chiki import deva_to_olchiki, is_ol_chiki

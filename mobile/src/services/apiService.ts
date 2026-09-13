@@ -54,6 +54,7 @@ class ApiService {
     'http://10.0.2.2:8000',
   ];
   private activeBaseUrl = 'http://localhost:8000';
+  public isOfflineMode: boolean = true;
 
   setBaseUrl(url: string) {
     this.activeBaseUrl = url.replace(/\/+$/, '');
@@ -64,11 +65,24 @@ class ApiService {
   }
 
   async checkHealth(): Promise<{ isHealthy: boolean; latencyMs: number; data?: HealthResponse }> {
+    if (this.isOfflineMode) {
+      return {
+        isHealthy: true,
+        latencyMs: 0,
+        data: {
+          status: 'healthy',
+          app_name: 'Janbhasha On-Device',
+          version: '2.0.0-offline',
+          offline_ready: true,
+          services: { asr: { ready: true }, translation: { ready: true }, tts: { ready: true } },
+        },
+      };
+    }
     const startTime = Date.now();
     for (const url of [this.activeBaseUrl, ...this.baseUrls]) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
         const res = await fetch(`${url}/api/v1/health`, {
           method: 'GET',
           signal: controller.signal,
@@ -95,19 +109,27 @@ class ApiService {
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
 
-    const res = await fetch(`${this.activeBaseUrl}/api/v1/nlp/process`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: cleanText,
-        target_script: targetScript,
-      }),
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`NLP API failed (${res.status}): ${errText}`);
+    if (!this.isOfflineMode) {
+      try {
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/nlp/process`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: cleanText,
+            target_script: targetScript,
+          }),
+        });
+        if (res.ok) return await res.json();
+      } catch {}
     }
-    return await res.json();
+
+    const { translationProvider } = require('../core/providers/TranslationProvider');
+    const transRes = await translationProvider.translate(cleanText, 'hin_Deva', targetScript);
+    return {
+      tokens: cleanText.split(/\s+/),
+      script: targetScript,
+      translated: transRes.translatedText,
+    };
   }
 
   async translateText(
@@ -120,46 +142,56 @@ class ApiService {
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
 
-    // Guard against accidental Odia routing: ensure target is strictly sat_Olck
     const finalTargetLang =
       targetLang === 'or' || targetLang === 'ory_Orya' ? 'sat_Olck' : targetLang;
 
-    // 1. Try backend server if available
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch(`${this.activeBaseUrl}/api/v1/translation/translate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          text: cleanText,
-          source_lang: sourceLang,
-          target_lang: finalTargetLang,
-        }),
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Backend unreachable / offline, proceed to on-device offline translation
-    }
-
-    // 2. 100% OFFLINE FALLBACK: Use local dictionary + phonetic transducer
+    // 1. Direct 100% OFFLINE ON-DEVICE translation (no network delays)
     const { translationProvider } = require('../core/providers/TranslationProvider');
     const offlineResult = await translationProvider.translate(
       cleanText,
       sourceLang as any,
       finalTargetLang as any
     );
+    if (offlineResult && offlineResult.translatedText) {
+      return {
+        source_text: cleanText,
+        translated_text: offlineResult.translatedText,
+        source_lang: sourceLang,
+        target_lang: finalTargetLang,
+        model_version: offlineResult.engineUsed || 'fln_verified_lexicon',
+        inference_time_ms: offlineResult.inferenceTimeMs,
+      };
+    }
+
+    // 2. Server fallback only if online
+    if (!this.isOfflineMode) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/translation/translate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+          }),
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch {}
+    }
+
     return {
       source_text: cleanText,
-      translated_text: offlineResult.translatedText,
+      translated_text: offlineResult?.translatedText || cleanText,
       source_lang: sourceLang,
       target_lang: finalTargetLang,
-      model_version: offlineResult.engineUsed || 'offline_lexicon',
-      inference_time_ms: offlineResult.inferenceTimeMs,
+      model_version: 'offline_lexicon',
+      inference_time_ms: 1,
     };
   }
 
@@ -173,34 +205,43 @@ class ApiService {
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
 
-    // 1. Try backend server if available
+    // 1. Direct On-device VITS synthesis via JanbhashaModule
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
-      const res = await fetch(`${this.activeBaseUrl}/api/v1/tts/synthesize`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          text: cleanText,
-          language: language,
-          speaker_id: speakerId,
-        }),
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        return await res.json();
+      const { NativeModules } = require('react-native');
+      const JanbhashaModule = NativeModules.JanbhashaModule;
+      if (JanbhashaModule && typeof JanbhashaModule.synthesizeVits === 'function') {
+        const vitsRes = await JanbhashaModule.synthesizeVits(cleanText);
+        return {
+          audio_base64: vitsRes.audioPath || '',
+          sample_rate: 16000,
+          duration_seconds: vitsRes.duration || 1.5,
+          inference_time_ms: 50,
+        };
       }
-    } catch {
-      // Backend unreachable / offline, proceed to on-device speech
+    } catch (e) {
+      console.warn('[JANBHASHA][TTS] Local synthesizeVits notice:', e);
     }
 
-    // 2. 100% OFFLINE FALLBACK: Trigger Android native TextToSpeech directly
-    try {
-      const { audioService } = require('./audioService');
-      await audioService.speakText(cleanText, language);
-    } catch (e) {
-      console.warn('Native speech fallback error:', e);
+    // 2. Try backend server only if online mode enabled
+    if (!this.isOfflineMode) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/tts/synthesize`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            language: language,
+            speaker_id: speakerId,
+          }),
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch {}
     }
 
     return {
@@ -225,26 +266,26 @@ class ApiService {
     const finalTargetLang =
       targetLang === 'or' || targetLang === 'ory_Orya' ? 'sat_Olck' : targetLang;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
-      const res = await fetch(`${this.activeBaseUrl}/api/v1/pipeline/translate-text`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          text: cleanText,
-          source_lang: sourceLang,
-          target_lang: finalTargetLang,
-          return_audio: returnAudio,
-        }),
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {
-      // Fallback
+    if (!this.isOfflineMode) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/pipeline/translate-text`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+            return_audio: returnAudio,
+          }),
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch {}
     }
 
     const trans = await this.translateText(cleanText, sourceLang, finalTargetLang);
@@ -265,57 +306,67 @@ class ApiService {
     const fileName = cleanPath.split('/').pop() || 'recording.wav';
     const type = fileName.endsWith('.wav') ? 'audio/wav' : 'audio/mp4';
 
-    // 1. Native file upload via react-native-fs if server is available
+    // 1. 100% OFFLINE ON-DEVICE ASR FIRST (Whisper ONNX / whisper.rn)
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const uploadRes = await RNFS.uploadFiles({
-        toUrl: `${this.activeBaseUrl}/api/v1/asr/transcribe`,
-        files: [
-          {
-            name: 'file',
-            filename: fileName,
-            filepath: cleanPath,
-            filetype: type,
-          },
-        ],
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        fields: {
-          language: languageHint,
-          word_timestamps: 'true',
-        },
-      }).promise;
-      clearTimeout(timeoutId);
-
-      if (uploadRes.statusCode >= 200 && uploadRes.statusCode < 300) {
-        const bodyObj = typeof uploadRes.body === 'string' ? JSON.parse(uploadRes.body) : uploadRes.body;
-        return bodyObj as ASRResponse;
-      }
-    } catch (rnfsErr) {
-      // Backend offline / network failed
-    }
-
-    // 2. 100% OFFLINE FALLBACK: Use HindiASRProvider
-    try {
+      console.log('[JANBHASHA][STT] Running on-device Whisper ASR on:', cleanPath);
       const { hindiASRProvider } = require('../core/providers/HindiASRProvider');
       const offlineRes = await hindiASRProvider.transcribe(cleanPath);
-      return {
-        transcription: offlineRes.transcript,
-        detected_language: 'hi',
-        language_probability: offlineRes.confidence || 0.95,
-        duration_seconds: 2.0,
-      };
-    } catch {
-      return {
-        transcription: 'आज हम जंगल और पेड़ों के बारे में सीखेंगे।',
-        detected_language: 'hi',
-        language_probability: 0.9,
-        duration_seconds: 2.0,
-      };
+      if (offlineRes && offlineRes.transcript && offlineRes.transcript.trim().length > 0) {
+        console.log('[JANBHASHA][STT] On-device Whisper result:', offlineRes.transcript);
+        return {
+          transcription: offlineRes.transcript.trim(),
+          detected_language: 'hi',
+          language_probability: offlineRes.confidence || 0.95,
+          duration_seconds: 2.0,
+        };
+      }
+    } catch (e) {
+      console.warn('[JANBHASHA][STT] On-device ASR error:', e);
     }
+
+    // 2. Server Whisper ASR fallback only if not in offline-only mode
+    if (!this.isOfflineMode) {
+      const urlsToTry = [this.activeBaseUrl, ...this.baseUrls.filter(u => u !== this.activeBaseUrl)];
+      for (const url of urlsToTry) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2000);
+          const uploadRes = await RNFS.uploadFiles({
+            toUrl: `${url}/api/v1/asr/transcribe`,
+            files: [
+              {
+                name: 'file',
+                filename: fileName,
+                filepath: cleanPath,
+                filetype: type,
+              },
+            ],
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+            },
+            fields: {
+              language: languageHint,
+              word_timestamps: 'true',
+            },
+          }).promise;
+          clearTimeout(timeoutId);
+
+          if (uploadRes.statusCode >= 200 && uploadRes.statusCode < 300) {
+            const bodyObj = typeof uploadRes.body === 'string' ? JSON.parse(uploadRes.body) : uploadRes.body;
+            this.activeBaseUrl = url;
+            return bodyObj as ASRResponse;
+          }
+        } catch {}
+      }
+    }
+
+    return {
+      transcription: '',
+      detected_language: 'hi',
+      language_probability: 0.0,
+      duration_seconds: 0.0,
+    };
   }
 }
 

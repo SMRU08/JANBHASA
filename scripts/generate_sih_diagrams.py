@@ -9,8 +9,9 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-OUTPUT_DIR = r"D:\Additional\PROJECT\JANBHASHA\SIH\diagrams"
-SCREENSHOT_DIR = r"D:\Additional\PROJECT\JANBHASHA\SIH\screenshots"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "SIH", "diagrams")
+SCREENSHOT_DIR = os.path.join(PROJECT_ROOT, "SIH", "screenshots")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 for sub in ["teacher", "student", "translator", "classroom", "fln", "pdf"]:

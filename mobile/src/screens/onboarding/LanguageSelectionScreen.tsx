@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, ScrollView } from 'react-native';
 import { JanbhashaTheme } from '../../theme/janbhashaTheme';
 import { useAppStore, AppLanguage } from '../../store/useAppStore';
 
@@ -11,21 +11,24 @@ export const LanguageSelectionScreen: React.FC = () => {
     {
       code: 'hi' as AppLanguage,
       title: 'हिन्दी',
-      sub: 'Hindi',
+      sub: 'Hindi (Devanagari)',
+      nativeDesc: 'मातृभाषा और मानक शिक्षा माध्यम',
       flag: '🇮🇳',
+    },
+    {
+      code: 'sat' as AppLanguage,
+      title: 'ᱥᱟᱱᱛᱟᱲᱤ',
+      sub: 'Santali (Ol Chiki)',
+      nativeDesc: 'ᱟᱭᱳ ᱟᱲᱟᱝ ᱟᱨ ᱟᱹᱫᱤᱵᱟᱹᱥᱤ ᱥᱮᱪᱮᱫ',
+      flag: '📜',
+      isOlChiki: true,
     },
     {
       code: 'en' as AppLanguage,
       title: 'English',
-      sub: 'English',
+      sub: 'English (Latin)',
+      nativeDesc: 'National standard & curriculum reference',
       flag: '🇬🇧',
-    },
-    {
-      code: 'sat' as AppLanguage,
-      title: 'ᱥᱟᱱᱛᱟᱲᱤ (ᱟᱞ ᱪᱤᱠᱤ)',
-      sub: 'Santali (Ol Chiki)',
-      flag: '📜',
-      isOlChiki: true,
     },
   ];
 
@@ -36,16 +39,19 @@ export const LanguageSelectionScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={JanbhashaTheme.colors.creamBg} barStyle="dark-content" />
-      <View style={styles.content}>
+      <StatusBar backgroundColor={JanbhashaTheme.colors.surface} barStyle="dark-content" />
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.topArea}>
+          <View style={styles.sproutBadge}>
+            <Text style={{ fontSize: 22 }}>🌱</Text>
+          </View>
           <Text style={styles.appTitle}>
-            <Text style={{ color: JanbhashaTheme.colors.deepGreen }}>JAN</Text>
-            <Text style={{ color: JanbhashaTheme.colors.warmOrange }}>BHASHA</Text>
+            <Text style={{ color: JanbhashaTheme.colors.primary }}>JAN</Text>
+            <Text style={{ color: JanbhashaTheme.colors.secondary }}>BHASHA</Text>
           </Text>
-          <Text style={styles.heading}>Choose Your App Language</Text>
+          <Text style={styles.heading}>Choose Your Interface Language</Text>
           <Text style={styles.subHeading}>
-            अपनी भाषा चुनें • Select your preferred language • ᱟᱢᱟᱜ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ
+            अपनी भाषा चुनें • Select preferred language • ᱟᱢᱟᱜ ᱯᱟᱹᱨᱥᱤ ᱵᱟᱪᱷᱟᱣ ᱢᱮ
           </Text>
 
           <View style={styles.list}>
@@ -71,6 +77,7 @@ export const LanguageSelectionScreen: React.FC = () => {
                         {item.title}
                       </Text>
                       <Text style={styles.langSub}>{item.sub}</Text>
+                      <Text style={styles.nativeDesc}>{item.nativeDesc}</Text>
                     </View>
                   </View>
                   <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected]}>
@@ -82,10 +89,15 @@ export const LanguageSelectionScreen: React.FC = () => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.continueBtn} onPress={handleContinue} activeOpacity={0.85}>
-          <Text style={styles.continueText}>Continue →</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.continueBtn} onPress={handleContinue} activeOpacity={0.85}>
+            <Text style={styles.continueText}>Confirm & Continue / आगे बढ़ें →</Text>
+          </TouchableOpacity>
+          <Text style={styles.note}>
+            Speech and translation models support Hindi & Santali Ol Chiki offline.
+          </Text>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -93,52 +105,60 @@ export const LanguageSelectionScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: JanbhashaTheme.colors.creamBg,
+    backgroundColor: JanbhashaTheme.colors.surface,
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'space-between',
+    paddingHorizontal: JanbhashaTheme.spacing.marginMobile,
+    paddingVertical: 24,
   },
   topArea: {
     alignItems: 'center',
-    marginTop: 10,
+  },
+  sproutBadge: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: JanbhashaTheme.colors.mintTag,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
   },
   appTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
-    letterSpacing: 2,
-    marginBottom: 16,
+    letterSpacing: 1.5,
+    marginBottom: 10,
   },
   heading: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
-    color: JanbhashaTheme.colors.charcoalText,
-    marginBottom: 8,
+    color: JanbhashaTheme.colors.onSurface,
+    marginBottom: 6,
     textAlign: 'center',
   },
   subHeading: {
-    fontSize: 13,
-    color: JanbhashaTheme.colors.mutedText,
+    fontSize: 12,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: 24,
     lineHeight: 18,
   },
   list: {
     width: '100%',
-    gap: 16,
+    gap: 14,
   },
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: JanbhashaTheme.colors.white,
-    borderRadius: 18,
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLowest,
+    borderRadius: JanbhashaTheme.borderRadius.lg,
     borderWidth: 1.5,
-    borderColor: JanbhashaTheme.colors.cardBorder,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+    borderColor: JanbhashaTheme.colors.outlineVariant,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
     elevation: 2,
     shadowColor: JanbhashaTheme.colors.shadowColor,
     shadowOffset: { width: 0, height: 2 },
@@ -146,24 +166,26 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   selectedCard: {
-    borderColor: JanbhashaTheme.colors.deepGreen,
-    backgroundColor: JanbhashaTheme.colors.creamBgLight,
+    borderColor: JanbhashaTheme.colors.primary,
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLow,
   },
   leftRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   flagIcon: {
     fontSize: 28,
-    marginRight: 16,
+    marginRight: 14,
   },
   textCol: {
+    flex: 1,
     justifyContent: 'center',
   },
   langTitle: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '700',
-    color: JanbhashaTheme.colors.charcoalText,
+    color: JanbhashaTheme.colors.onSurface,
     marginBottom: 2,
   },
   olChikiFont: {
@@ -172,41 +194,57 @@ const styles = StyleSheet.create({
   },
   langSub: {
     fontSize: 12,
-    color: JanbhashaTheme.colors.mutedText,
-    fontWeight: '500',
+    color: JanbhashaTheme.colors.onSurfaceVariant,
+    fontWeight: '600',
+  },
+  nativeDesc: {
+    fontSize: 11,
+    color: JanbhashaTheme.colors.outline,
+    marginTop: 2,
   },
   selectedText: {
-    color: JanbhashaTheme.colors.deepGreen,
+    color: JanbhashaTheme.colors.primary,
   },
   radioOuter: {
     width: 22,
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: JanbhashaTheme.colors.cardBorder,
+    borderColor: JanbhashaTheme.colors.outlineVariant,
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft: 10,
   },
   radioOuterSelected: {
-    borderColor: JanbhashaTheme.colors.deepGreen,
+    borderColor: JanbhashaTheme.colors.primary,
   },
   radioInner: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: JanbhashaTheme.colors.deepGreen,
+    backgroundColor: JanbhashaTheme.colors.primary,
+  },
+  footer: {
+    marginTop: 24,
+    alignItems: 'center',
   },
   continueBtn: {
-    backgroundColor: JanbhashaTheme.colors.deepGreen,
+    backgroundColor: JanbhashaTheme.colors.primary,
     paddingVertical: 16,
-    borderRadius: 30,
+    borderRadius: JanbhashaTheme.borderRadius.full,
     alignItems: 'center',
     width: '100%',
     elevation: 3,
   },
   continueText: {
-    color: JanbhashaTheme.colors.white,
-    fontSize: 16,
+    color: JanbhashaTheme.colors.onPrimary,
+    fontSize: 15,
     fontWeight: '700',
+  },
+  note: {
+    fontSize: 11,
+    color: JanbhashaTheme.colors.outline,
+    textAlign: 'center',
+    marginTop: 10,
   },
 });

@@ -4,7 +4,7 @@ Runs ASR -> translate -> TTS N times and checks for memory growth,
 latency degradation, and failures.
 
 Usage:
-  cd D:\\Additional\\PROJECT\\JANBHASHA
+  cd path/to/JANBHASHA
   .\\venv\\Scripts\\Activate.ps1
   python tests/stress/stress_test.py --runs 10 --model_base models/ --output tests/stress/results.json
 """

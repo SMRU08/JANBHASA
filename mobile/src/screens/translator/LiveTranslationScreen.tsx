@@ -10,12 +10,18 @@ import {
   ActivityIndicator,
   Animated,
   Alert,
+  NativeEventEmitter,
+  NativeModules,
+  TextInput,
 } from 'react-native';
 import { JanbhashaTheme } from '../../theme/janbhashaTheme';
 import { JanbhashaHeader } from '../../components/common/JanbhashaHeader';
 import { useAppStore } from '../../store/useAppStore';
 import { apiService } from '../../services/apiService';
 import { audioService } from '../../services/audioService';
+
+const { JanbhashaModule } = NativeModules;
+const janbhashaEmitter = JanbhashaModule ? new NativeEventEmitter(JanbhashaModule) : null;
 
 type PipelineStage =
   | 'IDLE'
@@ -26,18 +32,38 @@ type PipelineStage =
   | 'PLAYING';
 
 export const LiveTranslationScreen: React.FC = () => {
-  const { audioOutput, setAudioOutput, selectedBluetoothDevice, navigate } = useAppStore();
+  const { audioOutput, setAudioOutput, selectedBluetoothDevice, navigate, setLastTranslation } = useAppStore();
 
   const [stage, setStage] = useState<PipelineStage>('IDLE');
   const [hindiTranscript, setHindiTranscript] = useState<string>('');
+  const [customTextInput, setCustomTextInput] = useState<string>('');
   const [santaliTranslation, setSantaliTranslation] = useState<string>('');
-  const [currentAudioBase64, setCurrentAudioBase64] = useState<string>('');
+  const [romanPronunciation, setRomanPronunciation] = useState<string>('');
   const [latencyMs, setLatencyMs] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [recordingSeconds, setRecordingSeconds] = useState<number>(0);
 
   // Pulse animation for recording
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const isCancelledRef = useRef<boolean>(false);
+  const lastTapTimeRef = useRef<number>(0);
+  const recordingStartTimeRef = useRef<number>(0);
+  const isProcessingRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    let interval: any = null;
+    if (stage === 'RECORDING') {
+      setRecordingSeconds(0);
+      interval = setInterval(() => {
+        setRecordingSeconds((sec) => sec + 1);
+      }, 1000);
+    } else {
+      setRecordingSeconds(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [stage]);
 
   useEffect(() => {
     let anim: Animated.CompositeAnimation | null = null;
@@ -73,49 +99,123 @@ export const LiveTranslationScreen: React.FC = () => {
     };
   }, []);
 
-  const handleStartRecording = async () => {
+  // Subscribe to live partial results from SpeechRecognizer
+  useEffect(() => {
+    if (!janbhashaEmitter) return;
+    const partialSub = janbhashaEmitter.addListener('onSpeechPartialResults', (event) => {
+      if (event?.partialText) {
+        setHindiTranscript(event.partialText);
+        setCustomTextInput(event.partialText);
+      }
+    });
+    return () => {
+      partialSub.remove();
+    };
+  }, []);
+
+  const handleToggleMicrophone = async () => {
+    const now = Date.now();
+    if (now - lastTapTimeRef.current < 500) {
+      return; // Debounce fast accidental double taps
+    }
+    lastTapTimeRef.current = now;
+
+    if (stage === 'RECORDING') {
+      await handleStopRecordingAndProcess();
+    } else if (stage === 'IDLE') {
+      await handleStartLiveRecording();
+    }
+  };
+
+  const handleStartLiveRecording = async () => {
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
+
     try {
       setErrorMessage('');
-      const started = await audioService.startRecording();
+      const hasPerm = await audioService.requestMicrophonePermission();
+      if (!hasPerm) {
+        setErrorMessage('माइक्रोफोन अनुमति आवश्यक है (Microphone permission required)');
+        Alert.alert(
+          'Microphone Permission',
+          'JANBHASHA needs access to your microphone to transcribe and translate classroom speech. Please allow microphone permission.'
+        );
+        isProcessingRef.current = false;
+        return;
+      }
+
+      setHindiTranscript('');
+      setSantaliTranslation('');
+      setRomanPronunciation('');
+      recordingStartTimeRef.current = Date.now();
+
+      // Step 1: Start native 16,000 Hz Mono 16-bit PCM AudioRecord in Scoped Storage
+      await audioService.startRecording();
       setStage('RECORDING');
     } catch (err: any) {
-      setErrorMessage(err.message || 'Failed to access microphone');
+      console.error('Start recording error:', err);
+      setErrorMessage(err.message || 'Failed to start recording');
       setStage('IDLE');
-      Alert.alert('Microphone Error', err.message || 'Could not start recording. Please check permissions.');
+    } finally {
+      isProcessingRef.current = false;
     }
   };
 
   const handleStopRecordingAndProcess = async () => {
-    if (stage !== 'RECORDING') return;
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
 
     try {
-      const audioPath = await audioService.stopRecording();
-      const startTime = Date.now();
-
-      // Stage 1: STT
-      setStage('TRANSCRIBING');
-      let transcript = '';
-      try {
-        const asrRes = await apiService.transcribeAudio(audioPath, 'hi');
-        transcript = asrRes.transcription?.trim();
-      } catch (asrErr: any) {
-        console.warn('ASR API error, falling back to offline speech recognition:', asrErr);
+      const recordingDuration = Date.now() - recordingStartTimeRef.current;
+      if (recordingDuration < 500) {
         try {
-          transcript = await audioService.startSpeechRecognition('hi');
+          await audioService.stopRecording();
         } catch {}
+        setErrorMessage('रिकॉर्डिंग बहुत छोटी थी। कृपया बोलते समय माइक चालू रखें। (Recording too short. Please speak into the mic while recording.)');
+        setStage('IDLE');
+        return;
       }
 
-      if (!transcript) {
-        // Safe offline classroom prompt fallback so teacher can immediately proceed
-        transcript = sampleClassroomPrompts[0];
+      setStage('TRANSCRIBING');
+
+      // Step 1 Finish: Finalize 44-byte RIFF 16kHz mono WAV file in Scoped Storage
+      let wavPath = '';
+      try {
+        wavPath = await audioService.stopRecording();
+      } catch (stopErr: any) {
+        console.warn('stopRecording notice:', stopErr);
       }
+
+      // Step 2: ASR (Whisper Offline / Native / API Bridge)
+      let transcript = '';
+      if (wavPath) {
+        try {
+          const asrRes = await apiService.transcribeAudio(wavPath, 'hi');
+          transcript = (asrRes?.transcription || '').trim();
+        } catch (asrErr) {
+          console.warn('Whisper ASR notice:', asrErr);
+        }
+      }
+
+      // STRICT VALIDATION: If no speech was detected, HALT the pipeline immediately.
+      // NEVER substitute dummy fallback strings.
+      if (!transcript || !transcript.trim()) {
+        setErrorMessage('कोई आवाज़ दर्ज नहीं हुई। कृपया माइक दबाकर साफ़ आवाज़ में बोलें। (No speech detected. Please speak clearly into the microphone.)');
+        setStage('IDLE');
+        return;
+      }
+
       setHindiTranscript(transcript);
+      setCustomTextInput(transcript);
 
-      // Execute translation & TTS pipeline
-      await processTextPipeline(transcript, startTime);
+      // Steps 3, 4, 5: Translation -> VITS TTS -> Playback
+      await processTextPipeline(transcript, recordingStartTimeRef.current);
     } catch (err: any) {
+      console.error('Pipeline processing error:', err);
       setErrorMessage(err.message || 'Pipeline processing failed');
       setStage('IDLE');
+    } finally {
+      isProcessingRef.current = false;
     }
   };
 
@@ -124,18 +224,31 @@ export const LiveTranslationScreen: React.FC = () => {
       setErrorMessage('');
       setHindiTranscript(text);
 
-      // Stage 2: Translation (Hindi -> Santali Ol Chiki)
+      // Step 3: Translation (Hindi -> Santali Ol Chiki)
       setStage('TRANSLATING');
       let translated = '';
+      let roman = '';
       try {
-        const transRes = await apiService.translateText(text, 'hin_Deva', 'sat_Olck');
-        translated = transRes.translated_text || '';
-      } catch {
         const { translationProvider } = require('../../core/providers/TranslationProvider');
         const offlineRes = await translationProvider.translate(text, 'hin_Deva', 'sat_Olck');
         translated = offlineRes.translatedText;
+        roman = offlineRes.romanText || '';
+      } catch (offlineErr) {
+        console.warn('Offline translation error, checking server fallback:', offlineErr);
+        try {
+          const transRes = await apiService.translateText(text, 'hin_Deva', 'sat_Olck');
+          translated = transRes.translated_text || '';
+        } catch {}
       }
+
+      if (!translated) {
+        setErrorMessage('अनुवाद उपलब्ध नहीं है (Translation not found for this input)');
+        setStage('IDLE');
+        return;
+      }
+
       setSantaliTranslation(translated);
+      setRomanPronunciation(roman);
 
       // Save to Offline Database
       try {
@@ -150,30 +263,41 @@ export const LiveTranslationScreen: React.FC = () => {
         console.warn('History save error:', dbErr);
       }
 
-      // Stage 3: TTS (Santali Text -> Audio)
+      // Step 4: TTS (Santali Text -> VITS Audio / Acoustic Model Synthesis)
       setStage('GENERATING_AUDIO');
-      let audioB64 = '';
-      try {
-        const ttsRes = await apiService.synthesizeSpeech(translated, 0);
-        audioB64 = ttsRes.audio_base64 || '';
-      } catch {
-        // Handled automatically via native TTS
-      }
-      setCurrentAudioBase64(audioB64);
-      setLatencyMs(Date.now() - startTime);
+      const calculatedLatency = Date.now() - startTime;
+      setLatencyMs(calculatedLatency);
+      setLastTranslation({
+        sourceText: text,
+        targetText: translated,
+        sourceLang: 'hin_Deva',
+        targetLang: 'sat_Olck',
+        durationSec: Math.round(calculatedLatency / 1000),
+        engineUsed: 'FLN Lexicon + VITS Neural Acoustic TTS (Offline)',
+      });
 
-      // Stage 4: Automatic Playback of Santali Audio
+      let audioResultUri = '';
+      try {
+        const ttsRes = await apiService.synthesizeSpeech(translated, 0, 'sat_Olck');
+        if (ttsRes && ttsRes.audio_base64) {
+          audioResultUri = ttsRes.audio_base64;
+        }
+      } catch (vitsErr) {
+        console.warn('VITS TTS synthesis notice:', vitsErr);
+      }
+
+      // Step 5: Playback (Play VITS audio or native transliterated speech)
       if (!isCancelledRef.current) {
         setStage('PLAYING');
         try {
-          if (audioB64) {
-            await audioService.playAudio(audioB64);
+          await audioService.stopAudio();
+          if (audioResultUri) {
+            await audioService.playAudio(audioResultUri, translated, 'sat_Olck');
           } else {
-            // Speak directly via Android Native TextToSpeech
             await audioService.speakText(translated, 'sat_Olck');
           }
         } catch (playErr) {
-          console.warn('Audio playback completed or interrupted:', playErr);
+          console.warn('Audio playback notice:', playErr);
         }
       }
       setStage('IDLE');
@@ -187,22 +311,21 @@ export const LiveTranslationScreen: React.FC = () => {
     if (!santaliTranslation) return;
     setStage('PLAYING');
     try {
-      if (currentAudioBase64) {
-        await audioService.playAudio(currentAudioBase64);
-      } else {
-        await audioService.speakText(santaliTranslation, 'sat_Olck');
-      }
-    } catch {
-      // playback done
+      await audioService.stopAudio();
+      await audioService.speakText(santaliTranslation, 'sat_Olck');
+    } catch (e) {
+      console.warn('Replay audio notice:', e);
     }
     setStage('IDLE');
   };
 
   const sampleClassroomPrompts = [
-    'आज हम एक नई कहानी सीखेंगे।',
-    'पेड़ हमें फल और ठंडी छाया देते हैं।',
-    'किताबें खोलो और चित्र देखो।',
-    'सूरज सुबह पूर्व दिशा में उगता है।',
+    { text: 'नमस्ते', label: '1. Greeting (जोहार)' },
+    { text: 'अपनी किताब खोलो', label: '2. Classroom Command' },
+    { text: 'एक से पाँच तक गिनो', label: '3. Numeracy Activity' },
+    { text: 'तुम्हारा नाम क्या है?', label: '4. Inquiry / Question' },
+    { text: 'यह महुआ का पेड़ है', label: '5. Nature & Environment' },
+    { text: 'चलो हम सब मिलकर दस तक गिनती करें', label: '6. Group Count' },
   ];
 
   return (
@@ -345,6 +468,9 @@ export const LiveTranslationScreen: React.FC = () => {
                 ) : null}
               </View>
               <Text style={styles.targetText}>{santaliTranslation || 'Translating...'}</Text>
+              {romanPronunciation ? (
+                <Text style={styles.romanPronunciationText}>🗣️ {romanPronunciation}</Text>
+              ) : null}
 
               {stage === 'PLAYING' && (
                 <View style={styles.playingBadge}>
@@ -379,6 +505,47 @@ export const LiveTranslationScreen: React.FC = () => {
           </View>
         ) : null}
 
+        {/* Manual Hindi Text Input & Translate Trigger */}
+        <View style={styles.textInputCard}>
+          <View style={styles.textInputHeader}>
+            <Text style={styles.textInputLabel}>TYPE OR EDIT HINDI (वैकल्पिक रूप से लिखें):</Text>
+            {customTextInput.length > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  setCustomTextInput('');
+                  setHindiTranscript('');
+                  setSantaliTranslation('');
+                  setRomanPronunciation('');
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.clearBtnText}>✕ साफ़ करें</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <TextInput
+            style={styles.textInputField}
+            value={customTextInput}
+            onChangeText={setCustomTextInput}
+            placeholder="यहाँ हिन्दी में लिखें या माइक से बोलें (e.g. नमस्ते, अपनी किताब खोलो)..."
+            placeholderTextColor={JanbhashaTheme.colors.mutedText}
+            multiline
+            editable={stage === 'IDLE'}
+          />
+          <TouchableOpacity
+            style={[
+              styles.translateSpeakBtn,
+              (!customTextInput.trim() || stage !== 'IDLE') && styles.translateSpeakBtnDisabled,
+            ]}
+            onPress={() => processTextPipeline(customTextInput.trim())}
+            disabled={!customTextInput.trim() || stage !== 'IDLE'}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.translateSpeakBtnIcon}>🔊</Text>
+            <Text style={styles.translateSpeakBtnText}>Translate & Speak (अनुवाद और बोलें)</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Big Central Microphone Button */}
         <View style={styles.micSection}>
           <Animated.View style={[styles.micOuterCircle, { transform: [{ scale: pulseAnim }] }]}>
@@ -389,7 +556,7 @@ export const LiveTranslationScreen: React.FC = () => {
                 (stage === 'TRANSCRIBING' || stage === 'TRANSLATING' || stage === 'GENERATING_AUDIO') &&
                   styles.micButtonBusy,
               ]}
-              onPress={stage === 'RECORDING' ? handleStopRecordingAndProcess : handleStartRecording}
+              onPress={handleToggleMicrophone}
               disabled={stage === 'TRANSCRIBING' || stage === 'TRANSLATING' || stage === 'GENERATING_AUDIO'}
               activeOpacity={0.8}
             >
@@ -404,31 +571,38 @@ export const LiveTranslationScreen: React.FC = () => {
           </Animated.View>
 
           <Text style={styles.micStatusTitle}>
-            {stage === 'IDLE' && 'TAP TO SPEAK'}
-            {stage === 'RECORDING' && 'LISTENING... (TAP TO FINISH)'}
-            {stage === 'TRANSCRIBING' && 'TRANSCRIBING SPEECH...'}
+            {stage === 'IDLE' && 'TAP TO SPEAK (माइक दबाकर बोलें)'}
+            {stage === 'RECORDING' && `RECORDING ${Math.floor(recordingSeconds / 60)}:${(recordingSeconds % 60).toString().padStart(2, '0')} (TAP TO STOP & TRANSLATE)`}
+            {stage === 'TRANSCRIBING' && 'WHISPER ASR TRANSCRIBING...'}
             {stage === 'TRANSLATING' && 'TRANSLATING TO OL CHIKI...'}
-            {stage === 'GENERATING_AUDIO' && 'GENERATING SANTALI AUDIO...'}
-            {stage === 'PLAYING' && 'PLAYING SANTALI AUDIO...'}
+            {stage === 'GENERATING_AUDIO' && 'VITS TTS SYNTHESIZING AUDIO...'}
+            {stage === 'PLAYING' && 'PLAYING SANTALI AUDIO (बोल रहा है)...'}
           </Text>
           <Text style={styles.micStatusSub}>
-            {stage === 'RECORDING' ? 'Speak clearly in Hindi' : 'Speak Hindi • Automatic Santali Playback'}
+            {stage === 'RECORDING' ? 'Speak clearly in Hindi • Tap button when done' : 'Speak Hindi • Automatic Santali Playback'}
           </Text>
         </View>
 
         {/* Sample Classroom Prompts */}
         <View style={styles.quickPromptsSection}>
-          <Text style={styles.quickPromptsHeader}>Quick Classroom Prompts (Tap to Translate):</Text>
+          <Text style={styles.quickPromptsHeader}>Quick Classroom Prompts (1-Tap Test):</Text>
           <View style={styles.promptList}>
             {sampleClassroomPrompts.map((prompt, pIdx) => (
               <TouchableOpacity
                 key={pIdx}
                 style={styles.promptChip}
-                onPress={() => processTextPipeline(prompt)}
+                onPress={() => {
+                  setCustomTextInput(prompt.text);
+                  processTextPipeline(prompt.text);
+                }}
                 disabled={stage !== 'IDLE'}
                 activeOpacity={0.7}
               >
-                <Text style={styles.promptChipText}>"{prompt}"</Text>
+                <View style={styles.promptChipHeaderRow}>
+                  <Text style={styles.promptChipBadge}>{prompt.label}</Text>
+                  <Text style={styles.promptChipAction}>Translate ➔</Text>
+                </View>
+                <Text style={styles.promptChipText}>"{prompt.text}"</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -674,6 +848,13 @@ const styles = StyleSheet.create({
     color: JanbhashaTheme.colors.deepGreen,
     lineHeight: 32,
   },
+  romanPronunciationText: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: JanbhashaTheme.colors.deepGreen,
+    marginTop: 6,
+    lineHeight: 20,
+  },
   playingBadge: {
     marginTop: 10,
     backgroundColor: JanbhashaTheme.colors.mintTag,
@@ -738,6 +919,73 @@ const styles = StyleSheet.create({
     color: JanbhashaTheme.colors.errorRed,
     fontWeight: '600',
     flex: 1,
+  },
+  textInputCard: {
+    backgroundColor: JanbhashaTheme.colors.white,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: JanbhashaTheme.colors.cardBorder,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: JanbhashaTheme.colors.shadowColor,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+  },
+  textInputHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  textInputLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.mutedText,
+    letterSpacing: 0.5,
+  },
+  clearBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.errorRed,
+  },
+  textInputField: {
+    backgroundColor: JanbhashaTheme.colors.creamBgLight,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: JanbhashaTheme.colors.cardBorder,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: JanbhashaTheme.colors.charcoalText,
+    minHeight: 48,
+    maxHeight: 90,
+    textAlignVertical: 'top',
+    marginBottom: 10,
+  },
+  translateSpeakBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: JanbhashaTheme.colors.deepGreen,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    elevation: 3,
+  },
+  translateSpeakBtnDisabled: {
+    backgroundColor: '#CBD5E1',
+    elevation: 0,
+  },
+  translateSpeakBtnIcon: {
+    fontSize: 18,
+    marginRight: 8,
+  },
+  translateSpeakBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.white,
   },
   micSection: {
     alignItems: 'center',
@@ -816,6 +1064,22 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: JanbhashaTheme.colors.cardBorder,
+  },
+  promptChipHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  promptChipBadge: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.deepGreen,
+  },
+  promptChipAction: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: JanbhashaTheme.colors.mutedText,
   },
   promptChipText: {
     fontSize: 13,

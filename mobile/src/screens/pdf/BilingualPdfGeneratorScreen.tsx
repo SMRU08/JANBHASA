@@ -11,6 +11,7 @@ import {
 import { Colors } from '../../theme/colors';
 import { SohraiWatermark } from '../../components/common/SohraiWatermark';
 import { NeumorphicButton } from '../../components/common/NeumorphicButton';
+import { JanbhashaHeader } from '../../components/common/JanbhashaHeader';
 import { generateWorksheetHtml, FLNWorksheetItem } from '../../utils/pdfBuilder';
 
 import RNFS from 'react-native-fs';
@@ -133,13 +134,7 @@ export const BilingualPdfGeneratorScreen: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor={Colors.background.slate} barStyle="dark-content" />
       <SohraiWatermark />
-
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Bilingual FLN PDF Generator</Text>
-        <Text style={styles.headerSubtitle}>
-          NIPUN Bharat • On-Device Native Print Compiler (Zero Cloud)
-        </Text>
-      </View>
+      <JanbhashaHeader showBack title="PDF Generator" subtitle="NIPUN Bharat • Native Print Compiler" />
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* Preview Card */}

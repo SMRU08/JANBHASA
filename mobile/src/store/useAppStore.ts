@@ -4,6 +4,7 @@ import { audioService, BluetoothDevice } from '../services/audioService';
 
 export type AppScreen =
   | 'Splash'
+  | 'Welcome'
   | 'LanguageSelection'
   | 'RoleSelection'
   | 'TeacherLogin'
@@ -11,12 +12,15 @@ export type AppScreen =
   | 'TeacherDashboard'
   | 'StudentDashboard'
   | 'LiveTranslation'
+  | 'TranslationResult'
   | 'AudioOutput'
+  | 'BluetoothDevice'
   | 'Classroom'
   | 'StudentClassroom'
   | 'Curriculum'
   | 'LessonDetails'
   | 'Worksheets'
+  | 'BilingualPdfGenerator'
   | 'Flashcards'
   | 'ModelStatus'
   | 'Settings'
@@ -28,6 +32,16 @@ export type AppScreen =
 export type AppLanguage = 'hi' | 'en' | 'sat';
 export type UserRole = 'teacher' | 'student' | null;
 export type AudioOutputMode = 'speaker' | 'bluetooth';
+
+export interface TranslationData {
+  sourceText: string;
+  targetText: string;
+  sourceLang: string;
+  targetLang: string;
+  audioUri?: string;
+  durationSec?: number;
+  engineUsed?: string;
+}
 
 interface AppState {
   currentScreen: AppScreen;
@@ -42,6 +56,7 @@ interface AppState {
   healthLatencyMs: number;
   selectedSubject: any | null;
   selectedWorksheet: any | null;
+  lastTranslation: TranslationData | null;
 
   // Actions
   navigate: (screen: AppScreen) => void;
@@ -55,6 +70,7 @@ interface AppState {
   refreshHealth: () => Promise<void>;
   setSelectedSubject: (subject: any) => void;
   setSelectedWorksheet: (worksheet: any) => void;
+  setLastTranslation: (trans: TranslationData | null) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -70,6 +86,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   healthLatencyMs: 0,
   selectedSubject: null,
   selectedWorksheet: null,
+  lastTranslation: null,
 
   navigate: (screen: AppScreen) => {
     const current = get().currentScreen;
@@ -126,4 +143,5 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setSelectedSubject: (selectedSubject) => set({ selectedSubject }),
   setSelectedWorksheet: (selectedWorksheet) => set({ selectedWorksheet }),
+  setLastTranslation: (lastTranslation) => set({ lastTranslation }),
 }));

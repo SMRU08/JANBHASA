@@ -10,7 +10,7 @@ export interface TranslationResult {
   sourceLang: 'hin_Deva' | 'sat_Olck';
   targetLang: 'hin_Deva' | 'sat_Olck';
   inferenceTimeMs: number;
-  engineUsed: 'fln_verified_lexicon' | 'indictrans2_int8' | 'adibhasha_lexicon' | 'onnx_tiny' | 'phonetic_transducer';
+  engineUsed: 'fln_verified_lexicon' | 'indictrans2_int8' | 'adibhasha_lexicon' | 'onnx_tiny' | 'phonetic_transducer' | 'offline_hybrid_lexicon';
 }
 
 export interface ITranslationProvider {

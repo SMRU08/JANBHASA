@@ -16,7 +16,7 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 
 # Project Paths
-PROJECT_ROOT = Path(r"D:\Additional\PROJECT\JANBHASHA")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SIH_DIR = PROJECT_ROOT / "SIH"
 DIAGRAMS_DIR = SIH_DIR / "diagrams"
 SCREENSHOTS_DIR = SIH_DIR / "screenshots"

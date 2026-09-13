@@ -77,6 +77,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // On-Device Neural AI Engines
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.18.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

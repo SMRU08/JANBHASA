@@ -49,7 +49,6 @@ export function devaToOlChiki(text: string): string {
         i += 3;
         continue;
       } else {
-        res.push('ᱚ');
         i += 2;
         continue;
       }
@@ -65,7 +64,6 @@ export function devaToOlChiki(text: string): string {
         i += 2;
         continue;
       } else {
-        res.push('ᱚ');
         i += 1;
         continue;
       }
@@ -92,6 +90,68 @@ export class TranslationProvider implements ITranslationProvider {
   private hinToSatDict: Map<string, string> = new Map();
   private satToHinDict: Map<string, string> = new Map();
 
+  private compoundPhrases: [string, string][] = [
+    ['तुम्हारा नाम क्या है', 'ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ?'],
+    ['आपका नाम क्या है', 'ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ?'],
+    ['मेरा नाम', 'ᱤᱧᱟᱜ ᱧᱩᱛᱩᱢ'],
+    ['आप कैसे हैं', 'ᱟᱢ ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱢᱟ?'],
+    ['तुम कैसे हो', 'ᱟᱢ ᱪᱮᱫ ᱞᱮᱠᱟ ᱢᱮᱱᱟᱢᱟ?'],
+    ['मैं ठीक हूँ', 'ᱤᱧ ᱵᱮᱥ ᱜᱮ ᱢᱮᱱᱟᱹᱧᱟ'],
+    ['अपनी किताब खोलो', 'ᱟᱢᱟᱜ ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱢᱮ'],
+    ['किताब खोलो', 'ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱢᱮ'],
+    ['किताब बंद करो', 'ᱯᱚᱛᱚᱵ ᱵᱚᱸᱫᱽ ᱢᱮ'],
+    ['एक से पाँच तक गिनो', 'ᱢᱤᱫ ᱠᱷᱚᱱ ᱢᱚᱬᱮ ᱫᱷᱟᱹᱵᱤᱡ ᱞᱮᱠᱷᱟᱭ ᱢᱮ'],
+    ['चलो हम सब मिलकर दस तक गिनती करें', 'ᱫᱮᱞᱟᱵᱚ ᱥᱟᱱᱟᱢ ᱠᱚ ᱢᱮᱥᱟ ᱠᱟᱛᱮ ᱜᱮᱞ ᱫᱷᱟᱹᱵᱤᱡ ᱞᱮᱠᱷᱟᱭ ᱵᱚ'],
+    ['यह महुआ का पेड़ है', 'ᱱᱚᱣᱟ ᱫᱚ ᱢᱟᱛᱠᱚᱢ ᱫᱟᱨᱮ ᱠᱟᱱᱟ'],
+    ['के बारे में', 'ᱵᱟᱵᱚᱛ'],
+    ['के बारे', 'ᱵᱟᱵᱚᱛ'],
+    ['के लिए', 'ᱞᱟᱹᱜᱤᱫ'],
+    ['के साथ', 'ᱥᱟᱶᱛᱮ'],
+    ['के पास', 'ᱥᱩᱨ ᱨᱮ'],
+    ['की तरफ', 'ᱥᱮᱫ'],
+    ['की ओर', 'ᱥᱮᱫ'],
+    ['जा रहे हैं', 'ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟᱠᱚ'],
+    ['जा रहा है', 'ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟᱭ'],
+    ['जा रही है', 'ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟᱭ'],
+    ['आ रहे हैं', 'ᱦᱤᱡᱩᱜ ᱠᱟᱱᱟᱠᱚ'],
+    ['आ रहा है', 'ᱦᱤᱡᱩᱜ ᱠᱟᱱᱟᱭ'],
+    ['कर रहे हैं', 'ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟᱠᱚ'],
+    ['पढ़ा रहे हैं', 'ᱯᱟᱲᱦᱟᱣ ᱮᱫᱟᱠᱚ'],
+    ['पढ़ रहे हैं', 'ᱯᱟᱲᱦᱟᱣᱜ ᱠᱟᱱᱟᱠᱚ'],
+    ['लिख रहे हैं', 'ᱚᱞ ᱮᱫᱟᱠᱚ'],
+    ['खड़े हो जाओ', 'ᱛᱤᱸᱜᱩᱱ ᱢᱮ'],
+    ['बैठ जाओ', 'ᱫᱩᱲᱩᱵ ᱢᱮ'],
+    ['चुप रहो', 'ᱛᱷᱤᱨ ᱛᱟᱦᱮᱸᱱ ᱢᱮ'],
+    ['मेरी बात सुनो', 'ᱤᱧᱟᱜ ᱠᱟᱛᱷᱟ ᱟᱸᱡᱚᱢ ᱢᱮ'],
+    ['ध्यान से सुनो', 'ᱫᱷᱮᱭᱟᱱ ᱛᱮ ᱟᱸᱡᱚᱢ ᱢᱮ'],
+    ['हाथ उठाओ', 'ᱛᱤ ᱛᱩᱞ ᱢᱮ'],
+    ['यहाँ आओ', 'ᱱᱚᱸᱰᱮ ᱦᱤᱡᱩᱜ ᱢᱮ'],
+    ['वहाँ जाओ', 'ᱦᱟᱸᱰᱮ ᱪᱟᱞᱟᱜ ᱢᱮ'],
+    ['घर जाओ', 'ᱚᱲᱟᱜ ᱪᱟᱞᱟᱜ ᱢᱮ'],
+    ['पानी पियो', 'ᱫᱟᱜ ᱧᱩᱭ ᱢᱮ'],
+    ['खाना खाओ', 'ᱫᱟᱠᱟ ᱡᱚᱢ ᱢᱮ'],
+    ['हाथ धो लो', 'ᱛᱤ ᱟᱹᱨᱩᱵ ᱢᱮ'],
+    ['साफ़ करो', 'ᱥᱟᱯᱷᱟᱭ ᱢᱮ'],
+    ['बहुत अच्छा', 'ᱟᱹᱰᱤ ᱵᱮᱥ'],
+    ['शाबाश', 'ᱥᱟᱨᱦᱟᱣ'],
+    ['शुभ प्रभात', 'ᱥᱟᱹᱜᱩᱱ ᱥᱮᱛᱟᱜ'],
+    ['शुभ रात्रि', 'ᱥᱟᱹᱜᱩᱱ ᱧᱤᱫᱟᱹ'],
+    ['अलविदा', 'ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟᱹᱧ'],
+    ['फिर मिलेंगे', 'ᱫᱚᱲᱦᱟ ᱵᱚᱱ ᱧᱟᱯᱟᱢᱟ'],
+    ['आज स्कूल में कार्यक्रम है', 'ᱛᱮᱦᱮᱧ ᱤᱛᱩᱱ ᱟᱥᱲᱟ ᱨᱮ ᱠᱟᱹᱢᱤᱦᱚᱨᱟ ᱢᱮᱱᱟᱜ-ᱟ'],
+    ['आप कल कितने बजे आएंगे', 'ᱟᱯᱮ ᱜᱟᱯᱟ ᱛᱤᱱᱟᱹᱜ ᱵᱟᱡᱟᱣ ᱯᱮ ᱦᱤᱡᱩᱜ-ᱟ?'],
+    ['बच्चों को अपनी किताब खोलनी चाहिए', 'ᱜᱤᱫᱽᱨᱟᱹᱠᱚ ᱟᱠᱚᱣᱟᱜ ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱫᱚᱨᱠᱟᱨ'],
+    ['हम अगले सप्ताह नई कक्षा शुरू करेंगे', 'ᱟᱵᱚ ᱫᱟᱨᱟᱭ ᱦᱟᱯᱛᱟ ᱱᱟᱣᱟ ᱪᱟᱱᱟᱪ ᱵᱚ ᱮᱛᱚᱦᱚᱵ-ᱟ'],
+    ['मुझे बाजार जाना है', 'ᱤᱧ ᱦᱟᱴ ᱪᱟᱞᱟᱜ ᱦᱩᱭᱩᱜ-ᱟ'],
+    ['मैं घर जा रहा हूँ', 'ᱤᱧ ᱚᱲᱟᱜ ᱤᱧ ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟ'],
+    ['मैं घर जा रही हूँ', 'ᱤᱧ ᱚᱲᱟᱜ ᱤᱧ ᱪᱟᱞᱟᱜ ᱠᱟᱱᱟ'],
+    ['आप क्या कर रहे हैं', 'ᱟᱯᱮ ᱪᱮᱫ ᱯᱮ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ?'],
+    ['तुम क्या कर रहे हो', 'ᱟᱢ ᱪᱮᱫ ᱮᱢ ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ?'],
+    ['यह बहुत अच्छा है', 'ᱱᱚᱣᱟ ᱫᱚ ᱟᱹᱰᱤ ᱵᱮᱥ ᱜᱮᱭᱟ'],
+    ['कृपया यहाँ बैठिए', 'ᱫᱟᱭᱟ ᱠᱟᱛᱮ ᱱᱚᱸᱰᱮ ᱫᱩᱲᱩᱵ ᱢᱮ'],
+    ['सब बच्चे यहाँ आओ', 'ᱥᱟᱱᱟᱢ ᱜᱤᱫᱽᱨᱟᱹᱠᱚ ᱱᱚᱸᱰᱮ ᱦᱤᱡᱩᱜ ᱯᱮ'],
+  ];
+
   constructor() {
     // 1. Index 368 verified FLN interactions
     for (const item of FLN_LEXICON) {
@@ -101,10 +161,140 @@ export class TranslationProvider implements ITranslationProvider {
       this.flnSatToHin.set(s, item.sourceHindi.trim());
     }
 
-    // 2. Index core vocabulary terms
+    // 2. Index core vocabulary terms and slash-separated aliases
     for (const item of SANTALI_DICTIONARY) {
-      this.hinToSatDict.set(item.hindi.trim().toLowerCase(), item.olChiki);
+      const parts = item.hindi.split('/');
+      for (const part of parts) {
+        const cleanPart = part.trim().toLowerCase();
+        if (cleanPart) {
+          this.hinToSatDict.set(cleanPart, item.olChiki);
+        }
+      }
       this.satToHinDict.set(item.olChiki.trim(), item.hindi);
+    }
+
+    // 3. Common pedagogical and conversational classroom inflections
+    const commonClassroomPairs: [string, string][] = [
+      ['बच्चे', 'ᱜᱤᱫᱽᱨᱟᱹᱠᱚ'],
+      ['बच्चा', 'ᱜᱤᱫᱽᱨᱟᱹ'],
+      ['बच्चों', 'ᱜᱤᱫᱽᱨᱟᱹᱠᱚ'],
+      ['किताबें', 'ᱯᱚᱛᱚᱵᱠᱚ'],
+      ['किताब', 'ᱯᱚᱛᱚᱵ'],
+      ['स्कूल', 'ᱤᱛᱩᱱ ᱟᱥᱲᱟ'],
+      ['विद्यालय', 'ᱤᱛᱩᱱ ᱟᱥᱲᱟ'],
+      ['कलम', 'ᱠᱚᱞᱚᱢ'],
+      ['पेन', 'ᱠᱚᱞᱚᱢ'],
+      ['छात्र', 'ᱯᱟᱹᱴᱷᱩᱣᱟᱹ'],
+      ['विद्यार्थी', 'ᱯᱟᱹᱴᱷᱩᱣᱟᱹ'],
+      ['शिक्षक', 'ᱢᱟᱪᱮᱛ'],
+      ['गुरुजी', 'ᱢᱟᱪᱮᱛ'],
+      ['कक्षा', 'ᱪᱟᱱᱟᱪ'],
+      ['क्लास', 'ᱪᱟᱱᱟᱪ'],
+      ['जाओ', 'ᱪᱟᱞᱟᱜ ᱢᱮ'],
+      ['जाना', 'ᱥᱮᱱᱚᱜ'],
+      ['आओ', 'ᱦᱤᱡᱩᱜ ᱢᱮ'],
+      ['बैठो', 'ᱫᱩᱲᱩᱵ ᱢᱮ'],
+      ['खड़े हो जाओ', 'ᱛᱤᱸᱜᱩᱱ ᱢᱮ'],
+      ['सुनो', 'ᱟᱸᱡᱚᱢ ᱢᱮ'],
+      ['देखो', 'ᱧᱮᱞ ᱢᱮ'],
+      ['पियो', 'ᱧᱩᱭ ᱢᱮ'],
+      ['पीना', 'ᱧᱩᱭ'],
+      ['खाओ', 'ᱡᱚᱢ ᱢᱮ'],
+      ['खाना', 'ᱫᱟᱠᱟ'],
+      ['पेड़', 'ᱫᱟᱨᱮ'],
+      ['पेड़ों', 'ᱫᱟᱨᱮᱠᱚ'],
+      ['जंगल', 'ᱵᱤᱨ'],
+      ['पानी', 'ᱫᱟᱜ'],
+      ['घर', 'ᱚᱲᱟᱜ'],
+      ['गाँव', 'ᱟᱹᱛᱩ'],
+      ['नाम', 'ᱧᱩᱛᱩᱢ'],
+      ['में', 'ᱨᱮ'],
+      ['पर', 'ᱨᱮ'],
+      ['से', 'ᱠᱷᱚᱱ'],
+      ['तक', 'ᱫᱷᱟᱹᱵᱤᱡ'],
+      ['का', 'ᱨᱮᱱᱟᱜ'],
+      ['के', 'ᱨᱮᱱᱟᱜ'],
+      ['की', 'ᱨᱮᱱᱟᱜ'],
+      ['को', 'ᱫᱚ'],
+      ['और', 'ᱟᱨ'],
+      ['तथा', 'ᱟᱨ'],
+      ['या', 'ᱥᱮ'],
+      ['लेकिन', 'ᱢᱮᱱᱠᱷᱟᱱ'],
+      ['भी', 'ᱦᱚᱸ'],
+      ['तो', 'ᱠᱷᱟᱱ'],
+      ['है', 'ᱠᱟᱱᱟ'],
+      ['हैं', 'ᱠᱟᱱᱟᱠᱚ'],
+      ['था', 'ᱛᱟᱦᱮᱸᱠᱟᱱᱟ'],
+      ['थी', 'ᱛᱟᱦᱮᱸᱠᱟᱱᱟ'],
+      ['थे', 'ᱛᱟᱦᱮᱸᱠᱟᱱᱟ'],
+      ['होगा', 'ᱦᱩᱭᱩᱜ-ᱟ'],
+      ['नहीं', 'ᱵᱟᱝ'],
+      ['हाँ', 'ᱦᱮᱸ'],
+      ['मत', 'ᱟᱞᱚ'],
+      ['क्या', 'ᱪᱮᱫ'],
+      ['कहाँ', 'ᱚᱠᱟᱨᱮ'],
+      ['कब', 'ᱛᱤᱥ'],
+      ['क्यों', 'ᱪᱮᱫᱟᱜ'],
+      ['कौन', 'ᱚᱠᱚᱭ'],
+      ['कैसे', 'ᱪᱮᱫ ᱞᱮᱠᱟ'],
+      ['कैसा', 'ᱪᱮᱫ ᱞᱮᱠᱟ'],
+      ['कितना', 'ᱛᱤᱱᱟᱹᱜ'],
+      ['यह', 'ᱱᱚᱣᱟ'],
+      ['ये', 'ᱱᱚᱣᱟᱠᱚ'],
+      ['वह', 'ᱦᱟᱱᱟ'],
+      ['वे', 'ᱩᱱᱠᱩ'],
+      ['यहाँ', 'ᱱᱚᱸᱰᱮ'],
+      ['वहाँ', 'ᱦᱟᱸᱰᱮ'],
+      ['हम', 'ᱟᱵᱚ'],
+      ['हमारा', 'ᱟᱵᱚᱣᱟᱜ'],
+      ['तुम', 'ᱟᱢ'],
+      ['तुम्हारा', 'ᱟᱢᱟᱜ'],
+      ['आप', 'ᱟᱯᱮ'],
+      ['आपका', 'ᱟᱯᱮᱭᱟᱜ'],
+      ['मैं', 'ᱤᱧ'],
+      ['मेरा', 'ᱤᱧᱟᱜ'],
+      ['सब', 'ᱡᱚᱛᱚ'],
+      ['सभी', 'ᱥᱟᱱᱟᱢ'],
+      ['आज', 'ᱛᱮᱦᱮᱧ'],
+      ['कल', 'ᱜᱟᱯᱟ'],
+      ['अब', 'ᱱᱤᱛ'],
+      ['सीखेंगे', 'ᱪᱮᱫᱚᱜ ᱵᱚ'],
+      ['सीखना', 'ᱪᱮᱫᱚᱜ'],
+      ['पढ़ना', 'ᱯᱟᱲᱦᱟᱣ'],
+      ['लिखना', 'ᱚᱞ'],
+      ['बोलना', 'ᱨᱚᱲ'],
+      ['बड़ा', 'ᱢᱟᱨᱟᱝ'],
+      ['छोटा', 'ᱦᱩᱰᱤᱧ'],
+      ['अच्छा', 'ᱵᱮᱥ'],
+      ['साफ़', 'ᱥᱟᱯᱷᱟ'],
+      ['सुंदर', 'ᱪᱚᱨᱚᱠ'],
+      ['नमस्ते', 'ᱡᱚᱦᱟᱨ'],
+      ['प्रणाम', 'ᱡᱚᱦᱟᱨ'],
+      ['धन्यवाद', 'ᱥᱟᱨᱦᱟᱣ'],
+      ['सब्जी', 'ᱩᱛᱩ'],
+      ['रोटी', 'ᱯᱤᱴᱷᱟᱹ'],
+      ['चावल', 'ᱫᱟᱠᱟ'],
+      ['दूध', 'ᱛᱚᱣᱟ'],
+      ['बाजार', 'ᱦᱟᱴ'],
+      ['सप्ताह', 'ᱦᱟᱯᱛᱟ'],
+      ['समय', 'ᱚᱠᱛᱚ'],
+      ['कार्यक्रम', 'ᱠᱟᱹᱢᱤᱦᱚᱨᱟ'],
+      ['शुरू', 'ᱮᱛᱚᱦᱚᱵ'],
+      ['चाहिए', 'ᱫᱚᱨᱠᱟᱨ'],
+      ['नया', 'ᱱᱟᱣᱟ'],
+      ['नई', 'ᱱᱟᱣᱟ'],
+      ['नए', 'ᱱᱟᱣᱟ'],
+      ['पुराना', 'ᱢᱟᱨᱮ'],
+      ['दिन', 'ᱢᱟᱦᱟ'],
+      ['रात', 'ᱧᱤᱫᱟᱹ'],
+      ['सुबह', 'ᱥᱮᱛᱟᱜ'],
+      ['शाम', 'ᱟᱹᱭᱩᱵ'],
+      ['दोपहर', 'ᱛᱤᱠᱤᱱ'],
+    ];
+    for (const [h, s] of commonClassroomPairs) {
+      if (!this.hinToSatDict.has(h)) {
+        this.hinToSatDict.set(h, s);
+      }
     }
   }
 
@@ -136,6 +326,7 @@ export class TranslationProvider implements ITranslationProvider {
       // 1A. Exact match in FLN Pedagogical Corpus (Ashraf01k/vernacular-pedagogy-santhali)
       if (this.flnHinToSat.has(lookupKey)) {
         const trans = this.flnHinToSat.get(lookupKey)!;
+        console.log('[JANBHASHA][NMT] Exact FLN match:', clean, '->', trans);
         return {
           sourceText: clean,
           translatedText: trans,
@@ -150,6 +341,7 @@ export class TranslationProvider implements ITranslationProvider {
       // 1B. Exact dictionary match (AdiBhasha)
       if (this.hinToSatDict.has(lookupKey)) {
         const trans = this.hinToSatDict.get(lookupKey)!;
+        console.log('[JANBHASHA][NMT] Exact dictionary match:', clean, '->', trans);
         return {
           sourceText: clean,
           translatedText: trans,
@@ -167,6 +359,7 @@ export class TranslationProvider implements ITranslationProvider {
         if (g.__janbhasha && typeof g.__janbhasha.translate === 'function') {
           const res = await g.__janbhasha.translate(clean, 'hin', 'Deva', 'sat', 'Olck');
           if (res && res.translatedText) {
+            console.log('[JANBHASHA][NMT] Native IndicTrans2 inference:', clean, '->', res.translatedText);
             return {
               sourceText: clean,
               translatedText: res.translatedText,
@@ -182,10 +375,25 @@ export class TranslationProvider implements ITranslationProvider {
         // Fall back gracefully to lexicon decomposition
       }
 
-      // 1D. Subword & multi-token compound lookup with Ol Chiki phonetic transducer
-      const words = clean.split(/\s+/);
+      // 1D. Subword & multi-token compound lookup
+      let workingText = clean;
+      for (const [phrase, sat] of this.compoundPhrases) {
+        const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(^|\\s)${escaped}($|\\s|[,?.!|।])`, 'gi');
+        workingText = workingText.replace(regex, (match, prefix, suffix) => {
+          return `${prefix}${sat}${suffix}`;
+        });
+      }
+
+      const words = workingText.trim().split(/\s+/);
       let hitCount = 0;
       const translatedWords = words.map((w) => {
+        // If already translated into Ol Chiki by compound phrase match, preserve as-is
+        if (/[\u1C50-\u1C7F]/.test(w)) {
+          hitCount++;
+          return w;
+        }
+
         const punctuation = w.match(/[,?.!|।]+$/)?.[0] || '';
         const bareWord = w.replace(/[,?.!|।]+$/, '').toLowerCase();
         
@@ -199,11 +407,16 @@ export class TranslationProvider implements ITranslationProvider {
           hitCount++;
           return this.hinToSatDict.get(bareWord)! + (punctuation === '।' ? '᱾' : punctuation);
         }
-        // Phonetic transducer to Ol Chiki
-        return devaToOlChiki(bareWord) + (punctuation === '।' ? '᱾' : punctuation);
+        // Unmatched words: transliterate Devanagari phonetically to Ol Chiki
+        // so VITS TTS model can speak in authentic Ol Chiki phonemes
+        if (/[\u0900-\u097F]/.test(bareWord)) {
+          return devaToOlChiki(bareWord) + (punctuation === '।' ? '᱾' : punctuation);
+        }
+        return w;
       });
 
       const translated = translatedWords.join(' ');
+      console.log('[JANBHASHA][NMT] Decomposed translation:', clean, '->', translated);
       return {
         sourceText: clean,
         translatedText: translated,
@@ -211,7 +424,7 @@ export class TranslationProvider implements ITranslationProvider {
         sourceLang,
         targetLang,
         inferenceTimeMs: Date.now() - t0,
-        engineUsed: hitCount > 0 ? 'fln_verified_lexicon' : 'phonetic_transducer',
+        engineUsed: hitCount > 0 ? 'fln_verified_lexicon' : 'offline_hybrid_lexicon',
       };
     } else {
       // ---------------------------------------------------------------

@@ -35,3 +35,6 @@
 # Suppress harmless warnings from framework reflective lookups
 -dontwarn com.facebook.react.**
 -dontwarn com.tencent.mmkv.**
+
+# whisper.rn
+-keep class com.rnwhisper.** { *; }

@@ -5,7 +5,7 @@
 
 ```powershell
 # 1. Activate Python venv
-cd D:\Additional\PROJECT\JANBHASHA
+cd JANBHASHA
 .\venv\Scripts\Activate.ps1
 
 # 2. Verify offline env vars are set (for backend tests)

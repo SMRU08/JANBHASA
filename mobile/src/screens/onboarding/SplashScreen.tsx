@@ -1,7 +1,8 @@
-﻿import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { JanbhashaTheme } from '../../theme/janbhashaTheme';
 import { useAppStore } from '../../store/useAppStore';
+import { village_school_banyan } from '../../assets/images';
 
 export const SplashScreen: React.FC = () => {
   const { navigate, refreshHealth } = useAppStore();
@@ -9,48 +10,54 @@ export const SplashScreen: React.FC = () => {
   useEffect(() => {
     refreshHealth();
     const timer = setTimeout(() => {
-      navigate('LanguageSelection');
-    }, 2400);
+      navigate('Welcome');
+    }, 2800);
     return () => clearTimeout(timer);
   }, [navigate, refreshHealth]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={JanbhashaTheme.colors.creamBg} barStyle="dark-content" />
+      <StatusBar backgroundColor={JanbhashaTheme.colors.surface} barStyle="dark-content" />
       <View style={styles.content}>
+        {/* Header Branding */}
         <View style={styles.headerArea}>
           <View style={styles.sproutBadge}>
             <Text style={styles.sproutEmoji}>🌱</Text>
           </View>
           <Text style={styles.brandTitle}>
-            <Text style={{ color: JanbhashaTheme.colors.deepGreen }}>JAN</Text>
-            <Text style={{ color: JanbhashaTheme.colors.warmOrange }}>BHASHA</Text>
+            <Text style={{ color: JanbhashaTheme.colors.primary }}>JAN</Text>
+            <Text style={{ color: JanbhashaTheme.colors.secondary }}>BHASHA</Text>
           </Text>
           <Text style={styles.tagline}>Bridging Languages • Empowering Communities</Text>
+          <Text style={styles.olChikiTagline}>ᱯᱟᱹᱨᱥᱤ ᱛᱮ ᱞᱟᱦᱟᱱᱛᱤ • ᱥᱮᱪᱮᱫ ᱨᱮᱱᱟᱜ ᱥᱟᱹᱜᱟᱹᱭ</Text>
         </View>
 
+        {/* High-fidelity Tactile Hero Card */}
         <View style={styles.illustrationCard}>
-          <View style={styles.artLandscape}>
-            <Text style={styles.artEmojiRow}>☀️ ☁️ ⛰️</Text>
-            <Text style={styles.artEmojiCenter}>🌳 🏫 🌳 🏡</Text>
-            <Text style={styles.artEmojiChildren}>🎒 👧🏽 👦🏽 👧🏽 🎒</Text>
+          <Image
+            source={village_school_banyan}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+          <View style={styles.overlayTextContainer}>
+            <Text style={styles.visionTitle}>Bhasha se Vikas, Sabke Liye Shiksha</Text>
+            <Text style={styles.visionSubtitle}>
+              100% Offline AI Vernacular Pedagogy for Hindi ↔ Santali Primary Education (NEP 2020)
+            </Text>
           </View>
-          <Text style={styles.visionTitle}>Bhasha se Vikas, Sabke Liye Shiksha</Text>
-          <Text style={styles.visionSubtitle}>
-            AI-Powered Vernacular Pedagogy for Mother-Tongue Primary Education (NEP 2020)
-          </Text>
         </View>
 
+        {/* Bottom Actions */}
         <View style={styles.footerArea}>
           <TouchableOpacity
             style={styles.continueBtn}
-            onPress={() => navigate('LanguageSelection')}
+            onPress={() => navigate('Welcome')}
             activeOpacity={0.85}
           >
-            <Text style={styles.continueText}>Get Started →</Text>
+            <Text style={styles.continueText}>Get Started / सुरु करा →</Text>
           </TouchableOpacity>
           <Text style={styles.footerTag}>
-            Inclusive Education • Stronger Communities • A Brighter Tomorrow
+            100% Air-Gapped Offline AI • Whisper + IndicTrans2 + Piper VITS
           </Text>
         </View>
       </View>
@@ -61,112 +68,108 @@ export const SplashScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: JanbhashaTheme.colors.creamBg,
+    backgroundColor: JanbhashaTheme.colors.surface,
   },
   content: {
     flex: 1,
     justifyContent: 'space-between',
     paddingHorizontal: 24,
-    paddingVertical: 32,
+    paddingVertical: 24,
   },
   headerArea: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   sproutBadge: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: JanbhashaTheme.colors.mintTag,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
+    elevation: 2,
   },
   sproutEmoji: {
-    fontSize: 34,
+    fontSize: 32,
   },
   brandTitle: {
     fontSize: 34,
     fontWeight: '900',
     letterSpacing: 2,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   tagline: {
-    fontSize: 14,
-    color: JanbhashaTheme.colors.mutedText,
+    fontSize: 13,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
     fontWeight: '600',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
+    textAlign: 'center',
+  },
+  olChikiTagline: {
+    fontFamily: JanbhashaTheme.fonts.olChikiBold,
+    fontSize: 14,
+    color: JanbhashaTheme.colors.primary,
+    marginTop: 4,
     textAlign: 'center',
   },
   illustrationCard: {
-    backgroundColor: JanbhashaTheme.colors.white,
-    borderRadius: 24,
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLowest,
+    borderRadius: JanbhashaTheme.borderRadius.xl,
     borderWidth: 1,
-    borderColor: JanbhashaTheme.colors.cardBorder,
-    padding: 24,
-    alignItems: 'center',
+    borderColor: JanbhashaTheme.colors.outlineVariant,
+    overflow: 'hidden',
     elevation: 3,
     shadowColor: JanbhashaTheme.colors.shadowColor,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 10,
-    marginVertical: 20,
+    marginVertical: 16,
   },
-  artLandscape: {
-    alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: JanbhashaTheme.colors.creamBgLight,
+  heroImage: {
     width: '100%',
-    borderRadius: 18,
-    paddingVertical: 24,
+    height: 200,
   },
-  artEmojiRow: {
-    fontSize: 30,
-    marginBottom: 8,
-  },
-  artEmojiCenter: {
-    fontSize: 36,
-    marginBottom: 8,
-  },
-  artEmojiChildren: {
-    fontSize: 30,
+  overlayTextContainer: {
+    padding: 18,
+    alignItems: 'center',
+    backgroundColor: JanbhashaTheme.colors.surfaceContainerLow,
   },
   visionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '800',
-    color: JanbhashaTheme.colors.deepGreen,
-    marginBottom: 8,
+    color: JanbhashaTheme.colors.primary,
+    marginBottom: 6,
     textAlign: 'center',
   },
   visionSubtitle: {
-    fontSize: 13,
-    color: JanbhashaTheme.colors.mutedText,
+    fontSize: 12,
+    color: JanbhashaTheme.colors.onSurfaceVariant,
     textAlign: 'center',
-    lineHeight: 19,
-    paddingHorizontal: 12,
+    lineHeight: 18,
   },
   footerArea: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   continueBtn: {
-    backgroundColor: JanbhashaTheme.colors.deepGreen,
-    paddingVertical: 15,
+    backgroundColor: JanbhashaTheme.colors.primary,
+    paddingVertical: 16,
     paddingHorizontal: 36,
-    borderRadius: 30,
+    borderRadius: JanbhashaTheme.borderRadius.full,
     width: '100%',
     alignItems: 'center',
     elevation: 3,
-    marginBottom: 14,
+    marginBottom: 12,
   },
   continueText: {
-    color: JanbhashaTheme.colors.white,
+    color: JanbhashaTheme.colors.onPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
   footerTag: {
-    fontSize: 12,
-    color: JanbhashaTheme.colors.lightText,
+    fontSize: 11,
+    color: JanbhashaTheme.colors.outline,
     fontWeight: '600',
     textAlign: 'center',
   },
