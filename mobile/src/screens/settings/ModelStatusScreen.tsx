@@ -93,8 +93,8 @@ export const ModelStatusScreen: React.FC = () => {
               <Text style={styles.summaryTitle}>AI Pipeline Health</Text>
               <Text style={styles.summarySub}>
                 Status:{' '}
-                <Text style={{ fontWeight: '800', color: '#10B981' }}>
-                  {isServerReady ? 'ALL MODELS OPERATIONAL (SERVER)' : 'OFFLINE ENGINE ACTIVE (ON-DEVICE)'}
+                <Text style={{ fontWeight: '800', color: (isAsrReady && isTtsReady) ? '#10B981' : '#F59E0B' }}>
+                  {isAsrReady && isTtsReady ? 'ALL ON-DEVICE MODELS READY (100% OFFLINE)' : 'MODELS INITIALIZING'}
                 </Text>
               </Text>
             </View>

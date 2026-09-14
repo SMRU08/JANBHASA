@@ -87,8 +87,10 @@ class AudioTrackPlayer {
             }
 
             if (isPlaying) {
-                val drainMs = ((samples.size.toFloat() / SAMPLE_RATE) * 1000).toLong().coerceAtMost(3000)
-                kotlinx.coroutines.delay(drainMs)
+                val playedFrames = track.playbackHeadPosition
+                val remainingFrames = (samples.size - playedFrames).coerceAtLeast(0)
+                val remainingMs = (remainingFrames * 1000L) / SAMPLE_RATE + 150L
+                kotlinx.coroutines.delay(remainingMs.coerceIn(50L, 15000L))
             }
 
             Log.i(TAG, "AudioTrack playback completed successfully")

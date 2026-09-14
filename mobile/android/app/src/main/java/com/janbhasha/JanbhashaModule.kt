@@ -723,13 +723,15 @@ class JanbhashaModule(
                     }
                 }
 
-                setDataSource(targetPath)
+                val cleanTargetPath = targetPath.replace("file://", "")
+                setDataSource(cleanTargetPath)
                 setOnCompletionListener {
-                    it.release()
+                    try { it.release() } catch (_: Exception) {}
                     mediaPlayer = null
                     promise.resolve("COMPLETED")
                 }
-                setOnErrorListener { _, what, extra ->
+                setOnErrorListener { mp, what, extra ->
+                    try { mp.release() } catch (_: Exception) {}
                     mediaPlayer = null
                     promise.reject("PLAYBACK_ERROR", "MediaPlayer error: what=$what extra=$extra")
                     true

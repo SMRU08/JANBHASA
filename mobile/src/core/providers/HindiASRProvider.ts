@@ -162,7 +162,7 @@ export class HindiASRProvider {
             confidence: 0.0,
             isFinal: true,
             language: 'hin_Deva',
-            status: 'empty_audio',
+            status: 'unavailable',
           };
         }
       } else {
@@ -172,7 +172,7 @@ export class HindiASRProvider {
           confidence: 0.0,
           isFinal: true,
           language: 'hin_Deva',
-          status: 'file_not_found',
+          status: 'error',
         };
       }
     } catch (fsErr: any) {
@@ -237,7 +237,7 @@ export class HindiASRProvider {
       const g = global as unknown as { __janbhasha?: any };
       if (g.__janbhasha && typeof g.__janbhasha.transcribe === 'function') {
         logSTT('Trying native JSI __janbhasha.transcribe...');
-        const nativeRes = await g.__janbhasha.transcribe(audioPath, 'hi');
+        const nativeRes = await g.__janbhasha.transcribe(cleanPath, 'hi');
         if (nativeRes?.transcript && !nativeRes.transcript.includes('PLACEHOLDER')) {
           logSTT(`JSI transcribed: "${nativeRes.transcript.trim()}"`);
           return {
