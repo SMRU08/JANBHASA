@@ -1237,6 +1237,25 @@ class JanbhashaModule(
     }
 
     @ReactMethod
+    fun setTtsSpeed(speed: String, promise: Promise) {
+        try {
+            vitsEngine.setSpeedMode(speed)
+            promise.resolve(vitsEngine.getLengthScale().toDouble())
+        } catch (e: Exception) {
+            promise.reject("SET_SPEED_FAILED", e.message ?: "Failed to set TTS speed", e)
+        }
+    }
+
+    @ReactMethod
+    fun getTtsSpeed(promise: Promise) {
+        try {
+            promise.resolve(vitsEngine.getLengthScale().toDouble())
+        } catch (e: Exception) {
+            promise.reject("GET_SPEED_FAILED", e.message ?: "Failed to get TTS speed", e)
+        }
+    }
+
+    @ReactMethod
     fun checkLocalModelsStatus(promise: Promise) {
         try {
             val map = Arguments.createMap()

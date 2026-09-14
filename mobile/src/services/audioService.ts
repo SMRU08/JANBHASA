@@ -144,6 +144,28 @@ class AudioService {
     return true;
   }
 
+  async setTtsSpeed(speed: 'slow' | 'normal' | 'fast'): Promise<number> {
+    if (JanbhashaModule && typeof JanbhashaModule.setTtsSpeed === 'function') {
+      try {
+        return await JanbhashaModule.setTtsSpeed(speed);
+      } catch (err) {
+        console.warn('setTtsSpeed error:', err);
+      }
+    }
+    return 1.25;
+  }
+
+  async getTtsSpeed(): Promise<number> {
+    if (JanbhashaModule && typeof JanbhashaModule.getTtsSpeed === 'function') {
+      try {
+        return await JanbhashaModule.getTtsSpeed();
+      } catch (err) {
+        console.warn('getTtsSpeed error:', err);
+      }
+    }
+    return 1.25;
+  }
+
   async isSpeechRecognitionAvailable(): Promise<boolean> {
     if (JanbhashaModule && typeof JanbhashaModule.isSpeechRecognitionAvailable === 'function') {
       try {

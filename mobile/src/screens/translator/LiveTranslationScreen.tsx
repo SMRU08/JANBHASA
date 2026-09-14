@@ -43,6 +43,16 @@ export const LiveTranslationScreen: React.FC = () => {
   const [latencyMs, setLatencyMs] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [recordingSeconds, setRecordingSeconds] = useState<number>(0);
+  const [ttsSpeed, setTtsSpeedState] = useState<'slow' | 'normal' | 'fast'>('normal');
+
+  const handleChangeSpeed = async (speed: 'slow' | 'normal' | 'fast') => {
+    setTtsSpeedState(speed);
+    try {
+      await audioService.setTtsSpeed(speed);
+    } catch (e) {
+      console.warn('setTtsSpeed notice:', e);
+    }
+  };
 
   // Pulse animation for recording
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -438,6 +448,42 @@ export const LiveTranslationScreen: React.FC = () => {
                   <Text style={[styles.modeCheckText, { color: '#1D4ED8' }]}>✓ ON</Text>
                 </View>
               )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Classroom Teaching Voice Speed Selector */}
+        <View style={styles.speedModesContainer}>
+          <Text style={styles.speedModesLabel}>CLASSROOM VOICE CADENCE (बोलने की गति):</Text>
+          <View style={styles.speedPillsRow}>
+            <TouchableOpacity
+              style={[styles.speedPill, ttsSpeed === 'slow' && styles.speedPillActive]}
+              onPress={() => handleChangeSpeed('slow')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, ttsSpeed === 'slow' && styles.speedPillTextActive]}>
+                🐢 Slow (1.4x)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.speedPill, ttsSpeed === 'normal' && styles.speedPillActive]}
+              onPress={() => handleChangeSpeed('normal')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, ttsSpeed === 'normal' && styles.speedPillTextActive]}>
+                🎓 Classroom (1.25x)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.speedPill, ttsSpeed === 'fast' && styles.speedPillActive]}
+              onPress={() => handleChangeSpeed('fast')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, ttsSpeed === 'fast' && styles.speedPillTextActive]}>
+                ⚡ Fast (1.0x)
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1111,4 +1157,49 @@ const styles = StyleSheet.create({
     color: JanbhashaTheme.colors.mutedText,
     lineHeight: 16,
   },
+  speedModesContainer: {
+    marginTop: 14,
+    backgroundColor: JanbhashaTheme.colors.white,
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1.5,
+    borderColor: JanbhashaTheme.colors.cardBorder,
+  },
+  speedModesLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.charcoalText,
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  speedPillsRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  speedPill: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: JanbhashaTheme.colors.creamBgLight,
+    borderWidth: 1.5,
+    borderColor: JanbhashaTheme.colors.cardBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  speedPillActive: {
+    backgroundColor: '#FEF3C7',
+    borderColor: '#D97706',
+  },
+  speedPillText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: JanbhashaTheme.colors.charcoalText,
+    textAlign: 'center',
+  },
+  speedPillTextActive: {
+    color: '#92400E',
+    fontWeight: '800',
+  },
 });
+
