@@ -160,7 +160,8 @@ export const LiveTranslationScreen: React.FC = () => {
         return;
       }
 
-      setHindiTranscript('');
+      // Keep previous Hindi transcript visible while recording new speech
+      // Only clear the Santali side so it doesn't show stale translation
       setSantaliTranslation('');
       setRomanPronunciation('');
       recordingStartTimeRef.current = Date.now();
@@ -516,17 +517,33 @@ export const LiveTranslationScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Translation Results Display */}
-        {hindiTranscript ? (
+        {/* Translation Results Display — always show Hindi card when recording or have text */}
+        {(hindiTranscript || stage === 'RECORDING' || stage === 'TRANSCRIBING' || stage === 'TRANSLATING' || stage === 'GENERATING_AUDIO' || stage === 'PLAYING') ? (
           <View style={styles.resultsContainer}>
-            {/* Hindi Source Card */}
+            {/* Hindi Source Card — always visible once mic is tapped */}
             <View style={styles.resultCard}>
               <View style={styles.cardHeaderRow}>
                 <View style={styles.cardTag}>
                   <Text style={styles.cardTagText}>हिन्दी (You said)</Text>
                 </View>
               </View>
-              <Text style={styles.sourceText}>{hindiTranscript}</Text>
+              {stage === 'RECORDING' ? (
+                <Text style={[styles.sourceText, { color: '#e53935', fontStyle: 'italic' }]}>
+                  🎙️ सुन रहा है... बोलते रहें{'\n'}
+                  <Text style={{ fontSize: 13, color: '#888' }}>(Listening... keep speaking)</Text>
+                </Text>
+              ) : stage === 'TRANSCRIBING' ? (
+                <Text style={[styles.sourceText, { color: '#f57c00', fontStyle: 'italic' }]}>
+                  ⏳ आपकी आवाज़ पहचान रहा है...{'\n'}
+                  <Text style={{ fontSize: 13, color: '#888' }}>(Transcribing your speech...)</Text>
+                </Text>
+              ) : hindiTranscript ? (
+                <Text style={styles.sourceText}>{hindiTranscript}</Text>
+              ) : (
+                <Text style={[styles.sourceText, { color: '#888', fontStyle: 'italic' }]}>
+                  हिंदी पाठ यहाँ दिखेगा...
+                </Text>
+              )}
             </View>
 
             {/* Santali Target Card */}
