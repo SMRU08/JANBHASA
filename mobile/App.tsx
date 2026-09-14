@@ -4,6 +4,7 @@ import { useAppStore } from './src/store/useAppStore';
 import { JanbhashaTheme } from './src/theme/janbhashaTheme';
 import { useResponsive } from './src/hooks/useResponsive';
 import { SidebarNavigation } from './src/components/common/SidebarNavigation';
+import { warmupWhisper } from './src/core/providers/HindiASRProvider';
 
 // Screens
 import { SplashScreen } from './src/screens/onboarding/SplashScreen';
@@ -38,6 +39,8 @@ export default function App() {
 
   useEffect(() => {
     refreshHealth();
+    // Pre-install whisper.rn JSI bindings immediately at app startup
+    warmupWhisper().catch(() => {});
 
     const onBackPress = () => {
       if (

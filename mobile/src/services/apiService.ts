@@ -60,6 +60,12 @@ class ApiService {
   }
 
   async checkHealth(): Promise<{ isHealthy: boolean; latencyMs: number; data?: HealthResponse }> {
+    // Pre-warm whisper engine in background so JSI is ready before user speaks
+    try {
+      const { warmupWhisper } = require('../core/providers/HindiASRProvider');
+      warmupWhisper().catch(() => {});
+    } catch (_) {}
+
     return {
       isHealthy: true,
       latencyMs: 0,

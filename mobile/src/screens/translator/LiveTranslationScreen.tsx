@@ -19,6 +19,7 @@ import { JanbhashaHeader } from '../../components/common/JanbhashaHeader';
 import { useAppStore } from '../../store/useAppStore';
 import { apiService } from '../../services/apiService';
 import { audioService } from '../../services/audioService';
+import { warmupWhisper } from '../../core/providers/HindiASRProvider';
 
 const { JanbhashaModule } = NativeModules;
 const janbhashaEmitter = JanbhashaModule ? new NativeEventEmitter(JanbhashaModule) : null;
@@ -97,6 +98,11 @@ export const LiveTranslationScreen: React.FC = () => {
       isCancelledRef.current = true;
       audioService.stopAudio();
     };
+  }, []);
+
+  // Pre-warm whisper.rn JSI on screen mount so it's ready before user speaks
+  useEffect(() => {
+    warmupWhisper().catch(() => {});
   }, []);
 
   // Subscribe to live partial results from SpeechRecognizer

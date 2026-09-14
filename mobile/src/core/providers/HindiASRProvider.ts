@@ -2,109 +2,188 @@ import { ASRResult } from './ISpeechProvider';
 import RNFS from 'react-native-fs';
 import { NativeModules } from 'react-native';
 
+const { JanbhashaModule } = NativeModules;
+
 let whisperContext: any = null;
 let initPromise: Promise<any> | null = null;
+let jsiInstallAttempted = false;
 
 function logSTT(message: string): void {
   console.log(`[JANBHASHA][STT] ${message}`);
   try {
-    NativeModules.JanbhashaModule?.log('STT', message);
+    JanbhashaModule?.log('STT', message);
   } catch (_) {}
 }
 
+/**
+ * Explicitly install whisper.rn JSI bindings.
+ * Must be called BEFORE initWhisper.
+ */
+async function ensureJsiInstalled(): Promise<boolean> {
+  if (jsiInstallAttempted) return true;
+  jsiInstallAttempted = true;
+  try {
+    const { installJsi } = require('whisper.rn');
+    await installJsi();
+    logSTT('whisper.rn JSI bindings installed successfully');
+    return true;
+  } catch (e: any) {
+    logSTT(`whisper.rn JSI install warning: ${e?.message || e}`);
+    // Try explicit install via NativeModules.RNWhisper as fallback
+    try {
+      const { NativeModules: NM } = require('react-native');
+      const rnWhisper = NM.RNWhisper;
+      if (rnWhisper && typeof rnWhisper.install === 'function') {
+        await rnWhisper.install();
+        logSTT('RNWhisper.install() called via NativeModules fallback');
+        // Re-try installJsi now that native binding is present
+        try {
+          const { installJsi } = require('whisper.rn');
+          await installJsi();
+          logSTT('whisper.rn JSI bindings installed via fallback');
+          return true;
+        } catch (e2: any) {
+          logSTT(`whisper.rn JSI fallback install warning: ${e2?.message || e2}`);
+        }
+      }
+    } catch (fe: any) {
+      logSTT(`RNWhisper fallback install error: ${fe?.message || fe}`);
+    }
+    return false;
+  }
+}
+
+/**
+ * Resolve the on-device Whisper model path.
+ */
+async function resolveModelPath(): Promise<string> {
+  let nativeModelsDir = '';
+  try {
+    if (JanbhashaModule && typeof JanbhashaModule.getModelsPath === 'function') {
+      nativeModelsDir = await JanbhashaModule.getModelsPath();
+      logSTT(`Native models dir: ${nativeModelsDir}`);
+    }
+  } catch (ne: any) {
+    logSTT(`getModelsPath error: ${ne?.message || ne}`);
+  }
+
+  const candidatePaths = [
+    nativeModelsDir ? `${nativeModelsDir}/ggml-tiny.bin` : '',
+    nativeModelsDir ? `${nativeModelsDir}/asr/ggml-tiny.bin` : '',
+    `${RNFS.ExternalDirectoryPath}/models/ggml-tiny.bin`,
+    '/sdcard/Android/data/com.janbhasha/files/models/ggml-tiny.bin',
+    '/storage/emulated/0/Android/data/com.janbhasha/files/models/ggml-tiny.bin',
+    `${RNFS.DocumentDirectoryPath}/models/ggml-tiny.bin`,
+    '/sdcard/Janbhasha/models/ggml-tiny.bin',
+    '/storage/emulated/0/Janbhasha/models/ggml-tiny.bin',
+  ].filter(Boolean);
+
+  for (const p of candidatePaths) {
+    try {
+      const exists = await RNFS.exists(p);
+      if (exists) {
+        const stat = await RNFS.stat(p);
+        if (stat.size > 10 * 1024 * 1024) {
+          logSTT(`Valid model found (${Math.round(stat.size / (1024 * 1024))} MB) at: ${p}`);
+          return p;
+        } else {
+          logSTT(`Skipping incomplete model at ${p} (${stat.size} bytes)`);
+        }
+      }
+    } catch (_) {}
+  }
+
+  logSTT('No valid ggml-tiny.bin found on device');
+  return '';
+}
+
+/**
+ * Initialize Whisper context (singleton, deduped).
+ */
 async function getOrInitWhisperContext(): Promise<any> {
   if (whisperContext) return whisperContext;
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
     try {
+      // Step 1: ensure JSI is installed
+      await ensureJsiInstalled();
+
+      // Step 2: find the model file
+      const modelPath = await resolveModelPath();
+      if (!modelPath) {
+        logSTT('Cannot initialize Whisper: no model file found');
+        return null;
+      }
+
+      // Step 3: init whisper context
+      logSTT(`Initializing Whisper context from: ${modelPath}`);
       const { initWhisper } = require('whisper.rn');
-
-      // 1. Check native module reported models directory first
-      let nativeModelsDir = '';
-      try {
-        if (NativeModules.JanbhashaModule && typeof NativeModules.JanbhashaModule.getModelsPath === 'function') {
-          nativeModelsDir = await NativeModules.JanbhashaModule.getModelsPath();
-          logSTT(`Native models dir reported as: ${nativeModelsDir}`);
-        }
-      } catch (ne: any) {
-        logSTT(`JanbhashaModule.getModelsPath error: ${ne?.message || ne}`);
-      }
-
-      const candidatePaths = [
-        nativeModelsDir ? `${nativeModelsDir}/ggml-tiny.bin` : '',
-        nativeModelsDir ? `${nativeModelsDir}/asr/whisper-small-ct2/ggml-tiny.bin` : '',
-        nativeModelsDir ? `${nativeModelsDir}/asr/ggml-tiny.bin` : '',
-        `${RNFS.ExternalDirectoryPath}/models/ggml-tiny.bin`,
-        `${RNFS.ExternalDirectoryPath}/models/asr/ggml-tiny.bin`,
-        '/sdcard/Android/data/com.janbhasha/files/models/ggml-tiny.bin',
-        '/storage/emulated/0/Android/data/com.janbhasha/files/models/ggml-tiny.bin',
-        `${RNFS.DocumentDirectoryPath}/models/ggml-tiny.bin`,
-        `${RNFS.DocumentDirectoryPath}/models/asr/ggml-tiny.bin`,
-        '/sdcard/Janbhasha/models/ggml-tiny.bin',
-        '/storage/emulated/0/Janbhasha/models/ggml-tiny.bin',
-      ].filter(Boolean);
-
-      let modelPath = '';
-      for (const p of candidatePaths) {
-        try {
-          const exists = await RNFS.exists(p);
-          if (exists) {
-            const stat = await RNFS.stat(p);
-            if (stat.size > 10 * 1024 * 1024) {
-              modelPath = p;
-              logSTT(`Valid Whisper model found (${Math.round(stat.size / (1024 * 1024))} MB) at: ${p}`);
-              break;
-            } else {
-              logSTT(`Skipping incomplete model at ${p} (size: ${stat.size} bytes)`);
-            }
-          }
-        } catch (checkErr: any) {
-          logSTT(`Error checking path ${p}: ${checkErr?.message || checkErr}`);
-        }
-      }
-
-      if (modelPath) {
-        logSTT(`Initializing on-device Whisper from: ${modelPath}`);
-        whisperContext = await initWhisper({ filePath: modelPath });
-        logSTT('Whisper engine initialized successfully');
-        return whisperContext;
-      } else {
-        logSTT('No valid ggml-tiny.bin found on device storage');
-      }
+      const ctx = await initWhisper({ filePath: modelPath });
+      logSTT('Whisper context initialized successfully');
+      whisperContext = ctx;
+      return ctx;
     } catch (err: any) {
-      logSTT(`Whisper on-device init error: ${err?.message || err}`);
+      logSTT(`Whisper init error: ${err?.message || err}`);
+      return null;
     } finally {
-      initPromise = null;
+      initPromise = null; // Reset so next call retries if it failed
     }
-    return null;
   })();
 
   return initPromise;
 }
 
+/**
+ * Pre-warm the Whisper engine in background (call on app/screen mount).
+ */
+export async function warmupWhisper(): Promise<void> {
+  try {
+    logSTT('Pre-warming Whisper engine...');
+    await getOrInitWhisperContext();
+  } catch (_) {}
+}
+
 export class HindiASRProvider {
   async transcribe(audioPath: string): Promise<ASRResult> {
     const cleanPath = audioPath.replace('file://', '');
-    logSTT(`Transcribing audio file at: ${cleanPath}`);
+    logSTT(`transcribe() called with: ${cleanPath}`);
 
+    // Validate audio file exists
     try {
       const exists = await RNFS.exists(cleanPath);
       if (exists) {
         const stat = await RNFS.stat(cleanPath);
-        logSTT(`Audio file confirmed (${stat.size} bytes)`);
+        logSTT(`Audio file: ${stat.size} bytes`);
+        if (stat.size <= 44) {
+          logSTT('Audio file is empty (WAV header only) — recording captured no audio data');
+          return {
+            transcript: '',
+            confidence: 0.0,
+            isFinal: true,
+            language: 'hin_Deva',
+            status: 'empty_audio',
+          };
+        }
       } else {
-        logSTT(`Audio file not found at ${cleanPath}`);
+        logSTT(`Audio file NOT FOUND at: ${cleanPath}`);
+        return {
+          transcript: '',
+          confidence: 0.0,
+          isFinal: true,
+          language: 'hin_Deva',
+          status: 'file_not_found',
+        };
       }
     } catch (fsErr: any) {
-      logSTT(`Audio file check warning: ${fsErr?.message || fsErr}`);
+      logSTT(`Audio file check error: ${fsErr?.message || fsErr}`);
     }
 
-    // 1. Try on-device Whisper (whisper.rn / whisper.cpp) if local model file exists
+    // PATH 1: whisper.rn on-device Whisper
     try {
       const ctx = await getOrInitWhisperContext();
       if (ctx) {
-        logSTT('Calling ctx.transcribe()...');
+        logSTT('Running whisper.rn transcription...');
         const { promise } = ctx.transcribe(cleanPath, {
           language: 'hi',
           maxThreads: 4,
@@ -112,17 +191,26 @@ export class HindiASRProvider {
           temperature: 0.0,
           translate: false,
         });
-        const transcribeResult = await promise;
-        const rawResult = transcribeResult?.result || '';
-        logSTT(`Whisper raw transcript: "${rawResult}"`);
+
+        // 60-second timeout for transcription
+        const transcribeResult = await Promise.race([
+          promise,
+          new Promise<null>((_, reject) =>
+            setTimeout(() => reject(new Error('Whisper transcription timeout after 60s')), 60000)
+          ),
+        ]);
+
+        const rawResult = (transcribeResult as any)?.result || '';
+        logSTT(`Whisper raw result: "${rawResult}"`);
 
         const cleanResult = rawResult
           .replace(/\[.*?\]/g, '')
           .replace(/\(.*?\)/g, '')
+          .replace(/^\s*\.\s*$/, '')
           .trim();
 
         if (cleanResult.length > 0) {
-          logSTT(`Recognized speech: "${cleanResult}"`);
+          logSTT(`Whisper transcribed: "${cleanResult}"`);
           return {
             transcript: cleanResult,
             confidence: 0.95,
@@ -131,36 +219,41 @@ export class HindiASRProvider {
             status: 'success',
           };
         } else {
-          logSTT('Whisper returned empty transcript or only silence/special tokens');
+          logSTT('Whisper returned empty or silence-only result');
+          // Reset context so next call re-inits (model might be in bad state)
+          whisperContext = null;
         }
       } else {
-        logSTT('Whisper context is null; cannot run on-device Whisper');
+        logSTT('Whisper context is null — JSI install may have failed');
       }
     } catch (wErr: any) {
-      logSTT(`whisper.rn transcribe notice: ${wErr?.message || wErr}`);
+      logSTT(`whisper.rn transcribe error: ${wErr?.message || wErr}`);
+      // Reset context on error
+      whisperContext = null;
     }
 
-    // 2. Try JSI native Whisper if available
+    // PATH 2: JSI global.__janbhasha.transcribe (native C++ bridge)
     try {
       const g = global as unknown as { __janbhasha?: any };
       if (g.__janbhasha && typeof g.__janbhasha.transcribe === 'function') {
+        logSTT('Trying native JSI __janbhasha.transcribe...');
         const nativeRes = await g.__janbhasha.transcribe(audioPath, 'hi');
-        if (nativeRes && nativeRes.transcript && !nativeRes.transcript.includes('PLACEHOLDER')) {
-          logSTT(`Native JSI recognized text: ${nativeRes.transcript.trim()}`);
+        if (nativeRes?.transcript && !nativeRes.transcript.includes('PLACEHOLDER')) {
+          logSTT(`JSI transcribed: "${nativeRes.transcript.trim()}"`);
           return {
             transcript: nativeRes.transcript.trim(),
-            confidence: nativeRes.confidence || 0.95,
+            confidence: nativeRes.confidence || 0.9,
             isFinal: true,
             language: 'hin_Deva',
             status: 'success',
           };
         }
       }
-    } catch (e: any) {
-      logSTT(`Native ASR transcribe error: ${e?.message || e}`);
+    } catch (jsiErr: any) {
+      logSTT(`JSI transcribe error: ${jsiErr?.message || jsiErr}`);
     }
 
-    logSTT('No transcript produced by offline ASR engines');
+    logSTT('All ASR engines exhausted — no transcript produced');
     return {
       transcript: '',
       confidence: 0.0,
@@ -172,4 +265,3 @@ export class HindiASRProvider {
 }
 
 export const hindiASRProvider = new HindiASRProvider();
-
