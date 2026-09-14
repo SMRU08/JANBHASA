@@ -75,6 +75,45 @@ class AudioService {
     throw new Error('Native JanbhashaModule.stopRecording unavailable');
   }
 
+  /**
+   * Validate a recorded WAV file. Returns diagnostic info including validity,
+   * duration, RMS level, and a human-readable message.
+   */
+  async validateWavFile(filePath: string): Promise<{
+    valid: boolean;
+    size: number;
+    durationSec: number;
+    headerOk: boolean;
+    rmsDb: number;
+    message: string;
+  }> {
+    if (JanbhashaModule && typeof JanbhashaModule.validateWavFile === 'function') {
+      return await JanbhashaModule.validateWavFile(filePath);
+    }
+    // Fallback: basic size check
+    return { valid: true, size: 0, durationSec: 0, headerOk: true, rmsDb: -40, message: 'Native validateWavFile unavailable — assuming OK' };
+  }
+
+  /**
+   * Run a 1-second microphone hardware diagnostic.
+   * Returns { rmsDb, peakDb, working, message }.
+   */
+  async diagnoseMicrophone(): Promise<{
+    rmsDb: number;
+    peakDb: number;
+    working: boolean;
+    message: string;
+  }> {
+    const hasPerm = await this.requestMicrophonePermission();
+    if (!hasPerm) {
+      return { rmsDb: -100, peakDb: -100, working: false, message: 'Microphone permission denied' };
+    }
+    if (JanbhashaModule && typeof JanbhashaModule.diagnoseMicrophone === 'function') {
+      return await JanbhashaModule.diagnoseMicrophone();
+    }
+    return { rmsDb: -100, peakDb: -100, working: false, message: 'Native diagnoseMicrophone unavailable' };
+  }
+
   async playAudio(audioInput: string, textFallback?: string, language: string = 'sat_Olck'): Promise<string> {
     if (!audioInput) {
       if (textFallback) {

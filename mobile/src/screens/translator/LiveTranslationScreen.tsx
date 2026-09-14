@@ -202,6 +202,34 @@ export const LiveTranslationScreen: React.FC = () => {
         console.warn('stopRecording notice:', stopErr);
       }
 
+      // Step 1.5: Validate WAV before sending to Whisper — diagnose root cause
+      if (wavPath) {
+        try {
+          const { JanbhashaModule } = require('react-native').NativeModules;
+          if (JanbhashaModule && typeof JanbhashaModule.validateWavFile === 'function') {
+            const wavInfo = await JanbhashaModule.validateWavFile(wavPath);
+            console.log('[JANBHASHA][WAV-CHECK]', JSON.stringify(wavInfo));
+            if (!wavInfo.valid) {
+              // Specific error messages based on diagnosis
+              if (wavInfo.size <= 44) {
+                setErrorMessage(`माइक से कोई आवाज़ रिकॉर्ड नहीं हुई (WAV: ${wavInfo.size} bytes)। कृपया पुनः बोलें। (Microphone captured no audio. Please try again.)`);
+              } else if (!wavInfo.headerOk) {
+                setErrorMessage('रिकॉर्डिंग फ़ाइल दूषित है। कृपया पुनः प्रयास करें। (Recording file corrupted. Please try again.)');
+              } else if (wavInfo.durationSec < 0.1) {
+                setErrorMessage(`रिकॉर्डिंग बहुत छोटी (${wavInfo.durationSec.toFixed(2)}s)। थोड़ा लंबे समय तक बोलें। (Recording too short. Please speak longer.)`);
+              } else {
+                setErrorMessage(`आवाज़ बहुत धीमी (${wavInfo.rmsDb?.toFixed(1)} dBFS)। माइक के पास बोलें। (Audio too quiet. Speak closer to microphone.)`);
+              }
+              setStage('IDLE');
+              return;
+            }
+          }
+        } catch (valErr) {
+          // Non-critical — if validation fails, still try Whisper
+          console.warn('[JANBHASHA][WAV-CHECK] Validation error:', valErr);
+        }
+      }
+
       // Step 2: ASR (Whisper Offline / Native / API Bridge)
       let transcript = '';
       if (wavPath) {
@@ -216,7 +244,7 @@ export const LiveTranslationScreen: React.FC = () => {
       // STRICT VALIDATION: If no speech was detected, HALT the pipeline immediately.
       // NEVER substitute dummy fallback strings.
       if (!transcript || !transcript.trim()) {
-        setErrorMessage('कोई आवाज़ दर्ज नहीं हुई। कृपया माइक दबाकर साफ़ आवाज़ में बोलें। (No speech detected. Please speak clearly into the microphone.)');
+        setErrorMessage('Whisper ने कोई हिंदी वाक्य नहीं पहचाना। कृपया साफ़ आवाज़ में हिंदी में बोलें। (Whisper could not recognize Hindi speech. Please speak clearly in Hindi.)');
         setStage('IDLE');
         return;
       }

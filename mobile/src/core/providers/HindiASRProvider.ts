@@ -219,17 +219,20 @@ export class HindiASRProvider {
             status: 'success',
           };
         } else {
-          logSTT('Whisper returned empty or silence-only result');
-          // Reset context so next call re-inits (model might be in bad state)
-          whisperContext = null;
+          // Empty result is normal (silence / too short) — do NOT reset context
+          // Resetting would cause 30-60s re-init penalty on every empty result
+          logSTT('Whisper returned empty or silence-only result — keeping context alive for next call');
         }
       } else {
         logSTT('Whisper context is null — JSI install may have failed');
       }
     } catch (wErr: any) {
       logSTT(`whisper.rn transcribe error: ${wErr?.message || wErr}`);
-      // Reset context on error
-      whisperContext = null;
+      // Only reset context on actual hard errors (not timeouts — those recover)
+      if (wErr?.message && !wErr.message.includes('timeout')) {
+        whisperContext = null;
+        logSTT('Whisper context reset due to hard error');
+      }
     }
 
     // PATH 2: JSI global.__janbhasha.transcribe (native C++ bridge)

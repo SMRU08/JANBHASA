@@ -492,6 +492,9 @@ class JanbhashaModule(
 
             wavRecordingThread = Thread {
                 val tempPcm = File(outputDir, "temp_stream.pcm")
+                var totalBytesWritten = 0L
+                var totalRmsSum = 0.0
+                var totalSamplesCount = 0L
                 try {
                     FileOutputStream(tempPcm).use { fos ->
                         val buffer = ByteArray(bufferSize)
@@ -500,6 +503,7 @@ class JanbhashaModule(
                             val read = recorder.read(buffer, 0, buffer.size)
                             if (read > 0) {
                                 fos.write(buffer, 0, read)
+                                totalBytesWritten += read
                                 val now = System.currentTimeMillis()
                                 if (now - lastEmitTime > 100) {
                                     lastEmitTime = now
@@ -510,21 +514,43 @@ class JanbhashaModule(
                                         sum += sample * sample
                                     }
                                     val rms = if (shortsCount > 0) Math.sqrt(sum / shortsCount) else 0.0
+                                    totalRmsSum += rms * shortsCount
+                                    totalSamplesCount += shortsCount
                                     val db = if (rms > 0) 20 * Math.log10(rms / 32767.0) else -100.0
                                     val map = Arguments.createMap()
                                     map.putDouble("rmsdB", db)
                                     sendEvent("onAudioLevel", map)
                                 }
+                            } else if (read == AudioRecord.ERROR_INVALID_OPERATION || read == AudioRecord.ERROR_BAD_VALUE) {
+                                Log.w(TAG, "[JANBHASHA][MIC] AudioRecord.read() error code: $read — stopping capture")
+                                break
                             }
                         }
+                        fos.flush()
+                    }
+                    val avgRms = if (totalSamplesCount > 0) totalRmsSum / totalSamplesCount else 0.0
+                    val avgDb = if (avgRms > 0) 20 * Math.log10(avgRms / 32767.0) else -100.0
+                    val durationSec = totalBytesWritten.toFloat() / (sampleRate * 2)
+                    Log.i(TAG, "[JANBHASHA][MIC] PCM capture complete: ${totalBytesWritten} bytes, ${String.format("%.2f", durationSec)}s, avg RMS ${String.format("%.1f", avgDb)} dBFS")
+                    if (totalBytesWritten < 1600) {
+                        Log.w(TAG, "[JANBHASHA][MIC][WARN] Very few PCM bytes captured (${totalBytesWritten}) — mic may not be working!")
                     }
                     writeWavHeaderAndData(tempPcm, wavFile, sampleRate, 1, 16)
+                    Log.i(TAG, "[JANBHASHA][MIC] WAV written: ${wavFile.length()} bytes at ${wavFile.absolutePath}")
                     if (tempPcm.exists()) {
                         tempPcm.delete()
                     }
-                    Log.i(TAG, "Standard 16kHz RIFF WAV generated in Scoped Storage: ${wavFile.length()} bytes at ${wavFile.absolutePath}")
                 } catch (e: Exception) {
-                    Log.e(TAG, "Audio recording stream error: ${e.message}", e)
+                    Log.e(TAG, "[JANBHASHA][MIC][ERROR] Audio recording stream error: ${e.message}", e)
+                    // Attempt WAV write even after error — partial audio is better than nothing
+                    try {
+                        if (tempPcm.exists() && tempPcm.length() > 0) {
+                            writeWavHeaderAndData(tempPcm, wavFile, sampleRate, 1, 16)
+                            Log.w(TAG, "[JANBHASHA][MIC] WAV written from partial PCM after error: ${wavFile.length()} bytes")
+                        }
+                    } catch (we: Exception) {
+                        Log.e(TAG, "[JANBHASHA][MIC][ERROR] WAV write-after-error also failed: ${we.message}")
+                    }
                 }
             }
             wavRecordingThread?.start()
@@ -568,6 +594,169 @@ class JanbhashaModule(
         }
     }
 
+    /**
+     * Validate a WAV file before sending to Whisper.
+     * Returns: { valid, size, durationSec, headerOk, rmsDb, message }
+     */
+    @ReactMethod
+    fun validateWavFile(filePath: String, promise: Promise) {
+        try {
+            val cleanPath = filePath.replace("file://", "")
+            val file = File(cleanPath)
+            val result = Arguments.createMap()
+
+            if (!file.exists()) {
+                result.putBoolean("valid", false)
+                result.putString("message", "File does not exist: $cleanPath")
+                result.putDouble("size", 0.0)
+                result.putDouble("durationSec", 0.0)
+                result.putBoolean("headerOk", false)
+                result.putDouble("rmsDb", -100.0)
+                promise.resolve(result)
+                return
+            }
+
+            val size = file.length()
+            result.putDouble("size", size.toDouble())
+
+            if (size <= 44) {
+                result.putBoolean("valid", false)
+                result.putBoolean("headerOk", size >= 44)
+                result.putString("message", "File too small (${size} bytes) — no audio captured")
+                result.putDouble("durationSec", 0.0)
+                result.putDouble("rmsDb", -100.0)
+                promise.resolve(result)
+                return
+            }
+
+            // Read and verify RIFF header
+            val headerBytes = ByteArray(44)
+            file.inputStream().use { it.read(headerBytes) }
+            val riff = String(headerBytes, 0, 4)
+            val wave = String(headerBytes, 8, 4)
+            val headerOk = riff == "RIFF" && wave == "WAVE"
+
+            // Calculate duration from PCM bytes
+            val pcmBytes = size - 44
+            val durationSec = pcmBytes.toFloat() / (16000 * 2)  // 16kHz, 16-bit mono
+
+            // Sample RMS from first 1s of audio (32000 bytes = 16000 samples × 2 bytes)
+            val sampleBytes = minOf(32000L, pcmBytes).toInt()
+            var rmsSum = 0.0
+            var samplesRead = 0
+            if (sampleBytes > 0) {
+                val sampleData = ByteArray(sampleBytes)
+                file.inputStream().use { fis ->
+                    fis.skip(44)
+                    fis.read(sampleData, 0, sampleBytes)
+                }
+                for (i in 0 until sampleBytes / 2) {
+                    val sample = ((sampleData[i * 2 + 1].toInt() shl 8) or (sampleData[i * 2].toInt() and 0xFF)).toShort()
+                    rmsSum += sample.toLong() * sample.toLong()
+                    samplesRead++
+                }
+            }
+            val rms = if (samplesRead > 0) Math.sqrt(rmsSum / samplesRead) else 0.0
+            val rmsDb = if (rms > 0) 20 * Math.log10(rms / 32767.0) else -100.0
+
+            val isValid = headerOk && durationSec >= 0.1 && rmsDb > -70.0
+            result.putBoolean("valid", isValid)
+            result.putBoolean("headerOk", headerOk)
+            result.putDouble("durationSec", durationSec.toDouble())
+            result.putDouble("rmsDb", rmsDb)
+            result.putString("message", if (isValid) "WAV OK: ${String.format("%.2f", durationSec)}s, RMS ${String.format("%.1f", rmsDb)} dBFS"
+                else if (!headerOk) "Invalid RIFF/WAVE header"
+                else if (durationSec < 0.1) "Too short (${String.format("%.2f", durationSec)}s)"
+                else "Audio too quiet (${String.format("%.1f", rmsDb)} dBFS) — possible silence")
+
+            Log.i(TAG, "[JANBHASHA][WAV] Validation: $cleanPath → valid=$isValid, ${String.format("%.2f", durationSec)}s, RMS ${String.format("%.1f", rmsDb)} dBFS")
+            promise.resolve(result)
+        } catch (e: Exception) {
+            Log.e(TAG, "[JANBHASHA][WAV] validateWavFile error: ${e.message}", e)
+            promise.reject("VALIDATE_WAV_FAILED", e.message ?: "WAV validation failed", e)
+        }
+    }
+
+    /**
+     * Quick 1-second microphone diagnostic: records 1s of PCM and measures RMS.
+     * Use this in diagnostics screen to confirm mic is physically working.
+     * Returns: { rmsDb, peakDb, working, message }
+     */
+    @ReactMethod
+    fun diagnoseMicrophone(promise: Promise) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val sampleRate = 16000
+                val channelConfig = AudioFormat.CHANNEL_IN_MONO
+                val audioFormat = AudioFormat.ENCODING_PCM_16BIT
+                val minBuf = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat)
+                val bufSize = if (minBuf > 0) maxOf(minBuf * 2, 4096) else 4096
+
+                var rec: AudioRecord? = null
+                try {
+                    rec = AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, sampleRate, channelConfig, audioFormat, bufSize)
+                } catch (_: Exception) {}
+                if (rec == null || rec.state != AudioRecord.STATE_INITIALIZED) {
+                    rec?.release()
+                    rec = AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufSize)
+                }
+
+                if (rec.state != AudioRecord.STATE_INITIALIZED) {
+                    rec.release()
+                    withContext(Dispatchers.Main) {
+                        promise.reject("MIC_INIT_FAILED", "AudioRecord failed to initialize — check RECORD_AUDIO permission")
+                    }
+                    return@launch
+                }
+
+                rec.startRecording()
+                val buffer = ByteArray(bufSize)
+                var rmsSum = 0.0
+                var peakSample = 0.0
+                var totalSamples = 0
+                val endTime = System.currentTimeMillis() + 1000  // 1-second test
+
+                while (System.currentTimeMillis() < endTime) {
+                    val read = rec.read(buffer, 0, buffer.size)
+                    if (read > 0) {
+                        for (i in 0 until read / 2) {
+                            val sample = Math.abs(((buffer[i * 2 + 1].toInt() shl 8) or (buffer[i * 2].toInt() and 0xFF)).toShort().toDouble())
+                            rmsSum += sample * sample
+                            if (sample > peakSample) peakSample = sample
+                            totalSamples++
+                        }
+                    }
+                }
+                rec.stop()
+                rec.release()
+
+                val rms = if (totalSamples > 0) Math.sqrt(rmsSum / totalSamples) else 0.0
+                val rmsDb = if (rms > 0) 20 * Math.log10(rms / 32767.0) else -100.0
+                val peakDb = if (peakSample > 0) 20 * Math.log10(peakSample / 32767.0) else -100.0
+                val isWorking = rmsDb > -60.0  // Threshold: anything above -60 dBFS is real audio
+
+                val resultMap = Arguments.createMap()
+                resultMap.putDouble("rmsDb", rmsDb)
+                resultMap.putDouble("peakDb", peakDb)
+                resultMap.putBoolean("working", isWorking)
+                resultMap.putString("message", if (isWorking)
+                    "Microphone OK: RMS ${String.format("%.1f", rmsDb)} dBFS, Peak ${String.format("%.1f", peakDb)} dBFS"
+                else
+                    "Microphone silent: RMS ${String.format("%.1f", rmsDb)} dBFS — check permission or cover")
+
+                Log.i(TAG, "[JANBHASHA][MIC-DIAG] ${resultMap.getString("message")}")
+                withContext(Dispatchers.Main) {
+                    promise.resolve(resultMap)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "[JANBHASHA][MIC-DIAG] Error: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    promise.reject("MIC_DIAG_FAILED", e.message ?: "Microphone diagnostic failed", e)
+                }
+            }
+        }
+    }
+
     // ----------------------------------------------------------------
     // Pipeline Orchestration Module (Strict Sequential Execution)
     // 1. Live Audio Capture -> 2. Whisper ASR -> 3. NMT -> 4. VITS TTS -> 5. Playback
@@ -607,19 +796,36 @@ class JanbhashaModule(
     }
 
     private fun stopCurrentRecording() {
-        try {
-            isRecordingWav = false
-            audioRecord?.let {
-                if (it.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
-                    it.stop()
+        // Signal the recording loop to stop FIRST, before touching AudioRecord
+        isRecordingWav = false
+
+        // Stop and release AudioRecord safely
+        val rec = audioRecord
+        audioRecord = null
+        if (rec != null) {
+            try {
+                // Only call stop() if actually recording — calling stop() in STOPPED state throws IllegalStateException
+                if (rec.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
+                    rec.stop()
                 }
-                it.release()
+            } catch (e: Exception) {
+                Log.w(TAG, "[JANBHASHA][MIC] AudioRecord.stop() warning: ${e.message}")
             }
-            audioRecord = null
-            // Ensure background WAV encoder completes writing the 44-byte RIFF header and payload
-            wavRecordingThread?.join(2500)
-            wavRecordingThread = null
-        } catch (_: Exception) {}
+            try {
+                rec.release()
+            } catch (e: Exception) {
+                Log.w(TAG, "[JANBHASHA][MIC] AudioRecord.release() warning: ${e.message}")
+            }
+        }
+
+        // Wait for the WAV encoder thread to finish writing PCM + RIFF header (up to 5s)
+        // This is CRITICAL — if we return before the thread writes the WAV, the file will be empty
+        try {
+            wavRecordingThread?.join(5000)
+        } catch (e: InterruptedException) {
+            Log.w(TAG, "[JANBHASHA][MIC] WAV encoder thread join interrupted: ${e.message}")
+        }
+        wavRecordingThread = null
     }
 
     private fun writeWavHeaderAndData(pcmFile: File, wavFile: File, sampleRate: Int, channels: Int, bitsPerSample: Int) {
