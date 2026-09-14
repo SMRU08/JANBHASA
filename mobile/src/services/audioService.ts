@@ -337,6 +337,74 @@ class AudioService {
     }
     return false;
   }
+
+  /**
+   * Get list of all supported Santali voices (Piper VITS + Indic Parler-TTS Arjun & Pushpa).
+   */
+  async getSantaliVoices(): Promise<SantaliVoiceInfo[]> {
+    if (JanbhashaModule && typeof JanbhashaModule.getSantaliVoices === 'function') {
+      try {
+        return await JanbhashaModule.getSantaliVoices();
+      } catch (err) {
+        console.warn('getSantaliVoices notice:', err);
+      }
+    }
+    // Fallback static list
+    return [
+      { id: 'PIPER_CLASSROOM', name: 'Santali Teacher (Default)', engine: 'PIPER_VITS', isPremium: false, available: true },
+      { id: 'PIPER_SLOW', name: 'Santali Teacher (Slow)', engine: 'PIPER_VITS', isPremium: false, available: true },
+      { id: 'PIPER_FAST', name: 'Santali Conversational', engine: 'PIPER_VITS', isPremium: false, available: true },
+      { id: 'PARLER_ARJUN', name: 'Arjun Premium', engine: 'INDIC_PARLER_TTS', isPremium: true, available: false },
+      { id: 'PARLER_PUSHPA', name: 'Pushpa Premium', engine: 'INDIC_PARLER_TTS', isPremium: true, available: false },
+    ];
+  }
+
+  /**
+   * Set the active Santali voice. Supports PIPER_CLASSROOM, PIPER_SLOW, PIPER_FAST, PARLER_ARJUN, PARLER_PUSHPA.
+   */
+  async setSantaliVoice(speakerId: string): Promise<SantaliVoiceInfo> {
+    if (JanbhashaModule && typeof JanbhashaModule.setSantaliVoice === 'function') {
+      return await JanbhashaModule.setSantaliVoice(speakerId);
+    }
+    return { id: speakerId, name: speakerId, engine: speakerId.startsWith('PARLER') ? 'INDIC_PARLER_TTS' : 'PIPER_VITS', isPremium: speakerId.startsWith('PARLER'), available: true };
+  }
+
+  /**
+   * Get the currently active Santali voice.
+   */
+  async getActiveSantaliVoice(): Promise<SantaliVoiceInfo> {
+    if (JanbhashaModule && typeof JanbhashaModule.getActiveSantaliVoice === 'function') {
+      try {
+        return await JanbhashaModule.getActiveSantaliVoice();
+      } catch (err) {
+        console.warn('getActiveSantaliVoice notice:', err);
+      }
+    }
+    return { id: 'PIPER_CLASSROOM', name: 'Santali Teacher (Default)', engine: 'PIPER_VITS', isPremium: false, available: true };
+  }
+
+  /**
+   * Query Indic Parler-TTS local model status (download status, file size, storage dir).
+   */
+  async getParlerModelStatus(): Promise<{ isAvailable: boolean; sizeBytes: number; targetDir: string }> {
+    if (JanbhashaModule && typeof JanbhashaModule.getParlerModelStatus === 'function') {
+      try {
+        return await JanbhashaModule.getParlerModelStatus();
+      } catch (err) {
+        console.warn('getParlerModelStatus notice:', err);
+      }
+    }
+    return { isAvailable: false, sizeBytes: 0, targetDir: '' };
+  }
+}
+
+export interface SantaliVoiceInfo {
+  id: string;
+  name: string;
+  engine: 'PIPER_VITS' | 'INDIC_PARLER_TTS';
+  isPremium: boolean;
+  available: boolean;
+  description?: string;
 }
 
 export const audioService = new AudioService();

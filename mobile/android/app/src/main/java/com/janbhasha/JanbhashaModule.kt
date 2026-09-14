@@ -37,6 +37,8 @@ import java.util.Locale
 import java.io.File
 import java.io.FileOutputStream
 import com.janbhasha.core.ai.VitsTtsEngine
+import com.janbhasha.core.ai.OfflineSantaliTtsEngine
+import com.janbhasha.core.ai.SantaliTtsConfig
 import com.janbhasha.core.audio.AudioTrackPlayer
 
 private const val TAG = "JanbhashaModule"
@@ -429,6 +431,7 @@ class JanbhashaModule(
     // Native Audio Recording & Playback (Zero External Lib Dependencies)
     // ----------------------------------------------------------------
     private val vitsEngine by lazy { VitsTtsEngine(reactContext) }
+    private val offlineSantaliTtsEngine by lazy { OfflineSantaliTtsEngine(reactContext) }
     private val audioTrackPlayer by lazy { AudioTrackPlayer() }
 
     private var audioRecord: AudioRecord? = null
@@ -1256,50 +1259,73 @@ class JanbhashaModule(
         if (isSantali) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    Log.i(TAG, "[JANBHASHA][TTS] Synthesizing authentic Santali speech with on-device VITS for '$text'")
+                    val activeSpeaker = offlineSantaliTtsEngine.getActiveSpeaker()
+                    val activeEngine = offlineSantaliTtsEngine.getActiveEngine()
+                    Log.i(TAG, "[JANBHASHA][TTS] Synthesizing authentic Santali speech ($activeEngine, speaker: ${activeSpeaker.displayName}) for '$text'")
                     withContext(Dispatchers.Main) {
                         sendEvent("onSpeechPlayStart", null)
                     }
 
-                    val samples = vitsEngine.synthesize(text)
-                    if (samples != null && samples.isNotEmpty()) {
-                        withContext(Dispatchers.Main) {
-                            sendEvent("onSpeechStarted", null)
-                        }
+                    if (activeEngine == SantaliTtsConfig.TtsEngine.PIPER_VITS) {
+                        // High-speed on-device Piper VITS streaming via AudioTrack
+                        val samples = vitsEngine.synthesize(text)
+                        if (samples != null && samples.isNotEmpty()) {
+                            withContext(Dispatchers.Main) {
+                                sendEvent("onSpeechStarted", null)
+                            }
 
-                        val audioManager = reactContext.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
-                        var preferredDev: AudioDeviceInfo? = null
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && audioManager != null) {
-                            val devices = audioManager.getDevices(AndroidAudioManager.GET_DEVICES_OUTPUTS)
-                            if (currentAudioOutputMode == "speaker") {
-                                audioManager.isSpeakerphoneOn = true
-                                preferredDev = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
-                            } else {
-                                audioManager.isSpeakerphoneOn = false
-                                preferredDev = devices.firstOrNull {
-                                    it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
-                                    it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
-                                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (
-                                        it.type == AudioDeviceInfo.TYPE_BLE_HEADSET ||
-                                        it.type == AudioDeviceInfo.TYPE_BLE_SPEAKER
-                                    ))
+                            val audioManager = reactContext.getSystemService(Context.AUDIO_SERVICE) as? AndroidAudioManager
+                            var preferredDev: AudioDeviceInfo? = null
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && audioManager != null) {
+                                val devices = audioManager.getDevices(AndroidAudioManager.GET_DEVICES_OUTPUTS)
+                                if (currentAudioOutputMode == "speaker") {
+                                    audioManager.isSpeakerphoneOn = true
+                                    preferredDev = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
+                                } else {
+                                    audioManager.isSpeakerphoneOn = false
+                                    preferredDev = devices.firstOrNull {
+                                        it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
+                                        it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+                                        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && (
+                                            it.type == AudioDeviceInfo.TYPE_BLE_HEADSET ||
+                                            it.type == AudioDeviceInfo.TYPE_BLE_SPEAKER
+                                        ))
+                                    }
                                 }
                             }
-                        }
 
-                        audioTrackPlayer.playFloatPcm16k(samples, preferredDev) {
-                            sendEvent("onSpeechPlayDone", null)
-                            promise.resolve("COMPLETED")
+                            audioTrackPlayer.playFloatPcm16k(samples, preferredDev) {
+                                sendEvent("onSpeechPlayDone", null)
+                                promise.resolve("COMPLETED")
+                            }
+                            return@launch
                         }
-                        return@launch
                     } else {
-                        Log.w(TAG, "[JANBHASHA][TTS] VITS synthesis returned null, falling back to Android TTS engine")
+                        // Indic Parler-TTS Premium (44.1kHz audio)
+                        val res = offlineSantaliTtsEngine.generateSpeech(text)
+                        if (res.success && res.audioFilePath != null) {
+                            withContext(Dispatchers.Main) {
+                                sendEvent("onSpeechStarted", null)
+                                playAudio(res.audioFilePath, promise)
+                            }
+                            return@launch
+                        } else {
+                            Log.w(TAG, "[JANBHASHA][TTS] Parler-TTS synthesis failed: ${res.errorMessage}, falling back to VITS")
+                            val fallbackSamples = vitsEngine.synthesize(text)
+                            if (fallbackSamples != null && fallbackSamples.isNotEmpty()) {
+                                audioTrackPlayer.playFloatPcm16k(fallbackSamples, null) {
+                                    sendEvent("onSpeechPlayDone", null)
+                                    promise.resolve("COMPLETED")
+                                }
+                                return@launch
+                            }
+                        }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "[JANBHASHA][TTS] VITS synthesis failed: ${e.message}", e)
+                    Log.e(TAG, "[JANBHASHA][TTS] Santali synthesis failed: ${e.message}", e)
                 }
 
-                // Fallback to Android TTS if VITS synthesis was not possible
+                // Fallback to Android TTS if offline neural synthesis was not possible
                 withContext(Dispatchers.Main) {
                     speakViaAndroidTts(text, language, promise)
                 }
@@ -1464,6 +1490,81 @@ class JanbhashaModule(
     }
 
     @ReactMethod
+    fun getSantaliVoices(promise: Promise) {
+        try {
+            val list = Arguments.createArray()
+            val isParlerAvailable = offlineSantaliTtsEngine.isParlerModelAvailable()
+            for (speaker in SantaliTtsConfig.SantaliSpeaker.values()) {
+                val map = Arguments.createMap()
+                map.putString("id", speaker.name)
+                map.putString("name", speaker.displayName)
+                map.putString("engine", speaker.engineRequirement.name)
+                map.putBoolean("isPremium", speaker.isPremium)
+                map.putBoolean("available", if (speaker.isPremium) isParlerAvailable else true)
+                map.putString("description", speaker.parlerDescription)
+                list.pushMap(map)
+            }
+            promise.resolve(list)
+        } catch (e: Exception) {
+            promise.reject("GET_VOICES_FAILED", e.message ?: "Failed to get Santali voices", e)
+        }
+    }
+
+    @ReactMethod
+    fun setSantaliVoice(speakerId: String, promise: Promise) {
+        try {
+            val speaker = SantaliTtsConfig.SantaliSpeaker.values().firstOrNull { it.name.equals(speakerId, ignoreCase = true) }
+            if (speaker != null) {
+                offlineSantaliTtsEngine.setSpeaker(speaker)
+                if (speaker.engineRequirement == SantaliTtsConfig.TtsEngine.PIPER_VITS) {
+                    vitsEngine.setLengthScale(speaker.piperLengthScale)
+                }
+                val res = Arguments.createMap()
+                res.putString("id", speaker.name)
+                res.putString("name", speaker.displayName)
+                res.putString("engine", speaker.engineRequirement.name)
+                res.putBoolean("isPremium", speaker.isPremium)
+                promise.resolve(res)
+            } else {
+                promise.reject("INVALID_SPEAKER", "Unknown Santali speaker: $speakerId")
+            }
+        } catch (e: Exception) {
+            promise.reject("SET_VOICE_FAILED", e.message ?: "Failed to set Santali voice", e)
+        }
+    }
+
+    @ReactMethod
+    fun getActiveSantaliVoice(promise: Promise) {
+        try {
+            val speaker = offlineSantaliTtsEngine.getActiveSpeaker()
+            val res = Arguments.createMap()
+            res.putString("id", speaker.name)
+            res.putString("name", speaker.displayName)
+            res.putString("engine", speaker.engineRequirement.name)
+            res.putBoolean("isPremium", speaker.isPremium)
+            res.putBoolean("available", if (speaker.isPremium) offlineSantaliTtsEngine.isParlerModelAvailable() else true)
+            promise.resolve(res)
+        } catch (e: Exception) {
+            promise.reject("GET_ACTIVE_VOICE_FAILED", e.message ?: "Failed to get active voice", e)
+        }
+    }
+
+    @ReactMethod
+    fun getParlerModelStatus(promise: Promise) {
+        try {
+            val isAvailable = offlineSantaliTtsEngine.isParlerModelAvailable()
+            val sizeBytes = offlineSantaliTtsEngine.getParlerModelSizeBytes()
+            val res = Arguments.createMap()
+            res.putBoolean("isAvailable", isAvailable)
+            res.putDouble("sizeBytes", sizeBytes.toDouble())
+            res.putString("targetDir", "${reactContext.getExternalFilesDir(null)?.absolutePath}/${SantaliTtsConfig.PARLER_MODEL_DIR}")
+            promise.resolve(res)
+        } catch (e: Exception) {
+            promise.reject("GET_STATUS_FAILED", e.message ?: "Failed to get Parler status", e)
+        }
+    }
+
+    @ReactMethod
     fun checkLocalModelsStatus(promise: Promise) {
         try {
             val map = Arguments.createMap()
@@ -1495,6 +1596,14 @@ class JanbhashaModule(
             ttsMap.putString("path", ttsFile?.absolutePath ?: "")
             ttsMap.putDouble("sizeBytes", (ttsFile?.length() ?: 0L).toDouble())
             map.putMap("tts", ttsMap)
+
+            // Indic Parler-TTS Premium check
+            val parlerMap = Arguments.createMap()
+            val isParlerAvailable = offlineSantaliTtsEngine.isParlerModelAvailable()
+            parlerMap.putBoolean("ready", isParlerAvailable)
+            parlerMap.putDouble("sizeBytes", offlineSantaliTtsEngine.getParlerModelSizeBytes().toDouble())
+            parlerMap.putString("engine", "INDIC_PARLER_TTS")
+            map.putMap("indicParlerTts", parlerMap)
 
             // Dictionary check: fln_lexicon.sqlite
             val dictCandidates = listOf(

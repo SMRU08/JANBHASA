@@ -39,6 +39,23 @@ class VitsTtsEngine(private val context: Context) {
             '०' to '᱐', '१' to '᱑', '२' to '᱒', '३' to '᱓', '४' to '᱔',
             '५' to '᱕', '६' to '᱖', '७' to '᱗', '८' to '᱘', '९' to '᱙'
         )
+
+        // Devanagari to Ol Chiki phonetic fallback (handles un-transliterated words seamlessly)
+        private val DEVANAGARI_TO_OL_CHIKI = mapOf(
+            'अ' to "ᱚ", 'आ' to "ᱟ", 'इ' to "ᱤ", 'ई' to "ᱤ", 'उ' to "ᱩ", 'ऊ' to "ᱩ",
+            'ए' to "ᱮ", 'ऐ' to "ᱮ", 'ओ' to "ᱳ", 'औ' to "ᱳ",
+            'क' to "ᱠ", 'ख' to "ᱠᱷ", 'ग' to "ᱜ", 'घ' to "ᱜᱷ", 'ङ' to "ᱝ",
+            'च' to "ᱪ", 'छ' to "ᱪᱷ", 'ज' to "ᱡ", 'झ' to "ᱡᱷ", 'ञ' to "ᱧ",
+            'ट' to "ᱴ", 'ठ' to "ᱴᱷ", 'ड' to "ᱰ", 'ढ' to "ᱰᱷ", 'ण' to "ᱬ",
+            'त' to "ᱛ", 'थ' to "ᱛᱷ", 'द' to "ᱫ", 'ध' to "ᱫᱷ", 'न' to "ᱱ",
+            'प' to "ᱯ", 'फ' to "ᱯᱷ", 'ब' to "ᱵ", 'भ' to "ᱵᱷ", 'म' to "ᱢ",
+            'य' to "ᱭ", 'र' to "ᱨ", 'ल' to "ᱞ", 'व' to "ᱣ",
+            'श' to "ᱥ", 'ष' to "ᱥ", 'स' to "ᱥ", 'ह' to "ᱦ",
+            '\u095C' to "ᱲ", '\u095D' to "ᱲᱷ",
+            'ा' to "ᱟ", 'ि' to "ᱤ", 'ी' to "ᱤ", 'ु' to "ᱩ", 'ू' to "ᱩ",
+            'े' to "ᱮ", 'ै' to "ᱮ", 'ो' to "ᱳ", 'ौ' to "ᱳ",
+            'ं' to "ᱸ", '्' to ""
+        )
     }
 
     private var ortEnv: OrtEnvironment? = null
@@ -46,15 +63,15 @@ class VitsTtsEngine(private val context: Context) {
     private var phonemeIdMap: Map<String, List<Int>> = emptyMap()
     private var isInitialized = false
 
-    // Default classroom speaking cadence: 1.25f (deliberate, clear, articulate)
-    private var currentLengthScale: Float = 1.25f
+    // Default classroom speaking cadence: 1.20f (clear, deliberate, pedagogical pace)
+    private var currentLengthScale: Float = 1.20f
 
     fun setSpeedMode(mode: String) {
         currentLengthScale = when (mode.lowercase().trim()) {
             "slow" -> 1.40f      // Early childhood / kindergarten foundational listening
             "fast" -> 1.00f      // Native conversational / fast preview
-            "normal" -> 1.25f    // Standard teacher classroom explanation
-            else -> 1.25f
+            "normal" -> 1.20f    // Standard teacher classroom explanation
+            else -> 1.20f
         }
         Log.i(TAG, "VITS TTS speed set to mode '$mode' (length_scale: $currentLengthScale)")
     }
@@ -80,9 +97,9 @@ class VitsTtsEngine(private val context: Context) {
                 return@withContext false
             }
 
-            // Optimal multithreading config for mid-range mobile CPU cores
+            // Optimal multithreading config for 8-core CPU (2x Big + 6x Little)
             val sessionOptions = OrtSession.SessionOptions().apply {
-                setIntraOpNumThreads(2)
+                setIntraOpNumThreads(4)
                 setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT)
             }
             ortSession = ortEnv?.createSession(modelFile.absolutePath, sessionOptions)
@@ -131,13 +148,15 @@ class VitsTtsEngine(private val context: Context) {
      * Preprocesses raw text for high-intelligibility Santali TTS:
      * - Maps ASCII and Devanagari numerals to Ol Chiki digits (᱐-᱙)
      * - Converts Hindi danda ('।') to Ol Chiki danda ('᱾')
-     * - Removes non-printable or noisy control characters
+     * - Maps any Devanagari phonemes to Ol Chiki equivalents (prevents dropped words)
+     * - Preserves valid Ol Chiki characters, punctuation, and modifiers
      */
     private fun preprocessText(input: String): String {
         val sb = StringBuilder()
         for (c in input) {
             when {
                 DIGIT_TO_OL_CHIKI.containsKey(c) -> sb.append(DIGIT_TO_OL_CHIKI[c])
+                DEVANAGARI_TO_OL_CHIKI.containsKey(c) -> sb.append(DEVANAGARI_TO_OL_CHIKI[c])
                 c == '।' -> sb.append('᱾')
                 c == '॥' -> sb.append('᱿')
                 c == '\r' || c == '\t' -> sb.append(' ')
@@ -149,27 +168,29 @@ class VitsTtsEngine(private val context: Context) {
     }
 
     /**
-     * Segments text into sentence clauses to avoid long-sequence VITS degradation:
-     * Splits by standard punctuation and Ol Chiki terminators (᱾, ᱿, ., ?, !, \n).
-     * If a single sentence exceeds 20 words, splits on commas/semicolons.
+     * Segments text into sentence clauses while PRESERVING punctuation.
+     * Retaining delimiters (᱾, ᱿, ., ?, !, ,) allows Piper VITS to apply
+     * prosodic pitch modulation (question inflection, declarative drop, pause).
      */
     private fun splitIntoSentences(text: String): List<String> {
         val results = mutableListOf<String>()
-        val primaryDelimiters = Regex("([᱾᱿.?!\\n]+)")
-        val parts = text.split(primaryDelimiters)
+        // Match sentences up to and including trailing punctuation:
+        val regex = Regex("[^᱾᱿.?!\\n]+[᱾᱿.?!\\n]*")
+        val matches = regex.findAll(text)
 
-        for (part in parts) {
-            val trimmed = part.trim()
+        for (match in matches) {
+            val trimmed = match.value.trim()
             if (trimmed.isEmpty()) continue
 
             // If a clause is excessively long, split by comma to maintain rhythmic phrasing
             val words = trimmed.split(" ")
             if (words.size > 20 && trimmed.contains(",")) {
                 val subClauses = trimmed.split(",")
-                for (sc in subClauses) {
+                for ((idx, sc) in subClauses.withIndex()) {
                     val scTrimmed = sc.trim()
                     if (scTrimmed.isNotEmpty()) {
-                        results.add(scTrimmed)
+                        val withComma = if (idx < subClauses.size - 1) "$scTrimmed," else scTrimmed
+                        results.add(withComma)
                     }
                 }
             } else {
@@ -185,6 +206,7 @@ class VitsTtsEngine(private val context: Context) {
 
     /**
      * Synthesizes a single segment into raw Float PCM.
+     * Guarantees terminating punctuation for natural sentence cadence.
      */
     private fun synthesizeSingleSegment(segment: String): FloatArray? {
         val session = ortSession ?: return null
@@ -194,15 +216,27 @@ class VitsTtsEngine(private val context: Context) {
             val tokenIds = mutableListOf<Long>()
             tokenIds.add(1L) // ^ (start of sequence)
 
+            var hasTerminator = false
             for (ch in segment) {
                 val s = ch.toString()
                 val ids = phonemeIdMap[s] ?: phonemeIdMap[s.lowercase()]
                 if (ids != null && ids.isNotEmpty()) {
                     tokenIds.add(ids[0].toLong())
+                    if (ch == '᱾' || ch == '᱿' || ch == '.' || ch == '?' || ch == '!') {
+                        hasTerminator = true
+                    }
                 } else if (ch == ' ') {
                     tokenIds.add(3L) // space token
                 }
             }
+
+            // Natural prosody closure: if sentence has no terminating punctuation,
+            // append Ol Chiki danda '᱾' (token 20) to ensure natural pitch descent
+            if (!hasTerminator) {
+                val dandaId = phonemeIdMap["᱾"]?.firstOrNull() ?: 20
+                tokenIds.add(dandaId.toLong())
+            }
+
             tokenIds.add(2L) // $ (end of sequence)
 
             // Need more than just ^ and $

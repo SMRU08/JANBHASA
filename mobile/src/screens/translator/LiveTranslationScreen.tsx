@@ -44,6 +44,7 @@ export const LiveTranslationScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [recordingSeconds, setRecordingSeconds] = useState<number>(0);
   const [ttsSpeed, setTtsSpeedState] = useState<'slow' | 'normal' | 'fast'>('normal');
+  const [selectedVoice, setSelectedVoice] = useState<'PIPER_CLASSROOM' | 'PARLER_ARJUN' | 'PARLER_PUSHPA'>('PIPER_CLASSROOM');
 
   const handleChangeSpeed = async (speed: 'slow' | 'normal' | 'fast') => {
     setTtsSpeedState(speed);
@@ -51,6 +52,27 @@ export const LiveTranslationScreen: React.FC = () => {
       await audioService.setTtsSpeed(speed);
     } catch (e) {
       console.warn('setTtsSpeed notice:', e);
+    }
+  };
+
+  const handleChangeVoice = async (voiceId: 'PIPER_CLASSROOM' | 'PARLER_ARJUN' | 'PARLER_PUSHPA') => {
+    setSelectedVoice(voiceId);
+    try {
+      if (voiceId.startsWith('PARLER')) {
+        const status = await audioService.getParlerModelStatus();
+        if (!status.isAvailable) {
+          Alert.alert(
+            'AI4Bharat Indic Parler-TTS (Premium)',
+            `Parler-TTS (~885 MB) model files are not yet present in device storage:\n\n${status.targetDir}\n\nFalling back to fast Piper VITS until the model is copied to the phone.`,
+            [{ text: 'Use Piper VITS', onPress: () => setSelectedVoice('PIPER_CLASSROOM') }]
+          );
+          await audioService.setSantaliVoice('PIPER_CLASSROOM');
+          return;
+        }
+      }
+      await audioService.setSantaliVoice(voiceId);
+    } catch (e) {
+      console.warn('setSantaliVoice notice:', e);
     }
   };
 
@@ -477,6 +499,42 @@ export const LiveTranslationScreen: React.FC = () => {
                   <Text style={[styles.modeCheckText, { color: '#1D4ED8' }]}>✓ ON</Text>
                 </View>
               )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Santali Voice Speaker Selector (Piper VITS vs AI4Bharat Indic Parler-TTS) */}
+        <View style={styles.speedModesContainer}>
+          <Text style={styles.speedModesLabel}>SANTALI VOICE (ᱥᱟᱱᱛᱟᱲᱤ ᱟᱲᱟᱝ):</Text>
+          <View style={styles.speedPillsRow}>
+            <TouchableOpacity
+              style={[styles.speedPill, selectedVoice === 'PIPER_CLASSROOM' && styles.speedPillActive]}
+              onPress={() => handleChangeVoice('PIPER_CLASSROOM')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, selectedVoice === 'PIPER_CLASSROOM' && styles.speedPillTextActive]}>
+                🎓 Piper (Offline)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.speedPill, selectedVoice === 'PARLER_ARJUN' && styles.speedPillActive]}
+              onPress={() => handleChangeVoice('PARLER_ARJUN')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, selectedVoice === 'PARLER_ARJUN' && styles.speedPillTextActive]}>
+                👨‍🏫 Arjun ✨
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.speedPill, selectedVoice === 'PARLER_PUSHPA' && styles.speedPillActive]}
+              onPress={() => handleChangeVoice('PARLER_PUSHPA')}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.speedPillText, selectedVoice === 'PARLER_PUSHPA' && styles.speedPillTextActive]}>
+                👩‍🏫 Pushpa ✨
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
