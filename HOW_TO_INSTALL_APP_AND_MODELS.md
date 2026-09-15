@@ -18,10 +18,10 @@ This guide provides complete, step-by-step instructions on how to install the **
 ## 1. Prerequisites & Package Overview
 
 ### Included Files in Repository
-- **`Janbhasha_v1.0_Release.apk`**: Production release APK (23.1 MB) with Hermes bytecode, scoped storage support, native audio subsystem, and on-device offline translation and speech synthesis engines.
-- **`models/asr/whisper-small-ct2/`**: Quantized Whisper ASR model for Hindi speech recognition.
-- **`models/tts/vits-santhali/`**: VITS neural model weights for Ol Chiki Santali speech synthesis.
-- **`models/translation/indictrans2-en-indic-dist-200M/`**: IndicTrans2 translation weights.
+- **`Janbhasha_Offline_Release.apk`**: Latest production release APK (46.55 MB) with bundled on-device Hermes bytecode, scoped storage support, native audio subsystem, authentic Devanagari Hindi ASR, FLN compound stemmer, and on-device Piper VITS speech synthesis engine.
+- **`models/asr/whisper-small-indic/`**: Quantized Whisper ASR model for Hindi speech recognition.
+- **`models/tts/sat_piper/`**: Piper VITS neural acoustic model (`sat_piper_model.onnx`, 63.5 MB) for authentic Ol Chiki Santali speech synthesis.
+- **`models/translation/indictrans2-indic-indic-dist-320M/`**: IndicTrans2 320M neural translation weights.
 
 ### Device Requirements
 - Android 9.0 (Pie / API 28) or higher (Tested on Android 10, 11, 12, 13, 14, 15 HyperOS).
@@ -35,9 +35,9 @@ This guide provides complete, step-by-step instructions on how to install the **
 You can install the app using either **Method 1 (Direct on phone)** or **Method 2 (Using ADB on PC)**.
 
 ### Method 1: Direct Installation on Mobile (Easiest)
-1. Copy `Janbhasha_v1.0_Release.apk` from your computer to your phone via USB cable, Google Drive, WhatsApp, or local share.
+1. Copy `Janbhasha_Offline_Release.apk` from your computer to your phone via USB cable, Google Drive, WhatsApp, or local share.
 2. Open your phone's **File Manager** / **Downloads** folder.
-3. Tap on **`Janbhasha_v1.0_Release.apk`**.
+3. Tap on **`Janbhasha_Offline_Release.apk`**.
 4. If prompted with *"For your security, your phone is not allowed to install unknown apps from this source"*:
    - Tap **Settings**.
    - Toggle **Allow from this source** to **ON**.
@@ -55,7 +55,7 @@ You can install the app using either **Method 1 (Direct on phone)** or **Method 
 2. Connect your phone to your PC via a USB cable.
 3. Run the following command from PowerShell:
    ```powershell
-   adb install -r -d Janbhasha_v1.0_Release.apk
+   adb install -r -d Janbhasha_Offline_Release.apk
    ```
 4. To launch the app immediately:
    ```powershell
