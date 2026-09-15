@@ -360,23 +360,26 @@ export const LiveTranslationScreen: React.FC = () => {
       });
 
       let audioResultUri = '';
-      try {
-        const ttsRes = await apiService.synthesizeSpeech(translated, 0, 'sat_Olck');
-        if (ttsRes && ttsRes.audio_base64) {
-          audioResultUri = ttsRes.audio_base64;
+      if (!isOfflineMode) {
+        try {
+          const ttsRes = await apiService.synthesizeSpeech(translated, 0, 'sat_Olck');
+          if (ttsRes && ttsRes.audio_base64) {
+            audioResultUri = ttsRes.audio_base64;
+          }
+        } catch (vitsErr) {
+          console.warn('Online TTS synthesis notice:', vitsErr);
         }
-      } catch (vitsErr) {
-        console.warn('VITS TTS synthesis notice:', vitsErr);
       }
 
-      // Step 5: Playback (Play VITS audio or native transliterated speech)
+      // Step 5: Playback (Play Cloud Base64 WAV or Native On-Device Piper VITS)
       if (!isCancelledRef.current) {
         setStage('PLAYING');
         try {
           await audioService.stopAudio();
-          if (audioResultUri) {
+          if (audioResultUri && !isOfflineMode) {
             await audioService.playAudio(audioResultUri, translated, 'sat_Olck');
           } else {
+            // Direct 100% on-device Piper VITS via JanbhashaModule native streaming
             await audioService.speakText(translated, 'sat_Olck');
           }
         } catch (playErr) {
@@ -450,8 +453,29 @@ export const LiveTranslationScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Operating Mode Bar: Online Cloud vs Offline On-Device */}
+        {/* Operating Mode Bar: Offline On-Device (Default) vs Online Cloud */}
         <View style={styles.operatingModeBar}>
+          <TouchableOpacity
+            style={[
+              styles.operatingModePill,
+              isOfflineMode ? styles.operatingModeOfflineActive : styles.operatingModeInactive,
+            ]}
+            onPress={() => {
+              if (!isOfflineMode) toggleOfflineMode();
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.operatingModeEmoji}>📱</Text>
+            <View>
+              <Text style={[styles.operatingModeText, isOfflineMode && styles.operatingModeTextActive]}>
+                100% Offline {isOfflineMode ? '●' : ''}
+              </Text>
+              <Text style={styles.operatingModeSub}>
+                {isOfflineMode ? 'Air-Gapped On-Device' : 'Tap to switch'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={[
               styles.operatingModePill,
@@ -468,27 +492,8 @@ export const LiveTranslationScreen: React.FC = () => {
                 Online Cloud {!isOfflineMode ? '●' : ''}
               </Text>
               <Text style={styles.operatingModeSub}>
-                {!isOfflineMode ? (serverUrl ? serverUrl.replace(/^https?:\/\//, '') : 'FastAPI') : 'Tap to connect'}
+                {!isOfflineMode ? (serverUrl ? serverUrl.replace(/^https?:\/\//, '') : 'FastAPI') : 'Optional Server'}
               </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.operatingModePill,
-              isOfflineMode ? styles.operatingModeOfflineActive : styles.operatingModeInactive,
-            ]}
-            onPress={() => {
-              if (!isOfflineMode) toggleOfflineMode();
-            }}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.operatingModeEmoji}>📱</Text>
-            <View>
-              <Text style={[styles.operatingModeText, isOfflineMode && styles.operatingModeTextActive]}>
-                Offline On-Device {isOfflineMode ? '●' : ''}
-              </Text>
-              <Text style={styles.operatingModeSub}>Air-Gapped</Text>
             </View>
           </TouchableOpacity>
         </View>

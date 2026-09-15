@@ -58,24 +58,6 @@ export const SettingsScreen: React.FC = () => {
         <Text style={styles.sectionHeader}>Operating Mode</Text>
         <View style={styles.modeCard}>
           <TouchableOpacity
-            style={[styles.modeOptionBtn, !isOfflineMode && styles.modeOptionBtnOnlineActive]}
-            onPress={() => {
-              if (isOfflineMode) setOfflineMode(false);
-            }}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.modeOptionEmoji}>🌐</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.modeOptionTitle, !isOfflineMode && styles.modeOptionTitleActive]}>
-                Online Cloud Mode {!isOfflineMode ? '✓' : ''}
-              </Text>
-              <Text style={styles.modeOptionDesc}>
-                High-speed server ASR (CTranslate2) & IndicTrans2 translation over Wi-Fi
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
             style={[styles.modeOptionBtn, isOfflineMode && styles.modeOptionBtnOfflineActive]}
             onPress={() => {
               if (!isOfflineMode) setOfflineMode(true);
@@ -85,10 +67,28 @@ export const SettingsScreen: React.FC = () => {
             <Text style={styles.modeOptionEmoji}>📱</Text>
             <View style={{ flex: 1 }}>
               <Text style={[styles.modeOptionTitle, isOfflineMode && styles.modeOptionTitleActive]}>
-                Offline On-Device Mode {isOfflineMode ? '✓' : ''}
+                Offline On-Device Mode {isOfflineMode ? '✓ (Active)' : ''}
               </Text>
               <Text style={styles.modeOptionDesc}>
-                100% on-device Whisper & FLN Lexicon with zero network usage
+                100% on-device Whisper & FLN Lexicon with zero server, internet, or Wi-Fi required
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modeOptionBtn, !isOfflineMode && styles.modeOptionBtnOnlineActive]}
+            onPress={() => {
+              if (isOfflineMode) setOfflineMode(false);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.modeOptionEmoji}>🌐</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.modeOptionTitle, !isOfflineMode && styles.modeOptionTitleActive]}>
+                Online Cloud Mode {!isOfflineMode ? '✓ (Active)' : ''}
+              </Text>
+              <Text style={styles.modeOptionDesc}>
+                High-speed server ASR (CTranslate2) & IndicTrans2 translation over Wi-Fi / USB
               </Text>
             </View>
           </TouchableOpacity>

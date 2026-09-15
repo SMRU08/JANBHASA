@@ -82,7 +82,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   audioOutput: 'speaker',
   selectedBluetoothDevice: null,
   serverUrl: 'http://10.17.86.216:8000',
-  isOfflineMode: false,
+  isOfflineMode: true,
   health: null,
   healthLatencyMs: 0,
   selectedSubject: null,

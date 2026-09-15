@@ -49,8 +49,8 @@ export interface PipelineTextResponse {
 }
 
 class ApiService {
-  // Online by default; teachers can toggle to offline at any time
-  public isOfflineMode: boolean = false;
+  // Offline by default: 100% on-device AI with zero network/server dependency
+  public isOfflineMode: boolean = true;
   private activeBaseUrl: string = 'http://10.17.86.216:8000';
   private candidateUrls: string[] = [
     'http://10.17.86.216:8000',
