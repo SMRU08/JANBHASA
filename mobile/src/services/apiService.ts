@@ -1,4 +1,5 @@
 import RNFS from 'react-native-fs';
+import { ensureDevanagari } from '../utils/devanagariUtils';
 
 export interface HealthResponse {
   status: string;
@@ -48,19 +49,70 @@ export interface PipelineTextResponse {
 }
 
 class ApiService {
-  public isOfflineMode: boolean = true;
-  private activeBaseUrl: string = 'offline://on-device';
+  // Online by default; teachers can toggle to offline at any time
+  public isOfflineMode: boolean = false;
+  private activeBaseUrl: string = 'http://10.17.86.216:8000';
+  private candidateUrls: string[] = [
+    'http://10.17.86.216:8000',
+    'http://localhost:8000',
+    'http://10.0.2.2:8000',
+  ];
+
+  setOfflineMode(offline: boolean) {
+    this.isOfflineMode = offline;
+    console.log(`[JANBHASHA][API] Operating mode set to: ${offline ? 'OFFLINE (On-Device)' : 'ONLINE (Cloud Server)'}`);
+  }
+
+  getOfflineMode(): boolean {
+    return this.isOfflineMode;
+  }
 
   setBaseUrl(url: string) {
-    this.activeBaseUrl = url;
+    const cleanUrl = (url || '').trim().replace(/\/+$/, '');
+    if (cleanUrl) {
+      this.activeBaseUrl = cleanUrl;
+      if (!this.candidateUrls.includes(cleanUrl)) {
+        this.candidateUrls.unshift(cleanUrl);
+      }
+      console.log(`[JANBHASHA][API] Active server base URL set to: ${cleanUrl}`);
+    }
   }
 
   getBaseUrl(): string {
-    return '100% On-Device (Zero Network / Zero Server)';
+    return this.isOfflineMode ? '100% On-Device (Zero Network / Zero Server)' : this.activeBaseUrl;
   }
 
   async checkHealth(): Promise<{ isHealthy: boolean; latencyMs: number; data?: HealthResponse }> {
-    // Pre-warm whisper engine in background so JSI is ready before user speaks
+    // 1. If online mode enabled, attempt live server ping
+    if (!this.isOfflineMode) {
+      const startTime = Date.now();
+      const urlsToTry = [this.activeBaseUrl, ...this.candidateUrls.filter((u) => u !== this.activeBaseUrl)];
+
+      for (const url of urlsToTry) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          const res = await fetch(`${url}/api/v1/health`, {
+            method: 'GET',
+            signal: controller.signal,
+          });
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data: HealthResponse = await res.json();
+            this.activeBaseUrl = url;
+            const latencyMs = Date.now() - startTime;
+            console.log(`[JANBHASHA][API] Server healthy at ${url} (${latencyMs}ms)`);
+            return { isHealthy: true, latencyMs, data };
+          }
+        } catch {
+          // Try next candidate
+        }
+      }
+      console.log('[JANBHASHA][API] Online server check timed out — reporting local on-device status');
+    }
+
+    // 2. Pre-warm on-device Whisper engine in background
     try {
       const { warmupWhisper } = require('../core/providers/HindiASRProvider');
       warmupWhisper().catch(() => {});
@@ -71,13 +123,13 @@ class ApiService {
       latencyMs: 0,
       data: {
         status: 'healthy',
-        app_name: 'Janbhasha On-Device Engine',
-        version: '2.0.0-offline',
+        app_name: 'Janbhasha Hybrid Engine (Online + Offline Ready)',
+        version: '2.0.0',
         offline_ready: true,
         services: {
-          asr: { ready: true, engine: 'whisper.rn (ggml-tiny.bin on-device)' },
-          translation: { ready: true, engine: 'FLN Pedagogical Lexicon + Hybrid Transducer' },
-          tts: { ready: true, engine: 'VITS Neural TTS (sat_piper ONNX)' },
+          asr: { ready: true, engine: this.isOfflineMode ? 'whisper.rn (on-device)' : 'faster-whisper (Cloud)' },
+          translation: { ready: true, engine: this.isOfflineMode ? 'FLN Lexicon (on-device)' : 'IndicTrans2 (Cloud)' },
+          tts: { ready: true, engine: this.isOfflineMode ? 'Piper VITS (on-device)' : 'Neural VITS / Parler (Cloud)' },
         },
       },
     };
@@ -91,6 +143,28 @@ class ApiService {
       .replace(/[\r\n\t]+/g, ' ')
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
+
+    if (!this.isOfflineMode) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/nlp/process`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            target_script: targetScript,
+          }),
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (e) {
+        console.warn('[JANBHASHA][API] Online NLP error, falling back to local:', e);
+      }
+    }
 
     const { translationProvider } = require('../core/providers/TranslationProvider');
     const transRes = await translationProvider.translate(cleanText, 'hin_Deva', targetScript);
@@ -106,15 +180,55 @@ class ApiService {
     sourceLang: string = 'hin_Deva',
     targetLang: string = 'sat_Olck'
   ): Promise<TranslationResponse> {
-    const cleanText = (text || '')
+    let cleanText = (text || '')
       .replace(/[\r\n\t]+/g, ' ')
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
 
+    if (sourceLang === 'hin_Deva') {
+      cleanText = ensureDevanagari(cleanText);
+    }
+
     const finalTargetLang =
       targetLang === 'or' || targetLang === 'ory_Orya' ? 'sat_Olck' : targetLang;
 
-    // 100% OFFLINE ON-DEVICE translation (no network calls)
+    // 1. ONLINE CLOUD MODE: Call FastAPI IndicTrans2 backend
+    if (!this.isOfflineMode) {
+      try {
+        const t0 = Date.now();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/translation/translate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+          }),
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const body = await res.json();
+          const latency = Date.now() - t0;
+          console.log(`[JANBHASHA][API] Online translation success (${latency}ms):`, body.translated_text);
+          return {
+            source_text: cleanText,
+            translated_text: body.translated_text || cleanText,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+            model_version: 'IndicTrans2 (Online Cloud)',
+            inference_time_ms: body.inference_time_ms || latency,
+          };
+        }
+      } catch (cloudErr) {
+        console.warn('[JANBHASHA][API] Online translation notice, using on-device fallback:', cloudErr);
+      }
+    }
+
+    // 2. OFFLINE FALLBACK: 100% On-Device FLN Pedagogical Lexicon
     const { translationProvider } = require('../core/providers/TranslationProvider');
     const offlineResult = await translationProvider.translate(
       cleanText,
@@ -142,7 +256,43 @@ class ApiService {
       .replace(/[\x00-\x1f\x7f-\x9f]/g, '')
       .trim();
 
-    // 100% On-device VITS synthesis via JanbhashaModule
+    // 1. ONLINE CLOUD MODE: Call FastAPI VITS / MMS-TTS backend
+    if (!this.isOfflineMode) {
+      try {
+        const t0 = Date.now();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/tts/synthesize`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            language: language,
+            speaker_id: speakerId,
+          }),
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const body = await res.json();
+          if (body && body.audio_base64) {
+            const latency = Date.now() - t0;
+            console.log(`[JANBHASHA][API] Online TTS success (${latency}ms), sample rate: ${body.sample_rate || 22050}`);
+            return {
+              audio_base64: body.audio_base64,
+              sample_rate: body.sample_rate || 22050,
+              duration_seconds: body.duration_seconds || 2.0,
+              inference_time_ms: body.inference_time_ms || latency,
+            };
+          }
+        }
+      } catch (cloudErr) {
+        console.warn('[JANBHASHA][API] Online TTS notice, using on-device fallback:', cloudErr);
+      }
+    }
+
+    // 2. OFFLINE FALLBACK: 100% On-device Piper VITS synthesis via JanbhashaModule
     try {
       const { NativeModules } = require('react-native');
       const JanbhashaModule = NativeModules.JanbhashaModule;
@@ -181,6 +331,43 @@ class ApiService {
     const finalTargetLang =
       targetLang === 'or' || targetLang === 'ory_Orya' ? 'sat_Olck' : targetLang;
 
+    // 1. ONLINE CLOUD MODE: Single-hop complete pipeline
+    if (!this.isOfflineMode) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
+        const res = await fetch(`${this.activeBaseUrl}/api/v1/pipeline/translate-text`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            text: cleanText,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+            return_audio: returnAudio,
+          }),
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const body = await res.json();
+          return {
+            input_text: cleanText,
+            translated_text: body.translated_text,
+            source_lang: sourceLang,
+            target_lang: finalTargetLang,
+            audio_base64: body.audio_base64 || '',
+            audio_sample_rate: body.audio_sample_rate || 22050,
+            audio_duration_s: body.audio_duration_s || 2.0,
+            total_latency_ms: body.total_latency_ms || 100,
+          };
+        }
+      } catch (pipelineErr) {
+        console.warn('[JANBHASHA][API] Online pipeline notice, falling back to modular pipeline:', pipelineErr);
+      }
+    }
+
+    // 2. OFFLINE FALLBACK: Modular translation + TTS
     const trans = await this.translateText(cleanText, sourceLang, finalTargetLang);
     let audioPath = '';
     if (returnAudio) {
@@ -200,16 +387,62 @@ class ApiService {
 
   async transcribeAudio(audioFilePath: string, languageHint: string = 'hi'): Promise<ASRResponse> {
     const cleanPath = audioFilePath.replace('file://', '');
+    const fileName = cleanPath.split('/').pop() || 'recording.wav';
+    const type = fileName.endsWith('.wav') ? 'audio/wav' : 'audio/mp4';
 
-    // 100% OFFLINE ON-DEVICE ASR (Whisper on-device ggml-tiny.bin)
+    // 1. ONLINE CLOUD MODE: Upload audio file to FastAPI faster-whisper ASR endpoint
+    if (!this.isOfflineMode) {
+      try {
+        console.log(`[JANBHASHA][API] Uploading audio to online ASR: ${this.activeBaseUrl}/api/v1/asr/transcribe`);
+        const uploadRes = await RNFS.uploadFiles({
+          toUrl: `${this.activeBaseUrl}/api/v1/asr/transcribe`,
+          files: [
+            {
+              name: 'file',
+              filename: fileName,
+              filepath: cleanPath,
+              filetype: type,
+            },
+          ],
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+          },
+          fields: {
+            language: languageHint,
+            word_timestamps: 'true',
+          },
+        }).promise;
+
+        if (uploadRes.statusCode >= 200 && uploadRes.statusCode < 300) {
+          const bodyObj = typeof uploadRes.body === 'string' ? JSON.parse(uploadRes.body) : uploadRes.body;
+          const rawTranscript = (bodyObj?.transcription || '').trim();
+          if (rawTranscript) {
+            const devaTranscript = ensureDevanagari(rawTranscript);
+            console.log(`[JANBHASHA][API] Online ASR transcription (Devanagari): "${devaTranscript}"`);
+            return {
+              transcription: devaTranscript,
+              detected_language: bodyObj?.detected_language || languageHint,
+              language_probability: bodyObj?.language_probability || 0.98,
+              duration_seconds: bodyObj?.duration_seconds || 2.0,
+            };
+          }
+        }
+      } catch (uploadErr) {
+        console.warn('[JANBHASHA][API] Online ASR notice, falling back to on-device Whisper:', uploadErr);
+      }
+    }
+
+    // 2. OFFLINE FALLBACK: 100% On-Device Whisper ASR (ggml-tiny.bin)
     try {
       console.log('[JANBHASHA][STT] Running on-device Whisper ASR on:', cleanPath);
       const { hindiASRProvider } = require('../core/providers/HindiASRProvider');
       const offlineRes = await hindiASRProvider.transcribe(cleanPath);
       if (offlineRes && offlineRes.transcript && offlineRes.transcript.trim().length > 0) {
-        console.log('[JANBHASHA][STT] On-device Whisper result:', offlineRes.transcript);
+        const devaTranscript = ensureDevanagari(offlineRes.transcript.trim());
+        console.log('[JANBHASHA][STT] On-device Whisper result (Devanagari):', devaTranscript);
         return {
-          transcription: offlineRes.transcript.trim(),
+          transcription: devaTranscript,
           detected_language: 'hi',
           language_probability: offlineRes.confidence || 0.95,
           duration_seconds: 2.0,

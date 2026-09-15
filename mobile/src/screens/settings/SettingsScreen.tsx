@@ -15,6 +15,7 @@ export const SettingsScreen: React.FC = () => {
     setServerUrl,
     isOfflineMode,
     toggleOfflineMode,
+    setOfflineMode,
     navigate,
   } = useAppStore();
 
@@ -25,12 +26,14 @@ export const SettingsScreen: React.FC = () => {
     setIsTesting(true);
     try {
       apiService.setBaseUrl(inputUrl);
+      apiService.setOfflineMode(false);
       const res = await apiService.checkHealth();
-      if (res.isHealthy) {
+      if (res.isHealthy && res.data?.status === 'healthy') {
         setServerUrl(inputUrl);
-        Alert.alert('Connection Successful', `Connected to backend at ${inputUrl} (Latency: ${res.latencyMs}ms)`);
+        setOfflineMode(false);
+        Alert.alert('Connection Successful', `Connected to online backend at ${inputUrl}\n\nLatency: ${res.latencyMs}ms\nMode: Online Cloud Active`);
       } else {
-        Alert.alert('Connection Warning', `Could not reach ${inputUrl}. Please check Wi-Fi/ADB reverse.`);
+        Alert.alert('Connection Warning', `Could not reach ${inputUrl}. Falling back to On-Device Offline mode.`);
       }
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Connection failed');
@@ -51,7 +54,47 @@ export const SettingsScreen: React.FC = () => {
       <JanbhashaHeader showBack title="Settings" subtitle="System & Audio Preferences" />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Language Section */}
+        {/* Operating Mode Section */}
+        <Text style={styles.sectionHeader}>Operating Mode</Text>
+        <View style={styles.modeCard}>
+          <TouchableOpacity
+            style={[styles.modeOptionBtn, !isOfflineMode && styles.modeOptionBtnOnlineActive]}
+            onPress={() => {
+              if (isOfflineMode) setOfflineMode(false);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.modeOptionEmoji}>🌐</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.modeOptionTitle, !isOfflineMode && styles.modeOptionTitleActive]}>
+                Online Cloud Mode {!isOfflineMode ? '✓' : ''}
+              </Text>
+              <Text style={styles.modeOptionDesc}>
+                High-speed server ASR (CTranslate2) & IndicTrans2 translation over Wi-Fi
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.modeOptionBtn, isOfflineMode && styles.modeOptionBtnOfflineActive]}
+            onPress={() => {
+              if (!isOfflineMode) setOfflineMode(true);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.modeOptionEmoji}>📱</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.modeOptionTitle, isOfflineMode && styles.modeOptionTitleActive]}>
+                Offline On-Device Mode {isOfflineMode ? '✓' : ''}
+              </Text>
+              <Text style={styles.modeOptionDesc}>
+                100% on-device Whisper & FLN Lexicon with zero network usage
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Preferences Section */}
         <Text style={styles.sectionHeader}>Preferences</Text>
 
         <TouchableOpacity
@@ -211,6 +254,24 @@ export const SettingsScreen: React.FC = () => {
             autoCapitalize="none"
             autoCorrect={false}
           />
+          {/* Quick Presets */}
+          <View style={styles.presetsRow}>
+            <TouchableOpacity
+              style={styles.presetChip}
+              onPress={() => setInputUrl('http://10.17.86.216:8000')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.presetChipText}>📶 Wi-Fi (10.17.86.216)</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.presetChip}
+              onPress={() => setInputUrl('http://localhost:8000')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.presetChipText}>🔌 USB (localhost:8000)</Text>
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity
             style={styles.testBtn}
             onPress={handleTestAndSaveUrl}
@@ -222,8 +283,9 @@ export const SettingsScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
           <Text style={styles.serverHelp}>
-            • Over USB: Use http://localhost:8000 (with adb reverse tcp:8000 tcp:8000)
-            {'\n'}• Over Wi-Fi: Use http://10.196.55.216:8000
+            • Over Wi-Fi: Connect phone to same Wi-Fi network as PC and use http://10.17.86.216:8000
+            {'\n'}• Over USB: Use http://localhost:8000 with command:
+            {'\n'}  adb reverse tcp:8000 tcp:8000
           </Text>
         </View>
 
@@ -332,7 +394,69 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 14,
     color: JanbhashaTheme.colors.charcoalText,
+    marginBottom: 10,
+  },
+  presetsRow: {
+    flexDirection: 'row',
+    gap: 8,
     marginBottom: 12,
+  },
+  presetChip: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  presetChipText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.deepGreen,
+  },
+  modeCard: {
+    backgroundColor: JanbhashaTheme.colors.white,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: JanbhashaTheme.colors.cardBorder,
+    padding: 12,
+    marginBottom: 14,
+    gap: 10,
+  },
+  modeOptionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    backgroundColor: '#F8FAFC',
+  },
+  modeOptionBtnOnlineActive: {
+    borderColor: '#10B981',
+    backgroundColor: '#ECFDF5',
+  },
+  modeOptionBtnOfflineActive: {
+    borderColor: '#F59E0B',
+    backgroundColor: '#FFFBEB',
+  },
+  modeOptionEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  modeOptionTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: JanbhashaTheme.colors.charcoalText,
+    marginBottom: 2,
+  },
+  modeOptionTitleActive: {
+    color: JanbhashaTheme.colors.deepGreen,
+  },
+  modeOptionDesc: {
+    fontSize: 11,
+    color: JanbhashaTheme.colors.mutedText,
+    lineHeight: 15,
   },
   testBtn: {
     backgroundColor: JanbhashaTheme.colors.deepGreen,

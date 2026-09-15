@@ -67,6 +67,7 @@ interface AppState {
   setSelectedBluetoothDevice: (dev: BluetoothDevice | null) => void;
   setServerUrl: (url: string) => void;
   toggleOfflineMode: () => void;
+  setOfflineMode: (offline: boolean) => void;
   refreshHealth: () => Promise<void>;
   setSelectedSubject: (subject: any) => void;
   setSelectedWorksheet: (worksheet: any) => void;
@@ -80,7 +81,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   role: null,
   audioOutput: 'speaker',
   selectedBluetoothDevice: null,
-  serverUrl: 'http://localhost:8000',
+  serverUrl: 'http://10.17.86.216:8000',
   isOfflineMode: false,
   health: null,
   healthLatencyMs: 0,
@@ -132,7 +133,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ serverUrl });
   },
 
-  toggleOfflineMode: () => set((state) => ({ isOfflineMode: !state.isOfflineMode })),
+  toggleOfflineMode: () => {
+    const nextMode = !get().isOfflineMode;
+    apiService.setOfflineMode(nextMode);
+    set({ isOfflineMode: nextMode });
+  },
+
+  setOfflineMode: (isOffline: boolean) => {
+    apiService.setOfflineMode(isOffline);
+    set({ isOfflineMode: isOffline });
+  },
 
   refreshHealth: async () => {
     const res = await apiService.checkHealth();

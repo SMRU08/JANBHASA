@@ -34,7 +34,16 @@ type PipelineStage =
   | 'PLAYING';
 
 export const LiveTranslationScreen: React.FC = () => {
-  const { audioOutput, setAudioOutput, selectedBluetoothDevice, navigate, setLastTranslation } = useAppStore();
+  const {
+    audioOutput,
+    setAudioOutput,
+    selectedBluetoothDevice,
+    navigate,
+    setLastTranslation,
+    isOfflineMode,
+    toggleOfflineMode,
+    serverUrl,
+  } = useAppStore();
 
   const [stage, setStage] = useState<PipelineStage>('IDLE');
   const [hindiTranscript, setHindiTranscript] = useState<string>('');
@@ -345,7 +354,9 @@ export const LiveTranslationScreen: React.FC = () => {
         sourceLang: 'hin_Deva',
         targetLang: 'sat_Olck',
         durationSec: Math.round(calculatedLatency / 1000),
-        engineUsed: 'FLN Lexicon + VITS Neural Acoustic TTS (Offline)',
+        engineUsed: isOfflineMode
+          ? 'FLN Lexicon + VITS Neural Acoustic TTS (Offline)'
+          : 'IndicTrans2 + Faster-Whisper + Cloud Neural TTS',
       });
 
       let audioResultUri = '';
@@ -437,6 +448,49 @@ export const LiveTranslationScreen: React.FC = () => {
             <Text style={styles.langFlag}>📜</Text>
             <Text style={[styles.langName, styles.olChikiText]}>Santali (Ol Chiki)</Text>
           </View>
+        </View>
+
+        {/* Operating Mode Bar: Online Cloud vs Offline On-Device */}
+        <View style={styles.operatingModeBar}>
+          <TouchableOpacity
+            style={[
+              styles.operatingModePill,
+              !isOfflineMode ? styles.operatingModeOnlineActive : styles.operatingModeInactive,
+            ]}
+            onPress={() => {
+              if (isOfflineMode) toggleOfflineMode();
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.operatingModeEmoji}>🌐</Text>
+            <View>
+              <Text style={[styles.operatingModeText, !isOfflineMode && styles.operatingModeTextActive]}>
+                Online Cloud {!isOfflineMode ? '●' : ''}
+              </Text>
+              <Text style={styles.operatingModeSub}>
+                {!isOfflineMode ? (serverUrl ? serverUrl.replace(/^https?:\/\//, '') : 'FastAPI') : 'Tap to connect'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.operatingModePill,
+              isOfflineMode ? styles.operatingModeOfflineActive : styles.operatingModeInactive,
+            ]}
+            onPress={() => {
+              if (!isOfflineMode) toggleOfflineMode();
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.operatingModeEmoji}>📱</Text>
+            <View>
+              <Text style={[styles.operatingModeText, isOfflineMode && styles.operatingModeTextActive]}>
+                Offline On-Device {isOfflineMode ? '●' : ''}
+              </Text>
+              <Text style={styles.operatingModeSub}>Air-Gapped</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* 2 Audio Output Modes Direct Selector */}
@@ -643,7 +697,12 @@ export const LiveTranslationScreen: React.FC = () => {
               )}
 
               {latencyMs > 0 && (
-                <Text style={styles.latencyText}>⚡ Inference time: {latencyMs} ms</Text>
+                <View style={styles.telemetryRow}>
+                  <Text style={styles.latencyText}>⚡ Latency: {latencyMs} ms</Text>
+                  <Text style={[styles.engineTelemetryBadge, !isOfflineMode ? styles.engineBadgeOnline : styles.engineBadgeOffline]}>
+                    {!isOfflineMode ? '☁️ Cloud Engine' : '📱 On-Device'}
+                  </Text>
+                </View>
               )}
             </View>
           </View>
@@ -1308,6 +1367,73 @@ const styles = StyleSheet.create({
   speedPillTextActive: {
     color: '#92400E',
     fontWeight: '800',
+  },
+  operatingModeBar: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 14,
+  },
+  operatingModePill: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    backgroundColor: JanbhashaTheme.colors.white,
+  },
+  operatingModeOnlineActive: {
+    borderColor: '#10B981',
+    backgroundColor: '#ECFDF5',
+  },
+  operatingModeOfflineActive: {
+    borderColor: '#F59E0B',
+    backgroundColor: '#FFFBEB',
+  },
+  operatingModeInactive: {
+    opacity: 0.65,
+    backgroundColor: '#F8FAFC',
+  },
+  operatingModeEmoji: {
+    fontSize: 20,
+    marginRight: 8,
+  },
+  operatingModeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: JanbhashaTheme.colors.mutedText,
+  },
+  operatingModeTextActive: {
+    color: JanbhashaTheme.colors.charcoalText,
+    fontWeight: '800',
+  },
+  operatingModeSub: {
+    fontSize: 10,
+    color: JanbhashaTheme.colors.mutedText,
+    marginTop: 1,
+  },
+  telemetryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  engineTelemetryBadge: {
+    fontSize: 10,
+    fontWeight: '700',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  engineBadgeOnline: {
+    backgroundColor: '#ECFDF5',
+    color: '#065F46',
+  },
+  engineBadgeOffline: {
+    backgroundColor: '#FEF3C7',
+    color: '#92400E',
   },
 });
 
