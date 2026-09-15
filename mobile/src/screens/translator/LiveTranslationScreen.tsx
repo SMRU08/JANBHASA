@@ -310,16 +310,29 @@ export const LiveTranslationScreen: React.FC = () => {
       let translated = '';
       let roman = '';
       try {
-        const { translationProvider } = require('../../core/providers/TranslationProvider');
-        const offlineRes = await translationProvider.translate(devaText, 'hin_Deva', 'sat_Olck');
-        translated = offlineRes.translatedText;
-        roman = offlineRes.romanText || '';
-      } catch (offlineErr) {
-        console.warn('Offline translation error, checking server fallback:', offlineErr);
-        try {
-          const transRes = await apiService.translateText(devaText, 'hin_Deva', 'sat_Olck');
-          translated = transRes.translated_text || '';
-        } catch {}
+        if (!isOfflineMode) {
+          // ONLINE CLOUD MODE: Neural translation via FastAPI IndicTrans2 backend
+          try {
+            const transRes = await apiService.translateText(devaText, 'hin_Deva', 'sat_Olck');
+            if (transRes && transRes.translated_text && transRes.translated_text.trim()) {
+              translated = transRes.translated_text.trim();
+              const { olChikiToRoman } = require('../../utils/romanSantali');
+              roman = olChikiToRoman(translated);
+            }
+          } catch (onlineErr) {
+            console.warn('[JANBHASHA][TRANSLATE] Online translation attempt failed, falling back to on-device:', onlineErr);
+          }
+        }
+
+        // OFFLINE MODE or ONLINE FALLBACK: 100% On-Device Hybrid Engine
+        if (!translated) {
+          const { translationProvider } = require('../../core/providers/TranslationProvider');
+          const offlineRes = await translationProvider.translate(devaText, 'hin_Deva', 'sat_Olck');
+          translated = offlineRes.translatedText;
+          roman = offlineRes.romanText || '';
+        }
+      } catch (transErr: any) {
+        console.warn('Translation execution error:', transErr);
       }
 
       if (!translated) {
