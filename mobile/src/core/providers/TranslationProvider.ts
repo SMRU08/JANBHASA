@@ -2,6 +2,7 @@ import { ITranslationProvider, TranslationOptions, TranslationResult } from './I
 import { SANTALI_DICTIONARY } from '../../data/santaliDictionary';
 import { FLN_LEXICON } from '../../data/flnLexiconData';
 import { olChikiToRoman } from '../../utils/romanSantali';
+import { ensureDevanagari } from '../../utils/devanagariUtils';
 
 // Devanagari to Ol Chiki phonetic transliteration
 const DEVA_CONSONANTS: Record<string, string> = {
@@ -94,6 +95,28 @@ export class TranslationProvider implements ITranslationProvider {
 
   private compoundPhrases: [string, string][] = [
     // Greetings & Introduction
+    ['नमस्ते बच्चों, आज हम पढ़ाई करेंगे', 'ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹᱠᱚ, ᱛᱮᱦᱮᱧ ᱟᱵᱚ ᱵᱚᱱ ᱯᱟᱲᱦᱟᱣᱟ'],
+    ['नमस्ते बच्चों', 'ᱡᱚᱦᱟᱨ ᱜᱤᱫᱽᱨᱟᱹᱠᱚ'],
+    ['आज हम पढ़ाई करेंगे', 'ᱛᱮᱦᱮᱧ ᱟᱵᱚ ᱵᱚᱱ ᱯᱟᱲᱦᱟᱣᱟ'],
+    ['हम पढ़ाई करेंगे', 'ᱟᱵᱚ ᱵᱚᱱ ᱯᱟᱲᱦᱟᱣᱟ'],
+    ['पढ़ाई करेंगे', 'ᱵᱚᱱ ᱯᱟᱲᱦᱟᱣᱟ'],
+    ['बच्चों, अपनी किताब खोलिए', 'ᱜᱤᱫᱽᱨᱟᱹᱠᱚ, ᱟᱯᱮᱭᱟᱜ ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱯᱮ'],
+    ['अपनी किताब खोलिए', 'ᱟᱢᱟᱜ ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱢᱮ'],
+    ['अपनी किताबें खोलिए', 'ᱟᱯᱮᱭᱟᱜ ᱯᱚᱛᱚᱵᱠᱚ ᱡᱷᱤᱡᱽ ᱯᱮ'],
+    ['किताब खोलिए', 'ᱯᱚᱛᱚᱵ ᱡᱷᱤᱡᱽ ᱯᱮ'],
+    ['किताबें खोलिए', 'ᱯᱚᱛᱚᱵᱠᱚ ᱡᱷᱤᱡᱽ ᱯᱮ'],
+    ['आज हम संख्या के बारे में सीखेंगे', 'ᱛᱮᱦᱮᱧ ᱟᱵᱚ ᱮᱞ ᱵᱟᱵᱚᱛ ᱛᱮ ᱵᱚᱱ ᱪᱮᱫᱚᱜ-ᱟ'],
+    ['संख्या के बारे में सीखेंगे', 'ᱮᱞ ᱵᱟᱵᱚᱛ ᱛᱮ ᱵᱚᱱ ᱪᱮᱫᱚᱜ-ᱟ'],
+    ['संख्या के बारे में', 'ᱮᱞ ᱵᱟᱵᱚᱛ ᱛᱮ'],
+    ['के बारे में', 'ᱵᱟᱵᱚᱛ ᱛᱮ'],
+    ['सीखेंगे', 'ᱵᱚᱱ ᱪᱮᱫᱚᱜ-ᱟ'],
+    ['आप सभी ध्यान से मेरी बात सुनिए', 'ᱟᱯᱮ ᱡᱚᱛᱚ ᱦᱚᱲ ᱫᱷᱮᱭᱟᱱ ᱛᱮ ᱤᱧᱟᱜ ᱠᱟᱛᱷᱟ ᱟᱸᱡᱚᱢ ᱯᱮ'],
+    ['ध्यान से मेरी बात सुनिए', 'ᱫᱷᱮᱭᱟᱱ ᱛᱮ ᱤᱧᱟᱜ ᱠᱟᱛᱷᱟ ᱟᱸᱡᱚᱢ ᱯᱮ'],
+    ['मेरी बात सुनिए', 'ᱤᱧᱟᱜ ᱠᱟᱛᱷᱟ ᱟᱸᱡᱚᱢ ᱯᱮ'],
+    ['मेरी बात सुनो', 'ᱤᱧᱟᱜ ᱠᱟᱛᱷᱟ ᱟᱸᱡᱚᱢ ᱢᱮ'],
+    ['ध्यान से सुनिए', 'ᱫᱷᱮᱭᱟᱱ ᱛᱮ ᱟᱸᱡᱚᱢ ᱯᱮ'],
+    ['ध्यान से सुनो', 'ᱫᱷᱮᱭᱟᱱ ᱛᱮ ᱟᱸᱡᱚᱢ ᱢᱮ'],
+    ['आप सभी', 'ᱟᱯᱮ ᱡᱚᱛᱚ ᱦᱚᱲ'],
     ['तुम्हारा नाम क्या है', 'ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ?'],
     ['आपका नाम क्या है', 'ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ ᱪᱮᱫ?'],
     ['आपका नाम', 'ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ'],
@@ -263,6 +286,19 @@ export class TranslationProvider implements ITranslationProvider {
       ['बच्चों', 'ᱜᱤᱫᱽᱨᱟᱹᱠᱚ'],
       ['किताबें', 'ᱯᱚᱛᱚᱵᱠᱚ'],
       ['किताब', 'ᱯᱚᱛᱚᱵ'],
+      ['पढ़ाई', 'ᱯᱟᱲᱦᱟᱣ'],
+      ['पढ़ेंगे', 'ᱯᱟᱲᱦᱟᱣᱟᱵᱚ'],
+      ['करेंगे', 'ᱵᱚᱱ ᱠᱟᱹᱢᱤᱭᱟ'],
+      ['खोलिए', 'ᱡᱷᱤᱡᱽ ᱯᱮ'],
+      ['खोलो', 'ᱡᱷᱤᱡᱽ ᱢᱮ'],
+      ['सुनिए', 'ᱟᱸᱡᱚᱢ ᱯᱮ'],
+      ['सीखेंगे', 'ᱵᱚᱱ ᱪᱮᱫᱚᱜ-ᱟ'],
+      ['बात', 'ᱠᱟᱛᱷᱟ'],
+      ['बारे', 'ᱵᱟᱵᱚᱛ'],
+      ['अपनी', 'ᱟᱯᱮᱭᱟᱜ'],
+      ['अपने', 'ᱟᱯᱮᱭᱟᱜ'],
+      ['अपना', 'ᱟᱯᱮᱭᱟᱜ'],
+      ['ध्यान', 'ᱫᱷᱮᱭᱟᱱ'],
       ['स्कूल', 'ᱤᱛᱩᱱ ᱟᱥᱲᱟ'],
       ['विद्यालय', 'ᱤᱛᱩᱱ ᱟᱥᱲᱟ'],
       ['कलम', 'ᱠᱚᱞᱚᱢ'],
@@ -606,7 +642,10 @@ export class TranslationProvider implements ITranslationProvider {
     options?: TranslationOptions
   ): Promise<TranslationResult> {
     const t0 = Date.now();
-    const clean = text.trim();
+    let clean = text.trim();
+    if (sourceLang === 'hin_Deva') {
+      clean = ensureDevanagari(clean);
+    }
     if (!clean) {
       return {
         sourceText: text,
@@ -619,6 +658,7 @@ export class TranslationProvider implements ITranslationProvider {
     }
 
     const lookupKey = clean.toLowerCase();
+    const unpunctKey = lookupKey.replace(/[,?.!|।]+$/, '').trim();
 
     // ---------------------------------------------------------------
     // 1. Hindi -> Santali Ol Chiki Translation
@@ -637,6 +677,19 @@ export class TranslationProvider implements ITranslationProvider {
           inferenceTimeMs: Date.now() - t0,
           engineUsed: 'fln_verified_lexicon',
         };
+      } else if (this.flnHinToSat.has(unpunctKey)) {
+        const trans = this.flnHinToSat.get(unpunctKey)!;
+        const punct = clean.endsWith('।') ? '᱾' : (clean.match(/[,?.!|।]+$/)?.[0] || '');
+        console.log('[JANBHASHA][NMT] FLN match (unpunctuated):', clean, '->', trans + punct);
+        return {
+          sourceText: clean,
+          translatedText: trans + punct,
+          romanText: olChikiToRoman(trans + punct),
+          sourceLang,
+          targetLang,
+          inferenceTimeMs: Date.now() - t0,
+          engineUsed: 'fln_verified_lexicon',
+        };
       }
 
       // 1B. Exact dictionary match (AdiBhasha)
@@ -647,6 +700,19 @@ export class TranslationProvider implements ITranslationProvider {
           sourceText: clean,
           translatedText: trans,
           romanText: olChikiToRoman(trans),
+          sourceLang,
+          targetLang,
+          inferenceTimeMs: Date.now() - t0,
+          engineUsed: 'adibhasha_lexicon',
+        };
+      } else if (this.hinToSatDict.has(unpunctKey)) {
+        const trans = this.hinToSatDict.get(unpunctKey)!;
+        const punct = clean.endsWith('।') ? '᱾' : (clean.match(/[,?.!|।]+$/)?.[0] || '');
+        console.log('[JANBHASHA][NMT] Dictionary match (unpunctuated):', clean, '->', trans + punct);
+        return {
+          sourceText: clean,
+          translatedText: trans + punct,
+          romanText: olChikiToRoman(trans + punct),
           sourceLang,
           targetLang,
           inferenceTimeMs: Date.now() - t0,

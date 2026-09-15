@@ -20,6 +20,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { apiService } from '../../services/apiService';
 import { audioService } from '../../services/audioService';
 import { warmupWhisper } from '../../core/providers/HindiASRProvider';
+import { ensureDevanagari } from '../../utils/devanagariUtils';
 
 const { JanbhashaModule } = NativeModules;
 const janbhashaEmitter = JanbhashaModule ? new NativeEventEmitter(JanbhashaModule) : null;
@@ -142,8 +143,9 @@ export const LiveTranslationScreen: React.FC = () => {
     if (!janbhashaEmitter) return;
     const partialSub = janbhashaEmitter.addListener('onSpeechPartialResults', (event) => {
       if (event?.partialText) {
-        setHindiTranscript(event.partialText);
-        setCustomTextInput(event.partialText);
+        const devaPartial = ensureDevanagari(event.partialText);
+        setHindiTranscript(devaPartial);
+        setCustomTextInput(devaPartial);
       }
     });
     return () => {
@@ -272,11 +274,13 @@ export const LiveTranslationScreen: React.FC = () => {
         return;
       }
 
-      setHindiTranscript(transcript);
-      setCustomTextInput(transcript);
+      // Ensure 100% authentic Devanagari script output
+      const devaTranscript = ensureDevanagari(transcript);
+      setHindiTranscript(devaTranscript);
+      setCustomTextInput(devaTranscript);
 
       // Steps 3, 4, 5: Translation -> VITS TTS -> Playback
-      await processTextPipeline(transcript, recordingStartTimeRef.current);
+      await processTextPipeline(devaTranscript, recordingStartTimeRef.current);
     } catch (err: any) {
       console.error('Pipeline processing error:', err);
       setErrorMessage(err.message || 'Pipeline processing failed');
@@ -289,7 +293,8 @@ export const LiveTranslationScreen: React.FC = () => {
   const processTextPipeline = async (text: string, startTime: number = Date.now()) => {
     try {
       setErrorMessage('');
-      setHindiTranscript(text);
+      const devaText = ensureDevanagari(text);
+      setHindiTranscript(devaText);
 
       // Step 3: Translation (Hindi -> Santali Ol Chiki)
       setStage('TRANSLATING');
@@ -297,13 +302,13 @@ export const LiveTranslationScreen: React.FC = () => {
       let roman = '';
       try {
         const { translationProvider } = require('../../core/providers/TranslationProvider');
-        const offlineRes = await translationProvider.translate(text, 'hin_Deva', 'sat_Olck');
+        const offlineRes = await translationProvider.translate(devaText, 'hin_Deva', 'sat_Olck');
         translated = offlineRes.translatedText;
         roman = offlineRes.romanText || '';
       } catch (offlineErr) {
         console.warn('Offline translation error, checking server fallback:', offlineErr);
         try {
-          const transRes = await apiService.translateText(text, 'hin_Deva', 'sat_Olck');
+          const transRes = await apiService.translateText(devaText, 'hin_Deva', 'sat_Olck');
           translated = transRes.translated_text || '';
         } catch {}
       }
@@ -321,7 +326,7 @@ export const LiveTranslationScreen: React.FC = () => {
       try {
         const { offlineDatabase } = require('../../core/database/OfflineDatabase');
         await offlineDatabase.addHistory({
-          sourceText: text,
+          sourceText: devaText,
           translatedText: translated,
           sourceLang: 'hin_Deva',
           targetLang: 'sat_Olck',
@@ -335,7 +340,7 @@ export const LiveTranslationScreen: React.FC = () => {
       const calculatedLatency = Date.now() - startTime;
       setLatencyMs(calculatedLatency);
       setLastTranslation({
-        sourceText: text,
+        sourceText: devaText,
         targetText: translated,
         sourceLang: 'hin_Deva',
         targetLang: 'sat_Olck',
@@ -992,10 +997,10 @@ const styles = StyleSheet.create({
     color: JanbhashaTheme.colors.deepGreen,
   },
   sourceText: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '600',
     color: JanbhashaTheme.colors.charcoalText,
-    lineHeight: 24,
+    lineHeight: 28,
   },
   targetText: {
     fontSize: 21,
